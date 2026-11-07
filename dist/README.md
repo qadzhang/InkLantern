@@ -1,4 +1,4 @@
-# Magic Lantern 中文版 — 交付说明
+# 墨灯 InkLantern — 交付说明
 
 ## 产物
 

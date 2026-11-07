@@ -159,3 +159,9 @@ cjk.rbf，"D5 不显示汉字"即此 packaging 疏漏所致，非代码问题。
   缩放行为/已知边界重写）、AGENTS（PATH 新位置、49/49、toolchain 不入库）、
   TRANSLATE_RULES（页签规则反转为"禁止翻译"，附 menu_tab_label 映射表）、
   gen_cjk_font 文案、dist/README 页签路径。
+
+## 2026-11-07 项目命名
+
+- 定名 **墨灯 / InkLantern**（"灯"承 Magic Lantern，"墨"取点阵字形之墨迹）。
+- 根 README.md 替换为项目门面（上游介绍移至致谢节）；AGENTS/汉化说明/dist
+  标题同步冠名。

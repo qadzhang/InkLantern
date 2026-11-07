@@ -1,7 +1,7 @@
-# AGENTS.md — 本仓库 AI 代理操作规范
+# AGENTS.md — 墨灯 InkLantern · AI 代理操作规范
 
-本仓库是 Magic Lantern 官方源（`reticulatedpines/magiclantern_simplified`，dev 分支）
-的**中文本地化工作副本**，交付目标：**6D.116** 与 **EOSM.202** 两个机型的汉化固件。
+本仓库是**墨灯 InkLantern**——Magic Lantern 官方源
+（`reticulatedpines/magiclantern_simplified`，dev 分支）的中文本地化项目，交付目标：**6D.116** 与 **EOSM.202** 两个机型的汉化固件。
 任何 AI 代理在本仓库工作前必须通读本文档。
 
 ## 1. 目录导航
