@@ -165,3 +165,11 @@ cjk.rbf，"D5 不显示汉字"即此 packaging 疏漏所致，非代码问题。
 - 定名 **墨灯 / InkLantern**（"灯"承 Magic Lantern，"墨"取点阵字形之墨迹）。
 - 根 README.md 替换为项目门面（上游介绍移至致谢节）；AGENTS/汉化说明/dist
   标题同步冠名。
+
+## 2026-11-07 远端接入
+
+- 远端重排：`upstream` = reticulatedpines/magiclantern_simplified（经 ghfast.top
+  只读代理拉取），`origin` = github.com/qadzhang/InkLantern（直连推送）。
+- 本地浅克隆无法直接推送（缺上游父提交）：以 142472e 的树为根提交
+  （完整源码快照，GPLv2 对应源），墨灯各成果提交 cherry-pick 其上构成 main。
+- 提交署名统一为 qadzhang（GitHub noreply 邮箱）。
