@@ -47,8 +47,8 @@ lcd_release_display( void * priv, int x, int y, int selected )
     bmp_printf(
         selected ? MENU_FONT_SEL : MENU_FONT,
         x, y,
-        "LCDsensor Remote: %s",
-        v == 1 ? "Near" : v == 2 ? (get_mlu() ? "Away/MLU" : "Away") : v == 3 ? "Wave" : "OFF"
+        "LCD 感应遥控：%s",
+        v == 1 ? "近处" : v == 2 ? (get_mlu() ? "远处/预升" : "远处") : v == 3 ? "挥手" : "关"
     );
     if (v) display_lcd_remote_icon(x-25, y+5);
     menu_draw_icon(x, y, v ? MNI_NONE : MNI_OFF, 0);

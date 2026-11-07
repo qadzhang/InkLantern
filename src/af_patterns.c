@@ -387,38 +387,38 @@ static struct menu_entry afp_focus_menu[] = {
     {
         .depends_on = DEP_PHOTO_MODE | DEP_CHIPPED_LENS | DEP_NOT_LIVEVIEW,
 #if defined(CONFIG_6D)
-        .name = "Focus Shortcuts",
+        .name = "对焦快捷键",
         .priv = &af_patterns,
         .max = 1,
-        .help = "Choose af points directly, display OFF, arrows+SET.",
-        .help2 = "Btw: Real focus patterns aren't working on 6D (yet?).",
+        .help = "显示屏关闭时直接用方向键+SET 选择对焦点。",
+        .help2 = "另注：真正的对焦图案在 6D 上（暂时？）不可用。",
 #else
-        .name = "Focus Patterns",
+        .name = "对焦图案",
         .select = menu_open_submenu,
-        .help = "Custom AF patterns (photo mode only). Ported from 400plus.",
+        .help = "自定义对焦图案（仅拍照模式）。移植自 400plus。",
         .submenu_height = 280,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Center selection",
+                .name = "中央选择",
                 .select = afp_center_toggle,
-                .help = "Select a center-based AF pattern with LEFT and RIGHT keys.",
+                .help = "用左/右键选择一个以中央为主的对焦图案。",
             },
             {
-                .name = "Horizontal selection",
+                .name = "水平选择",
                 .select = afp_horiz_toggle,
-                .help = "Select a horizontal AF pattern with LEFT and RIGHT keys.",
+                .help = "用左/右键选择一个水平方向的对焦图案。",
             },
             {
-                .name = "Vertical selection",
+                .name = "垂直选择",
                 .select = afp_vert_toggle,
                 .update = pattern_display,
-                .help = "Select a vertical AF pattern with LEFT and RIGHT keys.",
+                .help = "用左/右键选择一个垂直方向的对焦图案。",
             },
             {
-                .name = "Shortcut keys",
+                .name = "快捷键",
                 .priv = &af_patterns,
                 .max = 1,
-                .help = "Choose patterns outside ML menu, display OFF, arrows+SET.",
+                .help = "在 ML 菜单之外选择图案：显示屏关闭时用方向键+SET。",
             },
             MENU_EOL
         },

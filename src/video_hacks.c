@@ -28,35 +28,35 @@ uint32_t bitrate_gop_size = 12;
 
 static MENU_UPDATE_FUNC(bitrate_flushing_rate_update)
 {
-    MENU_SET_VALUE("%d frames", bitrate_flushing_rate );
+    MENU_SET_VALUE("%d 帧", bitrate_flushing_rate );
 
 #if defined(CONFIG_7D)
     if(!ml_rpc_available())
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Master DIGiC hacks not available in this release.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此版本不支持主 DIGiC 补丁。");
     }
     else 
 #endif
     if(!bitrate_cache_hacks)
     {
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Video hacks disabled.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "视频补丁已禁用。");
     }
 }
 
 static MENU_UPDATE_FUNC(bitrate_gop_size_update)
 {
-    MENU_SET_VALUE("%d frames", bitrate_gop_size);
+    MENU_SET_VALUE("%d 帧", bitrate_gop_size);
 
 #if defined(CONFIG_7D)
     if(!ml_rpc_available())
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Master DIGiC hacks not available in this release.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此版本不支持主 DIGiC 补丁。");
     }
     else
 #endif
     if(!bitrate_cache_hacks)
     {
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Video hacks disabled.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "视频补丁已禁用。");
     }
 }
 
@@ -97,7 +97,7 @@ video_hack_task( void* unused )
                     // this code won't work on 5D2 and 50D
                     int mode  = 1;
                     prop_request_change(PROP_MOVIE_SOUND_RECORD, &mode, 4);
-                    NotifyBox(2000,"Canon sound disabled");
+                    NotifyBox(2000,"已禁用佳能录音");
                 }
                 else
                 {
@@ -129,27 +129,27 @@ video_hack_task( void* unused )
 
 static struct menu_entry video_hack_menus[] = {
     {
-        .name = "Video Hacks",
+        .name = "视频补丁",
         .priv = &bitrate_cache_hacks,
         .max  = 1,
-        .help = "Experimental hacks: flush rate, GOP size. Be careful!",
+        .help = "实验性补丁：缓冲刷新率、GOP 大小。请谨慎使用！",
         .depends_on = DEP_MOVIE_MODE,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Flush rate",
+                .name = "缓冲刷新率",
                 .priv = &bitrate_flushing_rate,
                 .update = bitrate_flushing_rate_update,
                 .min  = 2,
                 .max  = 50,
-                .help = "Flush movie buffer every n frames."
+                .help = "每 n 帧刷新一次录像缓冲区。"
             },
             {
-                .name = "GOP size",
+                .name = "GOP 大小",
                 .priv = &bitrate_gop_size,
                 .update = bitrate_gop_size_update,
                 .min  = 1,
                 .max  = 100,
-                .help = "Set GOP size to n frames."
+                .help = "将 GOP 大小设为 n 帧。"
             },
             MENU_EOL
         },

@@ -419,7 +419,7 @@ static MENU_UPDATE_FUNC(audio_dgain_display)
     unsigned val = MENU_CURRENT_VALUE;
     MENU_SET_RINFO("(dB)");
     if (alc_enable)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AGC is enabled.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AGC 已启用。");
     MENU_SET_ENABLED(val);
 }
 #endif
@@ -428,7 +428,7 @@ static MENU_UPDATE_FUNC(audio_dgain_display)
 static MENU_UPDATE_FUNC(audio_lovl_display)
 {
     if (!audio_monitoring)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Headphone monitoring is disabled");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "耳机监听已禁用");
 }
 #endif
 
@@ -437,12 +437,12 @@ static MENU_UPDATE_FUNC(audio_micpower_display)
 {
     int mic_pow = get_mic_power(get_input_source());
     MENU_SET_RINFO(
-        mic_pow ? "Low Z" : "High Z"
+        mic_pow ? "低阻抗" : "高阻抗"
     );
     
     if (get_input_source() < 2)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Mic power is required by internal mic, can't turn off.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "内置麦克风需要话筒供电，无法关闭。");
     }
 }
 #endif
@@ -450,7 +450,7 @@ static MENU_UPDATE_FUNC(audio_micpower_display)
 static struct menu_entry audio_menus[] = {
     #ifdef FEATURE_ANALOG_GAIN
     {
-        .name = "Analog Gain",
+        .name = "模拟增益",
         .priv           = &mgain,
         .icon_type = IT_PERCENT_OFF,
         #ifdef CONFIG_500D
@@ -461,41 +461,41 @@ static struct menu_entry audio_menus[] = {
         .max = 7,
         .choices = (const char *[]) {"0 dB", "10 dB", "17 dB", "20 dB", "23 dB", "26 dB", "29 dB", "32 dB"},
         #endif
-        .help = "Gain applied to both inputs in analog domain (preferred).",
+        .help = "在模拟域对两路输入施加增益（推荐）。",
         .depends_on = DEP_SOUND_RECORDING,
     },
     #endif
     #ifdef FEATURE_DIGITAL_GAIN
     {
-        .name = "Digital Gain", 
+        .name = "数字增益",
         .select = menu_open_submenu, 
-        .help = "Digital gain (not recommended, use only for headphones!)",
+        .help = "数字增益（不推荐，仅限耳机使用！）",
         .depends_on = DEP_SOUND_RECORDING,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Left Digital Gain",
+                .name = "左声道数字增益",
                 .priv           = &dgain_l,
                 .max            = 36,
                 .icon_type      = IT_PERCENT_OFF,
                 .unit           = UNIT_DEC,
                 .update         = audio_dgain_display,
-                .help = "Digital gain (LEFT). Any nonzero value reduces quality.",
+                .help = "左声道数字增益。非零值都会降低音质。",
             },
             {
-                .name = "Right Digital Gain",
+                .name = "右声道数字增益",
                 .priv           = &dgain_r,
                 .max            = 36,
                 .icon_type      = IT_PERCENT_OFF,
                 .unit           = UNIT_DEC,
                 .update         = audio_dgain_display,
-                .help = "Digital gain (RIGHT). Any nonzero value reduces quality.",
+                .help = "右声道数字增益。非零值都会降低音质。",
             },
             #ifdef FEATURE_AGC_TOGGLE
             {
                 .name = "AGC",
                 .priv           = &alc_enable,
                 .max            = 1,
-                .help = "Automatic Gain Control - turn it off :)",
+                .help = "自动增益控制（AGC）——建议关闭 :)",
             },
             #endif
             MENU_EOL,
@@ -504,21 +504,21 @@ static struct menu_entry audio_menus[] = {
     #endif
     #ifdef FEATURE_INPUT_SOURCE
     {
-        .name = "Input source",
+        .name = "输入源",
         .priv           = &input_choice,
         .icon_type      = IT_DICE,
         .max            = 4,
-        .choices = (const char *[]) {"Internal mic", "L:int R:ext", "External stereo", "L:int R:balanced", "Auto int/ext"},
-        .help = "Audio input: internal / external / both / balanced / auto.",
+        .choices = (const char *[]) {"内置麦克风", "左:内置 右:外接", "外接立体声", "左:内置 右:平衡", "自动 内置/外接"},
+        .help = "音频输入：内置 / 外接 / 混合 / 平衡 / 自动。",
         .depends_on = DEP_SOUND_RECORDING,
     },
     #endif
 
     #ifdef FEATURE_WIND_FILTER
     {
-        .name = "Wind Filter",
+        .name = "风声滤波",
         .priv              = &enable_filters,
-        .help = "High pass filter for wind noise reduction.",
+        .help = "用于降低风噪的高通滤波器。",
         .max = 1,
         .depends_on = DEP_SOUND_RECORDING,
     },
@@ -526,18 +526,18 @@ static struct menu_entry audio_menus[] = {
     
     #ifdef CONFIG_AUDIO_REG_LOG
     {
-        .name           = "Close register log",
+        .name           = "关闭寄存器日志",
         .select         = audio_reg_close,
     },
     #endif
 
     #ifdef FEATURE_MIC_POWER
     {
-        .name = "Mic Power",
+        .name = "话筒供电",
         .priv           = &mic_power,
         .update         = audio_micpower_display,
         .max = 1,
-        .help = "Needed for int. and some other mics, but lowers impedance.",
+        .help = "内置及部分话筒需要开启，但会降低阻抗。",
         .depends_on = DEP_SOUND_RECORDING,
     },
     #endif
@@ -560,21 +560,21 @@ static struct menu_entry audio_menus[] = {
 
     #ifdef FEATURE_HEADPHONE_MONITORING
     {
-        .name = "Headphone Mon.",
+        .name = "耳机监听",
         .priv = &audio_monitoring,
         .max = 1,
-        .help = "Monitoring via A-V jack. Disable if you use a SD display.",
+        .help = "通过 A-V 接口监听。使用 SD 显示时请禁用。",
         .depends_on = DEP_SOUND_RECORDING,
     },
     #ifdef FEATURE_HEADPHONE_OUTPUT_VOLUME
     {
-        .name = "Headphone Volume",
+        .name = "耳机音量",
         .priv           = &lovl,
         .update         = audio_lovl_display,
         .max = 3,
         .icon_type      = IT_PERCENT_OFF,
-        .choices = (const char *[]) {"0 dB", "2 dB (digital)", "4 dB (digital)", "6 dB (digital)"},
-        .help = "Output volume for audio monitoring (headphones only).",
+        .choices = (const char *[]) {"0 dB", "2 dB（数字）", "4 dB（数字）", "6 dB（数字）"},
+        .help = "音频监听的输出音量（仅限耳机）。",
         .depends_on = DEP_SOUND_RECORDING,
     },
     #endif
@@ -649,10 +649,10 @@ static void volume_display()
 {
     #ifdef FEATURE_DIGITAL_GAIN
     int mgain_db = mgain_index2gain(mgain);
-    NotifyBox(2000, "Volume: %d + (%d,%d) dB", mgain_db, dgain_l, dgain_r);
+    NotifyBox(2000, "音量：%d + (%d,%d) dB", mgain_db, dgain_l, dgain_r);
     #elif defined(FEATURE_ANALOG_GAIN)
     int mgain_db = mgain_index2gain(mgain);
-    NotifyBox(2000, "Volume: %d dB", mgain_db);
+    NotifyBox(2000, "音量：%d dB", mgain_db);
     #endif
 }
 
@@ -696,7 +696,7 @@ void volume_down()
 static void out_volume_display()
 {
     //int mgain_db = mgain_index2gain(mgain);
-    NotifyBox(2000, "Out Volume: %d dB", 2 * lovl);
+    NotifyBox(2000, "输出音量：%d dB", 2 * lovl);
 }
 void out_volume_up()
 {

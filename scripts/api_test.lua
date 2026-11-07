@@ -375,21 +375,21 @@ function test_menu()
     sleep(1)
 
     -- move selection (not required for set to work; just for user interface)
-    assert(menu.select("Expo", "Picture Style"))
+    assert(menu.select("Expo", "照片风格"))
 
     -- picture styles should be set-able as string
     -- numeric works too, as it sets the internal index
-    assert(menu.set("Expo", "Picture Style", "Portrait"))
-    assert(menu.get("Expo", "Picture Style") == "Portrait")
+    assert(menu.set("Expo", "照片风格", "Portrait"))
+    assert(menu.get("Expo", "照片风格") == "Portrait")
     sleep(1)
-    assert(menu.set("Expo", "Picture Style", 5)) -- OK, selects Neutral
+    assert(menu.set("Expo", "照片风格", 5)) -- OK, selects Neutral
     -- skip string test, as other camera models may use different indices
     sleep(1)
-    assert(menu.set("Expo", "Picture Style", "Landscape"))
-    assert(menu.get("Expo", "Picture Style") == "Landscape")
+    assert(menu.set("Expo", "照片风格", "Landscape"))
+    assert(menu.get("Expo", "照片风格") == "Landscape")
     sleep(1)
-    assert(menu.set("Expo", "Picture Style", 1234) == false) -- should fail, out of range
-    assert(menu.get("Expo", "Picture Style") == "Landscape") -- old selection should not change
+    assert(menu.set("Expo", "照片风格", 1234) == false) -- should fail, out of range
+    assert(menu.get("Expo", "照片风格") == "Landscape") -- old selection should not change
     sleep(1)
 
     assert(menu.select("Overlay"))
@@ -397,7 +397,7 @@ function test_menu()
     assert(menu.select("Movie"))
 
     -- only run this test if FPS override is available in menu
-    if menu.get("Movie", "FPS override") ~= nil then
+    if menu.get("Movie", "帧率覆盖") ~= nil then
         -- perform the next test in LiveView
         menu.close()
         lv.start()
@@ -405,24 +405,24 @@ function test_menu()
         assert(lv.running)
         menu.open()
 
-        assert(menu.select("Movie", "FPS override"))
-        assert(menu.set("Movie", "FPS override", "OFF"))            -- "OFF" and "ON" are boolean matches for zero/nonzero internal state
-        assert(menu.get("Movie", "FPS override") == "OFF")
-        assert(menu.set("FPS override", "Desired FPS", "23.976"))   -- this menu entry will print "23.976 (from 25)" or something like that
-        assert(menu.get("FPS override", "Desired FPS"):sub(1,13) == "23.976 (from ")
-        assert(menu.set("FPS override", "Desired FPS", "5"))        -- this menu entry will print "5 (from 30)" or something like that
-        assert(menu.get("FPS override", "Desired FPS"):sub(1,8) == "5 (from ")
-        assert(menu.set("FPS override", "Desired FPS", "10"))       -- this menu entry will print "10 (from 25)" or something like that
-        assert(menu.get("FPS override", "Desired FPS"):sub(1,9) == "10 (from ")
-        assert(menu.set("FPS override", "Optimize for", "Exact FPS")) -- nothing fancy here, just request exact frame rate
-        assert(menu.get("FPS override", "Optimize for") == "Exact FPS")
-        assert(menu.set("Movie", "FPS override", "ON"))             -- enable FPS override
-        assert(menu.get("Movie", "FPS override") ~= "ON")           -- the menu entry will print something else
+        assert(menu.select("Movie", "帧率覆盖"))
+        assert(menu.set("Movie", "帧率覆盖", "OFF"))            -- "OFF" and "ON" are boolean matches for zero/nonzero internal state
+        assert(menu.get("Movie", "帧率覆盖") == "OFF")
+        assert(menu.set("帧率覆盖", "目标帧率", "23.976"))   -- this menu entry will print "23.976 (from 25)" or something like that
+        assert(menu.get("帧率覆盖", "目标帧率"):sub(1,13) == "23.976 (from ")
+        assert(menu.set("帧率覆盖", "目标帧率", "5"))        -- this menu entry will print "5 (from 30)" or something like that
+        assert(menu.get("帧率覆盖", "目标帧率"):sub(1,8) == "5 (from ")
+        assert(menu.set("帧率覆盖", "目标帧率", "10"))       -- this menu entry will print "10 (from 25)" or something like that
+        assert(menu.get("帧率覆盖", "目标帧率"):sub(1,9) == "10 (from ")
+        assert(menu.set("帧率覆盖", "优化目标", "Exact FPS")) -- nothing fancy here, just request exact frame rate
+        assert(menu.get("帧率覆盖", "优化目标") == "Exact FPS")
+        assert(menu.set("Movie", "帧率覆盖", "ON"))             -- enable FPS override
+        assert(menu.get("Movie", "帧率覆盖") ~= "ON")           -- the menu entry will print something else
         sleep(2)                                                    -- switching the frame rate takes a while
-        assert(menu.get("Movie", "FPS override") == "10.000")       -- it should eventually settle to our requested value
-        assert(menu.get("FPS override", "Actual FPS") == "10.000")  -- current FPS value can be read from here
-        assert(menu.set("Movie", "FPS override", "OFF"))            -- that was it
-        assert(menu.get("Movie", "FPS override") == "OFF")          -- make sure it's turned off
+        assert(menu.get("Movie", "帧率覆盖") == "10.000")       -- it should eventually settle to our requested value
+        assert(menu.get("帧率覆盖", "实际帧率") == "10.000")  -- current FPS value can be read from here
+        assert(menu.set("Movie", "帧率覆盖", "OFF"))            -- that was it
+        assert(menu.get("Movie", "帧率覆盖") == "OFF")          -- make sure it's turned off
 
         -- LiveView test completed
         menu.close()
@@ -433,124 +433,124 @@ function test_menu()
     end
 
     assert(menu.select("Shoot"))
-    assert(menu.select("Shoot", "Advanced Bracket"))
+    assert(menu.select("Shoot", "高级包围"))
 
     -- boolean items should be set-able as int (0 or 1)
-    assert(menu.set("Shoot", "Advanced Bracket", 1))
-    assert(menu.get("Shoot", "Advanced Bracket", 0) == 1)
+    assert(menu.set("Shoot", "高级包围", 1))
+    assert(menu.get("Shoot", "高级包围", 0) == 1)
     sleep(1)
 
     -- or as string (if the user interface displays "ON" or "OFF")
     -- here, actual string will be "ON, 10s" or similar (also accepted)
-    assert(menu.set("Shoot", "Intervalometer", "ON"))
-    assert(menu.get("Shoot", "Intervalometer", 0) == 1)
+    assert(menu.set("Shoot", "间隔拍摄", "ON"))
+    assert(menu.get("Shoot", "间隔拍摄", 0) == 1)
     sleep(1)
 
     -- turning off should be straightforward
-    assert(menu.set("Shoot", "Advanced Bracket", "OFF"))
-    assert(menu.get("Shoot", "Advanced Bracket", 0) == 0)
-    assert(menu.get("Shoot", "Advanced Bracket") == "OFF")
+    assert(menu.set("Shoot", "高级包围", "OFF"))
+    assert(menu.get("Shoot", "高级包围", 0) == 0)
+    assert(menu.get("Shoot", "高级包围") == "OFF")
     sleep(1)
 
     -- "ON" and "OFF" are interpreted as booleans,
     -- even if the menu entry doesn't display exactly this string
-    assert(menu.set("Shoot", "Advanced Bracket", "ON"))
-    assert(menu.get("Shoot", "Advanced Bracket") ~= "ON")
-    assert(menu.get("Shoot", "Advanced Bracket") ~= "OFF")
-    assert(menu.set("Shoot", "Advanced Bracket", "OFF"))
-    assert(menu.get("Shoot", "Advanced Bracket") == "OFF")
+    assert(menu.set("Shoot", "高级包围", "ON"))
+    assert(menu.get("Shoot", "高级包围") ~= "ON")
+    assert(menu.get("Shoot", "高级包围") ~= "OFF")
+    assert(menu.set("Shoot", "高级包围", "OFF"))
+    assert(menu.get("Shoot", "高级包围") == "OFF")
 
-    assert(menu.set("Shoot", "Intervalometer", 0))
-    assert(menu.get("Shoot", "Intervalometer", 0) == 0)
-    assert(menu.get("Shoot", "Intervalometer") == "OFF")
+    assert(menu.set("Shoot", "间隔拍摄", 0))
+    assert(menu.get("Shoot", "间隔拍摄", 0) == 0)
+    assert(menu.get("Shoot", "间隔拍摄") == "OFF")
     sleep(1)
 
     -- move to Intervalometer menu
-    assert(menu.select("Shoot", "Intervalometer"))
+    assert(menu.select("Shoot", "间隔拍摄"))
     sleep(1)
 
     -- enter the submenu
-    assert(menu.select("Intervalometer", "Take a pic every"))
+    assert(menu.select("间隔拍摄", "拍摄间隔"))
     sleep(1)
 
     -- note: setting menu by string works by brute force
     -- that is, trying every possible value and comparing the string
-    assert(menu.set("Intervalometer", "Take a pic every", "1m10s"))
-    assert(menu.get("Intervalometer", "Take a pic every", 0) == 70)
-    assert(menu.get("Intervalometer", "Take a pic every") == "1m10s")
+    assert(menu.set("间隔拍摄", "拍摄间隔", "1m10s"))
+    assert(menu.get("间隔拍摄", "拍摄间隔", 0) == 70)
+    assert(menu.get("间隔拍摄", "拍摄间隔") == "1m10s")
 
     -- going from 1m10s to 1m30s should be easy
-    assert(menu.set("Intervalometer", "Take a pic every", "1m30s"))
-    assert(menu.get("Intervalometer", "Take a pic every", 0) == 90)
-    assert(menu.get("Intervalometer", "Take a pic every") == "1m30s")
+    assert(menu.set("间隔拍摄", "拍摄间隔", "1m30s"))
+    assert(menu.get("间隔拍摄", "拍摄间隔", 0) == 90)
+    assert(menu.get("间隔拍摄", "拍摄间隔") == "1m30s")
 
     -- going back to 1m10s would have to go through LOTS of intermediate values
-    assert(menu.set("Intervalometer", "Take a pic every", "1m10s"))
-    assert(menu.get("Intervalometer", "Take a pic every", 0) == 70)
-    assert(menu.get("Intervalometer", "Take a pic every") == "1m10s")
+    assert(menu.set("间隔拍摄", "拍摄间隔", "1m10s"))
+    assert(menu.get("间隔拍摄", "拍摄间隔", 0) == 70)
+    assert(menu.get("间隔拍摄", "拍摄间隔") == "1m10s")
     sleep(1)
 
     -- actual string will be 10s
-    assert(menu.set("Intervalometer", "Take a pic every", "10"))
-    assert(menu.get("Intervalometer", "Take a pic every", 0) == 10)
-    assert(menu.get("Intervalometer", "Take a pic every") == "10s")
+    assert(menu.set("间隔拍摄", "拍摄间隔", "10"))
+    assert(menu.get("间隔拍摄", "拍摄间隔", 0) == 10)
+    assert(menu.get("间隔拍摄", "拍摄间隔") == "10s")
     sleep(1)
 
     -- integer should work as well, as long as the internal state variable matches the menu value
     -- on other menus, where internal state is some index, integer argument may not be the best choice
-    assert(menu.set("Intervalometer", "Take a pic every", 70))
-    assert(menu.get("Intervalometer", "Take a pic every", 0) == 70)
-    assert(menu.get("Intervalometer", "Take a pic every") == "1m10s")
+    assert(menu.set("间隔拍摄", "拍摄间隔", 70))
+    assert(menu.get("间隔拍摄", "拍摄间隔", 0) == 70)
+    assert(menu.get("间隔拍摄", "拍摄间隔") == "1m10s")
     sleep(1)
 
     -- out of range, should fail
-    assert(menu.set("Intervalometer", "Take a pic every", 7000000) == false)
-    assert(menu.get("Intervalometer", "Take a pic every", 0) == 70)
-    assert(menu.get("Intervalometer", "Take a pic every") == "1m10s")
+    assert(menu.set("间隔拍摄", "拍摄间隔", 7000000) == false)
+    assert(menu.get("间隔拍摄", "拍摄间隔", 0) == 70)
+    assert(menu.get("间隔拍摄", "拍摄间隔") == "1m10s")
     sleep(1)
 
     -- exit submenu
-    assert(menu.select("Shoot", "Intervalometer"))
+    assert(menu.select("Shoot", "间隔拍摄"))
     sleep(1)
 
     -- let's try some more submenus
     -- todo: more multi-level submenus
-    assert(menu.select("Advanced Bracket", "Frames")); sleep(1)
-    assert(menu.select("Advanced Bracket", "Sequence")); sleep(1)
-    assert(menu.select("Advanced Bracket", "ISO shifting")); sleep(1)
-    assert(menu.select("Bulb Timer", "Exposure duration")); sleep(1)
-    assert(menu.select("Shoot Preferences", "Snap Simulation")); sleep(1)
-    assert(menu.select("Misc key settings", "Sticky HalfShutter")); sleep(1)
-    -- assert(menu.select("Play mode actions", "Trigger key(s)")); sleep(1)     -- FIXME: not present on EOS M
-    assert(menu.select("LiveView zoom tweaks", "Zoom on HalfShutter")); sleep(1)
-    assert(menu.select("Lens info", "Lens ID")); sleep(1)
-    assert(menu.select("Shoot", "Intervalometer")); sleep(1)
+    assert(menu.select("高级包围", "张数")); sleep(1)
+    assert(menu.select("高级包围", "顺序")); sleep(1)
+    assert(menu.select("高级包围", "ISO偏移")); sleep(1)
+    assert(menu.select("B门计时", "曝光时长")); sleep(1)
+    assert(menu.select("拍摄偏好", "快门模拟")); sleep(1)
+    assert(menu.select("杂项按键设置", "半按快门锁定")); sleep(1)
+    -- assert(menu.select("回放模式动作", "触发按键")); sleep(1)     -- FIXME: not present on EOS M
+    assert(menu.select("实时取景变焦微调", "半按快门变焦")); sleep(1)
+    assert(menu.select("镜头信息", "镜头 ID")); sleep(1)
+    assert(menu.select("Shoot", "间隔拍摄")); sleep(1)
 
     -- selection in the Modified menu
-    -- note: we have already modified "Take a pic every"
+    -- note: we have already modified "拍摄间隔"
     -- so at least this setting should appear there
-    assert(menu.set("Shoot", "Intervalometer", "ON")); sleep(1)
-    assert(menu.select("Modified", "Intervalometer")); sleep(1)             -- we should find Intervalometer in the Modified menu
-    assert(menu.select("Modified", "Take a pic every")); sleep(1)           -- same for "Take pic every" (smaller font)
-    assert(menu.select("Modified", "Intervalometer")); sleep(1)             -- scroll back to intervalometer
-    assert(menu.set("Shoot", "Intervalometer", "OFF")); sleep(1)            -- turn it off
-    assert(menu.select("Modified", "Take a pic every") == false); sleep(1)  -- now "Take a pic every" should disappear (submenus are only expanded when the main entry is on)
-    assert(menu.set("Shoot", "Intervalometer", "ON")); sleep(1)             -- re-enable intervalometer
-    assert(menu.select("Modified", "Take a pic every")); sleep(1)           -- now "Take a pic every" should re-appear
-    assert(menu.set("Intervalometer", "Take a pic every", 10)); sleep(1)    -- set "Take a pic every" back to default
-    assert(menu.select("Modified", "Intervalometer")); sleep(1)             -- scroll back to intervalometer
-    assert(menu.set("Shoot", "Intervalometer", "OFF")); sleep(1)            -- turn it off
-    assert(menu.select("Modified", "Take a pic every") == false); sleep(1)  -- now "Take a pic every" should disappear
-    assert(menu.select("Shoot", "Intervalometer")); sleep(1)                -- move back to Shoot -> Intervalometer
-    assert(menu.select("Intervalometer", "Take a pic every")); sleep(1)     -- set other intervalometer settings to default (just in case)
-    assert(menu.select("Intervalometer", "Start trigger")); sleep(1)        -- the menu.select calls are just for visual effect
-    assert(menu.set("Intervalometer", "Start trigger", "Leave Menu")); sleep(0.5);
-    assert(menu.select("Intervalometer", "Start after")); sleep(0.5)
-    assert(menu.set("Intervalometer", "Start after", "3s")); sleep(0.5);
-    assert(menu.select("Intervalometer", "Stop after")); sleep(0.5)
-    assert(menu.set("Intervalometer", "Stop after", "Disabled")); sleep(0.5);
-    assert(menu.select("Shoot", "Intervalometer")); sleep(1)
-    assert(menu.select("Modified", "Intervalometer") == false); sleep(1)    -- now Modified -> Intervalometer should disappear
+    assert(menu.set("Shoot", "间隔拍摄", "ON")); sleep(1)
+    assert(menu.select("已修改", "间隔拍摄")); sleep(1)             -- we should find Intervalometer in the Modified menu
+    assert(menu.select("已修改", "拍摄间隔")); sleep(1)           -- same for "Take pic every" (smaller font)
+    assert(menu.select("已修改", "间隔拍摄")); sleep(1)             -- scroll back to intervalometer
+    assert(menu.set("Shoot", "间隔拍摄", "OFF")); sleep(1)            -- turn it off
+    assert(menu.select("已修改", "拍摄间隔") == false); sleep(1)  -- now "拍摄间隔" should disappear (submenus are only expanded when the main entry is on)
+    assert(menu.set("Shoot", "间隔拍摄", "ON")); sleep(1)             -- re-enable intervalometer
+    assert(menu.select("已修改", "拍摄间隔")); sleep(1)           -- now "拍摄间隔" should re-appear
+    assert(menu.set("间隔拍摄", "拍摄间隔", 10)); sleep(1)    -- set "拍摄间隔" back to default
+    assert(menu.select("已修改", "间隔拍摄")); sleep(1)             -- scroll back to intervalometer
+    assert(menu.set("Shoot", "间隔拍摄", "OFF")); sleep(1)            -- turn it off
+    assert(menu.select("已修改", "拍摄间隔") == false); sleep(1)  -- now "拍摄间隔" should disappear
+    assert(menu.select("Shoot", "间隔拍摄")); sleep(1)                -- move back to Shoot -> Intervalometer
+    assert(menu.select("间隔拍摄", "拍摄间隔")); sleep(1)     -- set other intervalometer settings to default (just in case)
+    assert(menu.select("间隔拍摄", "启动触发")); sleep(1)        -- the menu.select calls are just for visual effect
+    assert(menu.set("间隔拍摄", "启动触发", "留在菜单")); sleep(0.5);
+    assert(menu.select("间隔拍摄", "开始延迟")); sleep(0.5)
+    assert(menu.set("间隔拍摄", "开始延迟", "3s")); sleep(0.5);
+    assert(menu.select("间隔拍摄", "结束条件")); sleep(0.5)
+    assert(menu.set("间隔拍摄", "结束条件", "禁用")); sleep(0.5);
+    assert(menu.select("Shoot", "间隔拍摄")); sleep(1)
+    assert(menu.select("已修改", "间隔拍摄") == false); sleep(1)    -- now Modified -> Intervalometer should disappear
 
     -- non-existent menus; should fail
     assert(menu.select("Dinosaur") == false)
@@ -1015,11 +1015,11 @@ function test_camera_take_pics()
     sleep(2)
     
     printf("Snap simulation test...\n")
-    assert(menu.set("Shoot Preferences", "Snap Simulation", 1))
+    assert(menu.set("拍摄偏好", "快门模拟", 1))
     local initial_file_num = dryos.shooting_card.file_number
     camera.shoot()
     assert(dryos.shooting_card.file_number == initial_file_num)
-    assert(menu.set("Shoot Preferences", "Snap Simulation", 0))
+    assert(menu.set("拍摄偏好", "快门模拟", 0))
 
     sleep(2)
 
@@ -1256,7 +1256,7 @@ function test_lv()
     end
 
     console.hide(); assert(not console.visible)
-    local old_gdr = menu.get("Overlay", "Global Draw")
+    local old_gdr = menu.get("Overlay", "全局绘制")
     local overlays_tested = false
     for i=1,16 do
         key.press(KEY.INFO)
@@ -1265,7 +1265,7 @@ function test_lv()
         if lv.enabled and lv.overlays ~= 1 then
             -- Canon overlays disabled?
             -- Enable ML overlays
-            assert(menu.set("Overlay", "Global Draw", "ON"))
+            assert(menu.set("Overlay", "全局绘制", "ON"))
             sleep(0.2); print_overlays_status()
             assert(lv.overlays == 2)
             sleep(1)
@@ -1275,7 +1275,7 @@ function test_lv()
                 sleep(1)
             end
             -- Disable ML overlays
-            assert(menu.set("Overlay", "Global Draw", "OFF"))
+            assert(menu.set("Overlay", "全局绘制", "OFF"))
             sleep(0.2); print_overlays_status()
             assert(lv.overlays == false)
             sleep(1)
@@ -1283,17 +1283,17 @@ function test_lv()
         end
     end
     -- restore original Global Draw setting
-    assert(menu.set("Overlay", "Global Draw", old_gdr))
-    assert(menu.get("Overlay", "Global Draw") == old_gdr)
+    assert(menu.set("Overlay", "全局绘制", old_gdr))
+    assert(menu.get("Overlay", "全局绘制") == old_gdr)
     sleep(0.2); print_overlays_status()
     console.show(); assert(console.visible)
 
     sleep(2)
 
-    local old_x5 = menu.get("LiveView zoom tweaks", "Zoom x5")
-    local old_x10 = menu.get("LiveView zoom tweaks", "Zoom x10")
-    assert(menu.set("LiveView zoom tweaks", "Zoom x5", "ON"))
-    assert(menu.set("LiveView zoom tweaks", "Zoom x10", "ON"))
+    local old_x5 = menu.get("实时取景变焦微调", "变焦 x5")
+    local old_x10 = menu.get("实时取景变焦微调", "变焦 x10")
+    assert(menu.set("实时取景变焦微调", "变焦 x5", "ON"))
+    assert(menu.set("实时取景变焦微调", "变焦 x10", "ON"))
     for i,z in pairs{1, 5, 10, 5, 1, 10, 1} do
         printf("Setting zoom to x%d...\n", z)
         lv.zoom = z
@@ -1307,10 +1307,10 @@ function test_lv()
         end
         lv.wait(5)
     end
-    assert(menu.set("LiveView zoom tweaks", "Zoom x5", old_x5))
-    assert(menu.set("LiveView zoom tweaks", "Zoom x10", old_x10))
-    assert(menu.get("LiveView zoom tweaks", "Zoom x5") == old_x5)
-    assert(menu.get("LiveView zoom tweaks", "Zoom x10") == old_x10)
+    assert(menu.set("实时取景变焦微调", "变焦 x5", old_x5))
+    assert(menu.set("实时取景变焦微调", "变焦 x10", old_x10))
+    assert(menu.get("实时取景变焦微调", "变焦 x5") == old_x5)
+    assert(menu.get("实时取景变焦微调", "变焦 x10") == old_x10)
 
     printf("Pausing LiveView...\n")
     lv.pause()

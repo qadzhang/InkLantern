@@ -74,38 +74,38 @@ static enum crop_preset crop_presets_5d3[] = {
 };
 
 static const char * crop_choices_5d3[] = {
-    "OFF",
+    "关",
     "1920 1:1",
-    "1920 1:1 tall",
+    "1920 1:1 加高",
     "1920 50/60 3x3",
     "1080p45/1040p48 3x3",
     "3K 1:1",
     "UHD 1:1",
-    "4K 1:1 half-fps",
-    "3.5K 1:1 centered x5",
-    "Full-res LiveView",
+    "4K 1:1 半帧率",
+    "3.5K 1:1 居中 x5",
+    "全分辨率实时取景",
   //"1x3 binning",
   //"3x1 binning",      /* doesn't work well */
   //"40 fps",
 };
 
 static const char crop_choices_help_5d3[] =
-    "Change 1080p and 720p movie modes into crop modes (select one)";
+    "将 1080p 和 720p 视频模式变为剪裁模式（选择其一）";
 
 static const char crop_choices_help2_5d3[] =
     "\n"
-    "1:1 sensor readout (square raw pixels, 3x crop, good preview in 1080p)\n"
-    "1:1 crop, higher vertical resolution (1920x1920 @ 24p, cropped preview)\n"
-    "1920x960 @ 50p, 1920x800 @ 60p (3x3 binning, cropped preview)\n"
-    "1920x1080 @ 45p, 1920x1040 @ 48p, 3x3 binning (50/60 FPS in Canon menu)\n"
-    "1:1 3K crop (3072x1920 @ 24p, square raw pixels, preview broken)\n"
-    "1:1 4K UHD crop (3840x1600 @ 24p, square raw pixels, preview broken)\n"
-    "1:1 4K crop (4096x3072 @ 12.5 fps, half frame rate, preview broken)\n"
-    "1:1 readout in x5 zoom mode (centered raw, high res, cropped preview)\n"
-    "Full resolution LiveView (5796x3870 @ 7.4 fps, 5784x3864, preview broken)\n"
-    "1x3 binning: read all lines, bin every 3 columns (extreme anamorphic)\n"
-    "3x1 binning: bin every 3 lines, read all columns (extreme anamorphic)\n"
-    "FPS override test\n";
+    "1:1 传感器读出（RAW 方形像素，3 倍剪裁，1080p 下预览良好）\n"
+    "1:1 剪裁，垂直分辨率更高（1920x1920 @ 24p，预览被剪裁）\n"
+    "1920x960 @ 50p，1920x800 @ 60p（3x3 合并读出，预览被剪裁）\n"
+    "1920x1080 @ 45p，1920x1040 @ 48p，3x3 合并（Canon 菜单中为 50/60 FPS）\n"
+    "1:1 3K 剪裁（3072x1920 @ 24p，RAW 方形像素，预览异常）\n"
+    "1:1 4K UHD 剪裁（3840x1600 @ 24p，RAW 方形像素，预览异常）\n"
+    "1:1 4K 剪裁（4096x3072 @ 12.5 fps，半帧率，预览异常）\n"
+    "5 倍变焦下 1:1 读出（RAW 居中，高分辨率，预览被剪裁）\n"
+    "全分辨率实时取景（5796x3870 @ 7.4 fps，5784x3864，预览异常）\n"
+    "1x3 合并：读取所有行，每 3 列合并（极端变形宽银幕）\n"
+    "3x1 合并：每 3 行合并，读取所有列（极端变形宽银幕）\n"
+    "帧率覆盖测试\n";
 
 /* menu choices for cameras that only have the basic 3x3 crop_rec option */
 static enum crop_preset crop_presets_basic[] = {
@@ -114,15 +114,15 @@ static enum crop_preset crop_presets_basic[] = {
 };
 
 static const char * crop_choices_basic[] = {
-    "OFF",
+    "关",
     "3x3 720p",
 };
 
 static const char crop_choices_help_basic[] =
-    "Change 1080p and 720p movie modes into crop modes (one choice)";
+    "将 1080p 和 720p 视频模式变为剪裁模式（仅一项可选）";
 
 static const char crop_choices_help2_basic[] =
-    "3x3 binning in 720p (square pixels in RAW, vertical crop)";
+    "720p 下 3x3 合并读出（RAW 方形像素，垂直剪裁）";
 
 
 /* camera-specific parameters */
@@ -1469,18 +1469,18 @@ static MENU_UPDATE_FUNC(crop_update)
         {
             if (lv_dispsize == 1)
             {
-                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "To use this mode, exit ML menu & press the zoom button (set to x5/x10).");
+                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "使用此模式需退出 ML 菜单并按变焦键（设为 x5/x10）。");
             }
         }
         else /* non-zoom modes */
         {
             if (!is_supported_mode())
             {
-                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This preset only works in 1080p and 720p video modes.");
+                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此预设仅适用于 1080p 和 720p 视频模式。");
             }
             else if (lv_dispsize != 1)
             {
-                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "To use this mode, exit ML menu and press the zoom button (set to x1).");
+                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "使用此模式需退出 ML 菜单并按变焦键（设为 x1）。");
             }
             else if (!is_720p())
             {
@@ -1488,7 +1488,7 @@ static MENU_UPDATE_FUNC(crop_update)
                     CROP_PRESET_MENU == CROP_PRESET_3x3_1X_48p)
                 {
                     /* these presets only have effect in 720p mode */
-                    MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This preset only works in the 720p 50/60 fps modes from Canon menu.");
+                    MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此预设仅适用于 Canon 菜单中的 720p 50/60 fps 模式。");
                     return;
                 }
             }
@@ -1498,34 +1498,34 @@ static MENU_UPDATE_FUNC(crop_update)
 
 static MENU_UPDATE_FUNC(target_yres_update)
 {
-    MENU_SET_RINFO("from %d", max_resolutions[crop_preset][get_video_mode_index()]);
+    MENU_SET_RINFO("上限 %d", max_resolutions[crop_preset][get_video_mode_index()]);
 }
 
 static struct menu_entry crop_rec_menu[] =
 {
     {
-        .name       = "Crop mode",
+        .name       = "裁切模式",
         .priv       = &crop_preset_index,
         .update     = crop_update,
         .depends_on = DEP_LIVEVIEW,
         .children =  (struct menu_entry[]) {
             {
-                .name       = "Shutter range",
+                .name       = "快门范围",
                 .priv       = &shutter_range,
                 .max        = 1,
-                .choices    = CHOICES("Original", "Full range"),
-                .help       = "Choose the available shutter speed range:",
-                .help2      = "Original: default range used by Canon in selected video mode.\n"
-                              "Full range: from 1/FPS to minimum exposure time allowed by hardware."
+                .choices    = CHOICES("原始", "全范围"),
+                .help       = "选择可用的快门速度范围：",
+                .help2      = "原始：所选视频模式下 Canon 的默认范围。\n"
+                              "全范围：从 1/FPS 到硬件允许的最短曝光时间。"
             },
             {
-                .name   = "Target YRES",
+                .name   = "目标垂直分辨率",
                 .priv   = &target_yres,
                 .update = target_yres_update,
                 .max    = 3870,
                 .unit   = UNIT_DEC,
-                .help   = "Desired vertical resolution (only for presets with higher resolution).",
-                .help2  = "Decrease if you get corrupted frames (dial the desired resolution here).",
+                .help   = "期望的垂直分辨率（仅适用于高分辨率预设）。",
+                .help2  = "若出现坏帧请调低（在此输入所需分辨率）。",
             },
             {
                 .name   = "Delta ADTG 0",
@@ -1534,7 +1534,7 @@ static struct menu_entry crop_rec_menu[] =
                 .max    = 500,
                 .unit   = UNIT_DEC,
                 .help   = "ADTG 0x8178, 0x8196, 0x82F8",
-                .help2  = "May help pushing the resolution a little. Start with small increments.",
+                .help2  = "或有助于略微提高分辨率。请从小幅度开始调整。",
                 .advanced = 1,
             },
             {
@@ -1544,7 +1544,7 @@ static struct menu_entry crop_rec_menu[] =
                 .max    = 500,
                 .unit   = UNIT_DEC,
                 .help   = "ADTG 0x8179, 0x8197, 0x82F9",
-                .help2  = "May help pushing the resolution a little. Start with small increments.",
+                .help2  = "或有助于略微提高分辨率。请从小幅度开始调整。",
                 .advanced = 1,
             },
             {
@@ -1553,7 +1553,7 @@ static struct menu_entry crop_rec_menu[] =
                 .min    = -500,
                 .max    = 500,
                 .unit   = UNIT_DEC,
-                .help2  = "May help pushing the resolution a little. Start with small increments.",
+                .help2  = "或有助于略微提高分辨率。请从小幅度开始调整。",
                 .advanced = 1,
             },
             {
@@ -1562,24 +1562,24 @@ static struct menu_entry crop_rec_menu[] =
                 .min    = -500,
                 .max    = 500,
                 .unit   = UNIT_DEC,
-                .help2  = "May help pushing the resolution a little. Start with small increments.",
+                .help2  = "或有助于略微提高分辨率。请从小幅度开始调整。",
                 .advanced = 1,
             },
             {
-                .name   = "CMOS[1] lo",
+                .name   = "CMOS[1] 起",
                 .priv   = &cmos1_lo,
                 .max    = 63,
                 .unit   = UNIT_DEC,
-                .help   = "Start scanline (very rough). Use for vertical positioning.",
+                .help   = "起始扫描行（非常粗略）。用于垂直定位。",
                 .advanced = 1,
             },
             {
-                .name   = "CMOS[1] hi",
+                .name   = "CMOS[1] 止",
                 .priv   = &cmos1_hi,
                 .max    = 63,
                 .unit   = UNIT_DEC,
-                .help   = "End scanline (very rough). Increase if white bar at bottom.",
-                .help2  = "Decrease if you get strange colors as you move the camera.",
+                .help   = "结束扫描行（非常粗略）。底部有白边时增大。",
+                .help2  = "移动相机时若出现怪异颜色请减小。",
                 .advanced = 1,
             },
             {
@@ -1587,8 +1587,8 @@ static struct menu_entry crop_rec_menu[] =
                 .priv   = &cmos2,
                 .max    = 0xFFF,
                 .unit   = UNIT_HEX,
-                .help   = "Horizontal position / binning.",
-                .help2  = "Use for horizontal centering.",
+                .help   = "水平位置 / 合并读出。",
+                .help2  = "用于水平居中。",
                 .advanced = 1,
             },
             MENU_ADVANCED_TOGGLE,
@@ -1855,7 +1855,7 @@ warn:
 
 static struct lvinfo_item info_items[] = {
     {
-        .name = "Crop info",
+        .name = "剪裁信息",
         .which_bar = LV_BOTTOM_BAR_ONLY,
         .update = crop_info,
         .preferred_position = -50,  /* near the focal length display */

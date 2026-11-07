@@ -71,8 +71,8 @@ static void find_cropmarks()
     struct fio_dirent * dirent = FIO_FindFirstEx( "ML/CROPMKS/", &file );
     if( IS_ERROR(dirent) )
     {
-        NotifyBox(2000, "ML/CROPMKS dir missing\n"
-                        "Please copy all ML files!" );
+        NotifyBox(2000, "缺少ML/CROPMKS目录\n"
+                        "请复制全部ML文件！" );
         return;
     }
     int k = 0;
@@ -82,7 +82,7 @@ static void find_cropmarks()
         {
             if (k >= MAX_CROPMARKS)
             {
-                NotifyBox(2000, "TOO MANY CROPMARKS (max=%d)", MAX_CROPMARKS);
+                NotifyBox(2000, "剪裁标记过多（最多%d个）", MAX_CROPMARKS);
                 break;
             }
             snprintf(cropmark_names[k], MAX_CROP_NAME_LEN, "%s", file.name);
@@ -117,7 +117,7 @@ static void reload_cropmark()
     char bmpname[100];
     snprintf(bmpname, sizeof(bmpname), "ML/CROPMKS/%s", cropmark_names[i]);
     cropmarks = bmp_load(bmpname,1);
-    if (!cropmarks) bmp_printf(FONT_LARGE, 0, 50, "LOAD ERROR %d:%s   ", i, bmpname);
+    if (!cropmarks) bmp_printf(FONT_LARGE, 0, 50, "加载错误 %d:%s   ", i, bmpname);
 }
 
 static void
@@ -133,10 +133,10 @@ static MENU_UPDATE_FUNC(crop_display)
     int index = crop_index;
     index = COERCE(index, 0, num_cropmarks-1);
     if (crop_enabled) MENU_SET_VALUE(
-         num_cropmarks ? cropmark_names[index] : "N/A"
+         num_cropmarks ? cropmark_names[index] : "无"
     );
     if (cropmark_movieonly && !is_movie_mode())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Cropmarks are configured only for movie mode");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "剪裁标记设置为仅在视频模式使用");
 }
 
 static MENU_UPDATE_FUNC(crop_display_submenu)
@@ -144,12 +144,12 @@ static MENU_UPDATE_FUNC(crop_display_submenu)
     int index = crop_index;
     index = COERCE(index, 0, num_cropmarks-1);
     MENU_SET_NAME(
-        "Bitmap (%d/%d)",
+        "位图 (%d/%d)",
          index+1, num_cropmarks
     );
     MENU_SET_VALUE(
         "%s",
-         num_cropmarks ? cropmark_names[index] : "N/A"
+         num_cropmarks ? cropmark_names[index] : "无"
     );
 
     if (info->can_custom_draw)
@@ -171,35 +171,35 @@ static MENU_UPDATE_FUNC(crop_display_submenu)
 #ifdef FEATURE_CROPMARKS
 static struct menu_entry cropmarks_menu[] = {
     {
-        .name = "Cropmarks",
+        .name = "剪裁标记",
         .priv = &crop_enabled,
         .update    = crop_display,
         .max = 1,
-        .help = "Cropmarks or custom grids for framing.",
+        .help = "用于构图的剪裁标记或自定义网格。",
         .depends_on = DEP_GLOBAL_DRAW,
         .submenu_width = 710,
         .submenu_height = 250,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Bitmap",
+                .name = "位图",
                 .priv = &crop_index, 
                 .select = crop_toggle,
                 .update    = crop_display_submenu,
                 .icon_type = IT_DICE,
-                .help = "You can draw your own cropmarks in Paint.",
+                .help = "可用画图软件自制剪裁标记位图。",
             },
             {
-                .name = "Show in photo mode",
+                .name = "拍照模式显示",
                 .priv = &cropmark_movieonly, 
                 .max = 1,
-                .choices = (const char *[]) {"ON", "OFF"},
-                .help = "Cropmarks are mostly used in movie mode.",
+                .choices = (const char *[]) {"开", "关"},
+                .help = "剪裁标记多用于视频模式。",
             },
             {
-                .name = "Show in PLAY mode",
+                .name = "回放模式显示",
                 .priv = &cropmarks_play, 
                 .max = 1,
-                .help = "You may also have cropmarks in Playback mode.",
+                .help = "也可在回放模式下显示剪裁标记。",
             },
             MENU_EOL
         },

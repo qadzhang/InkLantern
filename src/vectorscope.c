@@ -254,7 +254,7 @@ vectorscope_draw_image(uint32_t x_origin, uint32_t y_origin)
 static MENU_UPDATE_FUNC(vectorscope_update)
 {
     if (vectorscope_draw && vectorscope_gain)
-        MENU_SET_VALUE("ON, 2x");
+        MENU_SET_VALUE("开, 2x");
 }
 
 int vectorscope_should_draw()
@@ -286,19 +286,19 @@ void vectorscope_redraw()
 static struct menu_entry vectorscope_menus[] = {
     #ifdef FEATURE_VECTORSCOPE
     {
-        .name = "Vectorscope",
+        .name = "矢量示波器",
         .priv       = &vectorscope_draw,
         .max = 1,
         .update = vectorscope_update,
-        .help = "Shows color distribution as U-V plot. For grading & WB.",
+        .help = "以U-V图显示色彩分布，用于调色和白平衡。",
         .depends_on = DEP_GLOBAL_DRAW | DEP_EXPSIM,
         .children =  (struct menu_entry[]) {
             {
-                .name = "UV scaling",
+                .name = "UV缩放",
                 .priv = &vectorscope_gain, 
                 .max = 1,
-                .choices = (const char *[]) {"OFF", "2x", "4x"},
-                .help = "Scaling for input signal (useful with flat picture styles).",
+                .choices = (const char *[]) {"关", "2x", "4x"},
+                .help = "输入信号缩放（适用于平坦图片风格）。",
             },
             MENU_EOL
         },

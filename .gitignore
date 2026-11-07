@@ -77,3 +77,8 @@ developer_guide/developer_guide.html
 developer_guide/developer_guide.pdf
 
 syntax: regexp
+
+# 本地工具链与生成物（不入库；重建方法见 dist/README.md）
+toolchain/
+tools/cjk/preview.png
+!dist/*.zip

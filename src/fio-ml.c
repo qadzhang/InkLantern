@@ -106,7 +106,7 @@ static void card_test(struct card_info * card)
         {
             bmp_fill(COLOR_BLACK, 0, 0, 400, 38);
             char msg[50];
-            snprintf(msg, sizeof(msg), "%s card test (%d%%)...", card->type, i+1);
+            snprintf(msg, sizeof(msg), "%s 卡测试（%d%%）...", card->type, i+1);
             bmp_printf(FONT_CANON, 0, 0, msg);
             int r = FIO_WriteFile(f, (void*)YUV422_LV_BUFFER_1, 1025);
             if (r != 1025) { fail = 1; break; }
@@ -123,14 +123,14 @@ static void card_test(struct card_info * card)
                 bmp_fill(COLOR_BLACK, 0, 0, 550, 80);
                 if (warning_enabling_workaround)
                 {
-                    bmp_printf(FONT_CANON, 0,  0, "CF test fail, enabling workaround.");
-                    bmp_printf(FONT_CANON, 0, 40, "Restart the camera to try again.");
+                    bmp_printf(FONT_CANON, 0,  0, "CF 测试失败，正在启用兼容方案。");
+                    bmp_printf(FONT_CANON, 0, 40, "请重启相机后重试。");
                     cf_card_workaround = 1;
                 }
                 else
                 {
-                    bmp_printf(FONT_CANON, 0,  0, "%s card test failed!", card->type);
-                    bmp_printf(FONT_CANON, 0, 40, "Do not use this card on 5D3!");
+                    bmp_printf(FONT_CANON, 0,  0, "%s 卡测试失败！", card->type);
+                    bmp_printf(FONT_CANON, 0, 40, "请勿在 5D3 上使用此卡！");
                 }
                 beep();
                 info_led_blink(1, 1000, 1000);
@@ -189,7 +189,7 @@ static MENU_SELECT_FUNC(card_test_toggle)
 
 static MENU_UPDATE_FUNC(card_test_update)
 {
-    MENU_SET_VALUE(card_test_enabled ? "ON" : "OFF");
+    MENU_SET_VALUE(card_test_enabled ? "开" : "关");
     MENU_SET_ICON(MNI_BOOL(card_test_enabled), 0);
     MENU_SET_ENABLED(card_test_enabled);
 }
@@ -238,11 +238,11 @@ void _find_ml_card()
         /* still ambiguity? */
         /* we know Canon loads autoexec.bin from the SD card first */
         ML_CARD = &available_cards[CARD_B];
-        startup_warning("ML on both cards, loading from SD.");
+        startup_warning("两张卡上都有 ML，将从 SD 卡加载。");
     }
     else
     {
-        startup_warning("Could not find ML files.");
+        startup_warning("未找到 ML 文件。");
     }
 }
 
@@ -838,7 +838,7 @@ void dump_big_seg(int k, char* filename)
         {
             DEBUG();
             uint32_t start = (k << 28 | i << 24);
-            bmp_printf(FONT_LARGE, 50, 50, "Saving %8x...", start);
+            bmp_printf(FONT_LARGE, 50, 50, "正在保存 %8x...", start);
             FIO_WriteFile( f, (const void *) start, 0x1000000 );
         }
         FIO_CloseFile(f);
@@ -922,9 +922,9 @@ my_fprintf(
 #ifdef CONFIG_DUAL_SLOT
 struct menu_entry card_menus[] = {
     {
-        .name = "Card settings",
+        .name = "存储卡设置",
         .select = menu_open_submenu,
-        .help = "Preferences related to SD/CF card operation.",
+        .help = "与 SD/CF 卡操作相关的偏好设置。",
         .children =  (struct menu_entry[]) {
             /*
             {
@@ -934,28 +934,28 @@ struct menu_entry card_menus[] = {
             },*/
 #ifdef CONFIG_5D3
             {
-                .name = "Card test at startup", 
+                .name = "启动时测试存储卡",
                 //~ .priv = &card_test_enabled, /* don't use priv, so it doesn't get displayed in the modified settings menu */
                 .select = card_test_toggle,
                 .update = card_test_update,
-                .help = "File write test. Some cards may have compatibility issues.",
+                .help = "文件写入测试。某些卡可能存在兼容性问题。",
             },
             {
-                .name = "CF card workaround",
+                .name = "CF 卡兼容方案",
                 .priv = &cf_card_workaround,
                 .max = 1,
-                .help = "Slows down the CF write speed to let you use certain cards.",
-                .help2 = "(e.g. Kingston 16GB 266x is known to require this)"
+                .help = "降低 CF 卡写入速度，以便使用某些特定存储卡。",
+                .help2 = "（例如 Kingston 16GB 266x 就需要开启此项）"
             },
 #endif
             {
-                .name = "Preferred card", 
+                .name = "首选存储卡",
                 .priv = &card_force_type,
                 .min = 0,
                 .max = 2,
-                .choices = CHOICES("OFF", "CF", "SD"),
-                .help  = "Make sure your preferred card is selected at startup.",
-                .help2 = "This changes Canon card selection at startup - nothing else."
+                .choices = CHOICES("关", "CF", "SD"),
+                .help  = "确保启动时选中您偏好的存储卡。",
+                .help2 = "仅更改 Canon 启动时的存储卡选择，无其他影响。"
             },
             MENU_EOL,
         }

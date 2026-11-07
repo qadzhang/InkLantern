@@ -669,14 +669,14 @@ static unsigned int dual_iso_refresh(unsigned int ctx)
     {
         enabled_ph = 1;
         int err = dual_iso_enable(PHOTO_CMOS_ISO_START, PHOTO_CMOS_ISO_SIZE, PHOTO_CMOS_ISO_COUNT, backup_ph);
-        if (err) { NotifyBox(10000, "ISOless PH err(%d)", err); enabled_ph = 0; }
+        if (err) { NotifyBox(10000, "双ISO 拍照出错(%d)", err); enabled_ph = 0; }
     }
     
     if (dual_iso_hdr && raw_mv && !enabled_lv && FRAME_CMOS_ISO_START)
     {
         enabled_lv = 1;
         int err = dual_iso_enable(FRAME_CMOS_ISO_START, FRAME_CMOS_ISO_SIZE, FRAME_CMOS_ISO_COUNT, backup_lv);
-        if (err) { NotifyBox(10000, "ISOless LV err(%d)", err); enabled_lv = 0; }
+        if (err) { NotifyBox(10000, "双ISO 取景出错(%d)", err); enabled_lv = 0; }
     }
 
     if (setting_changed)
@@ -843,7 +843,7 @@ static unsigned int dual_iso_playback_fix(unsigned int ctx)
     if (max_b > 245)
         show_bright = 0, forced = 1;
 
-    bmp_printf(FONT_MED, 0, 0, "%s%s", show_bright ? "Bright" : "Dark", forced ? " only" : "");
+    bmp_printf(FONT_MED, 0, 0, "%s%s", show_bright ? "亮部" : "暗部", forced ? "（仅）" : "");
 
     /* only keep one line from each group (not optimal for resolution, but doesn't have banding) */
     for(int y = os.y0; y < os.y_max; y ++ )
@@ -864,19 +864,19 @@ static MENU_UPDATE_FUNC(dual_iso_check)
     int iso2 = lens_info.iso_analog_raw/8*8;
     
     if (!iso2)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Auto ISO => cannot estimate dynamic range.");
-    
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "自动 ISO => 无法估算动态范围。");
+
     if (!iso2 && iso1 < 0)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Auto ISO => cannot use relative alternate ISO.");
-    
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "自动 ISO => 无法使用相对恢复 ISO。");
+
     if (iso1 == iso2)
-        MENU_SET_WARNING(MENU_WARN_INFO, "Both ISOs are identical, nothing to do.");
-    
+        MENU_SET_WARNING(MENU_WARN_INFO, "两个 ISO 相同，无需操作。");
+
     if (iso1 && iso2 && ABS(iso1 - iso2) > 8 * (is_movie_mode() ? MIN(FRAME_CMOS_ISO_COUNT-2, 3) : MIN(PHOTO_CMOS_ISO_COUNT-2, 4)))
-        MENU_SET_WARNING(MENU_WARN_INFO, "Consider using a less aggressive setting (e.g. 100/800).");
+        MENU_SET_WARNING(MENU_WARN_INFO, "建议使用较温和的设置（如 100/800）。");
 
     if (!get_dxo_dynamic_range(72))
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "No dynamic range info available.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "无动态范围数据。");
 
     int mvi = is_movie_mode();
 
@@ -884,7 +884,7 @@ static MENU_UPDATE_FUNC(dual_iso_check)
     int raw = mvi ? raw_lv_is_enabled() : ((pic_quality & 0xFE00FF) == (PICQ_RAW & 0xFE00FF));
 
     if (mvi && !FRAME_CMOS_ISO_START)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Dual ISO does not work in movie mode on your camera.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "您的相机在视频模式下无法使用双ISO。");
     
     if (!raw)
         menu_set_warning_raw(entry, info);
@@ -948,52 +948,52 @@ static MENU_UPDATE_FUNC(dual_iso_update)
 static struct menu_entry dual_iso_menu[] =
 {
     {
-        .name = "Dual ISO",
+        .name = "双ISO",
         .priv = &dual_iso_hdr,
         .update = dual_iso_update,
         .max = 1,
-        .help  = "Alternate ISO for every 2 sensor scan lines.",
-        .help2 = "With some clever post, you get less shadow noise (more DR).",
+        .help  = "每隔 2 行传感器扫描线交替使用 ISO。",
+        .help2 = "配合后期处理可减少暗部噪点（提升动态范围）。",
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Recovery ISO",
+                .name = "恢复 ISO",
                 .priv = &dual_iso_alternate_iso,
                 .update = dual_iso_check,
                 .min = -12,
                 .max = 6,
                 .unit = UNIT_ISO,
                 .choices = CHOICES("-6 EV", "-5 EV", "-4 EV", "-3 EV", "-2 EV", "-1 EV", "+1 EV", "+2 EV", "+3 EV", "+4 EV", "+5 EV", "+6 EV", "100", "200", "400", "800", "1600", "3200", "6400"),
-                .help  = "ISO for half of the scanlines (usually to recover shadows).",
-                .help2 = "Can be absolute or relative to primary ISO from Canon menu.",
+                .help  = "一半扫描线使用的 ISO（通常用于挽救暗部）。",
+                .help2 = "可为绝对值，或相对 Canon 菜单主 ISO 的偏移。",
             },
             {
-                .name = "Dynamic range gained",
+                .name = "动态范围提升",
                 .update = dual_iso_dr_update,
                 .icon_type = IT_ALWAYS_ON,
-                .help  = "[READ-ONLY] How much more DR you get with current settings",
-                .help2 = "(upper theoretical limit, estimated from DxO measurements)",
+                .help  = "[只读] 当前设置下可获得的动态范围提升",
+                .help2 = "（理论上限，由 DxO 测量数据估算）",
             },
             {
-                .name = "Midtone overlapping",
+                .name = "中间调重叠",
                 .update = dual_iso_overlap_update,
                 .icon_type = IT_ALWAYS_ON,
-                .help  = "[READ-ONLY] How much of midtones will get better resolution",
-                .help2 = "Highlights/shadows will be half res, with aliasing/moire.",
+                .help  = "[只读] 中间调有多少部分能获得更高分辨率",
+                .help2 = "高光/暗部为半分辨率，可能有伪色/摩尔纹。",
             },
             {
-                .name = "Every other frame",
+                .name = "隔张交替",
                 .priv = &dual_iso_every_other,
                 .max = 1,
-                .help = "Shoot one image with the hack, one without.",
+                .help = "一张启用双ISO、一张不启用，交替拍摄。",
             },
             {
-                .name = "Custom file prefix",
+                .name = "自定义文件前缀",
                 .priv = &dual_iso_file_prefix,
                 .max = 1,
-                .choices = CHOICES("OFF", "DUAL (unreliable!)"),
-                .help  = "Change file prefix for dual ISO photos (e.g. DUAL0001.CR2).",
-                .help2 = "Will not sync properly in burst mode or when taking pics quickly."
+                .choices = CHOICES("关", "DUAL（不可靠！）"),
+                .help  = "更改双ISO照片的文件前缀（如 DUAL0001.CR2）。",
+                .help2 = "连拍或快速拍摄时可能无法正确同步。"
             },
             MENU_EOL,
         },

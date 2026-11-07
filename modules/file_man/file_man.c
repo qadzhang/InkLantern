@@ -155,7 +155,7 @@ static MENU_UPDATE_FUNC(main_update)
 static struct menu_entry fileman_menu[] =
 {
     {
-        .name = "File Manager",
+        .name = "文件管理器",
         .select = menu_open_submenu,
         .update = main_update,
         .submenu_width = 710,
@@ -176,7 +176,7 @@ static void clear_file_menu()
     while (file_entries)
     {
         struct file_entry *next = file_entries->next;
-        menu_remove("File Manager", file_entries->menu_entry, 1);
+        menu_remove("文件管理器", file_entries->menu_entry, 1);
         //printf("%s\n", file_entries->name);
         free(file_entries);
         file_entries = next;
@@ -340,7 +340,7 @@ static void build_file_menu()
         ptr++;
     }
 
-    menu_add("File Manager", compacted, count);
+    menu_add("文件管理器", compacted, count);
 
     /* disable name lookup on this submenu */
     /* (it will take effect as soon as we have a non-empty submenu; further calls are superfluous) */
@@ -430,19 +430,19 @@ static void ScanDir(char *path)
             
             /* need to add these in reverse order */
 
-            e = add_file_entry("*** Cancel OP ***", TYPE_ACTION, 0, 0);
+            e = add_file_entry("*** 取消操作 ***", TYPE_ACTION, 0, 0);
             if (e)
                 e->menu_entry->select = FileOpCancel;
 
             switch (op_mode)
             {
                 case FILE_OP_COPY:
-                    e = add_file_entry("*** Copy Here ***", TYPE_ACTION, 0, 0);
+                    e = add_file_entry("*** 复制到此处 ***", TYPE_ACTION, 0, 0);
                     if (e)
                         e->menu_entry->select = FileCopyStart;
                     break;
                 case FILE_OP_MOVE:
-                    e = add_file_entry("*** Move Here ***", TYPE_ACTION, 0, 0);
+                    e = add_file_entry("*** 移动到此处 ***", TYPE_ACTION, 0, 0);
                     if (e)
                         e->menu_entry->select = FileMoveStart;
                     break;
@@ -549,8 +549,8 @@ MFILE_SEM (
         }
         
         snprintf(gStatusMsg, sizeof(gStatusMsg),
-            "[%d/%d] %s %s to %s...", k, N,
-            move ? "Moving" : "Copying", mf->name, tmpdst
+            "[%d/%d] %s %s 到 %s...", k, N,
+            move ? "正在移动" : "正在复制", mf->name, tmpdst
         );
 
         int err = (move ? FIO_MoveFile : FIO_CopyFile)(mf->name, dstfile);
@@ -801,7 +801,7 @@ static MENU_UPDATE_FUNC(viewfile_update)
     if (ext)
         filetype = fileman_find_filetype(ext);
     if (filetype)
-        MENU_SET_RINFO("Type: %s", filetype->type);
+        MENU_SET_RINFO("类型：%s", filetype->type);
     update_action(entry, info);
 }
 
@@ -850,7 +850,7 @@ static MENU_UPDATE_FUNC(delete_confirm)
 
     /* no question mark in in our font, fsck! */
     if (delete_confirm_flag)
-        MENU_SET_RINFO("Press SET to confirm");
+        MENU_SET_RINFO("再按 SET 确认");
 }
 
 static int 
@@ -1071,38 +1071,38 @@ static MENU_SELECT_FUNC(file_menu)
         if (*ext == '.')
         {
             char msg[100];
-            snprintf(msg, sizeof(msg), "Select *%s", ext);
+            snprintf(msg, sizeof(msg), "选择 *%s", ext);
             e = add_file_entry(msg, TYPE_ACTION, 0, 0);
             if (e)
             {
                 e->menu_entry->select = select_by_extension;
-                e->menu_entry->help = "Press PLAY to select individual files.";
+                e->menu_entry->help = "按 PLAY 键可逐个选择文件。";
             }
         }
     }
 
     if (sel)
     {
-        e = add_file_entry("Clear selection", TYPE_ACTION, 0, 0);
+        e = add_file_entry("清除所选", TYPE_ACTION, 0, 0);
         if (e)
             e->menu_entry->select = mfile_clear_all_selected_menu;
     }
 
-    e = add_file_entry("Delete", TYPE_ACTION, 0, 0);
+    e = add_file_entry("删除", TYPE_ACTION, 0, 0);
     if (e)
     {
         e->menu_entry->select = delete_file;
         e->menu_entry->update = delete_confirm;
     }
 
-    e = add_file_entry("Move", TYPE_ACTION, 0, 0);
+    e = add_file_entry("移动", TYPE_ACTION, 0, 0);
     if (e)
     {
         e->menu_entry->select = MoveFile;
         //e->menu_entry->update = MoveFileProgress;
     }
 
-    e = add_file_entry("Copy", TYPE_ACTION, 0, 0);
+    e = add_file_entry("复制", TYPE_ACTION, 0, 0);
     if (e)
     {
         e->menu_entry->select = CopyFile;
@@ -1111,7 +1111,7 @@ static MENU_SELECT_FUNC(file_menu)
 
     if (!sel)
     {
-        e = add_file_entry("View", TYPE_ACTION, 0, 0);
+        e = add_file_entry("查看", TYPE_ACTION, 0, 0);
         if (e)
         {
             e->menu_entry->select = viewfile_toggle;
@@ -1133,9 +1133,9 @@ static MENU_SELECT_FUNC(file_menu)
         int dirs = mfile_get_dir_count();
         char msg[100];
         if (dirs > 1)
-            snprintf(msg, sizeof(msg), "%d files from %d folders", sel, dirs);
+            snprintf(msg, sizeof(msg), "%d 个文件，来自 %d 个文件夹", sel, dirs);
         else
-            snprintf(msg, sizeof(msg), "%d selected files", sel);
+            snprintf(msg, sizeof(msg), "已选中 %d 个文件", sel);
         e = add_file_entry(msg, TYPE_ACTION, 0, 0);
         if (e)
         {
@@ -1184,9 +1184,9 @@ static MENU_UPDATE_FUNC(update_status)
             char msg[70];
             snprintf(
                 msg, sizeof(msg), "%s ",
-                op_mode == FILE_OP_COPY ? "Copy" :
-                op_mode == FILE_OP_MOVE ? "Move" :
-                                          "Selected"
+                op_mode == FILE_OP_COPY ? "复制" :
+                op_mode == FILE_OP_MOVE ? "移动" :
+                                          "已选择"
             );
 
             if (n == 1)
@@ -1195,10 +1195,10 @@ static MENU_UPDATE_FUNC(update_status)
             }
             else
             {
-                STR_APPEND(msg, "%d files", n);
+                STR_APPEND(msg, "%d 个文件", n);
                 int dirs = mfile_get_dir_count();
                 if (dirs > 1)
-                    STR_APPEND(msg, " from %d folders", dirs);
+                    STR_APPEND(msg, "，来自 %d 个文件夹", dirs);
             }
             
             MENU_SET_WARNING(MENU_WARN_INFO, "%s", msg);
@@ -1254,7 +1254,7 @@ static MENU_UPDATE_FUNC(update_file)
             
             /* error? */
             if (status <= 0)
-                bmp_printf(FONT_MED, 0, 460, "Error viewing %s", filename);
+                bmp_printf(FONT_MED, 0, 460, "无法查看 %s", filename);
             else
                 bmp_printf(FONT_MED, 0, 460, "%s", filename);
             

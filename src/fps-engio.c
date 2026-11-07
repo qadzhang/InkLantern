@@ -945,17 +945,17 @@ static MENU_UPDATE_FUNC(fps_print)
 
         if (frame_readout_time_percent)
         {
-            MENU_SET_RINFO("Roll.sh.%d%%", frame_readout_time_percent);
+            MENU_SET_RINFO("卷帘 %d%%", frame_readout_time_percent);
         }
 
         /* FPS override will disable sound recording automatically, but not right away (only at next update step) */
         /* if it can't be disabled automatically (timeout 1 second), show a warning so the user can disable it himself */
         if (sound_recording_enabled_canon() && is_movie_mode() && fps_should_disable_sound() && t > last_inactive + 1000)
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Sound recording must be disabled from Canon menu.");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "必须在佳能菜单中禁用录音。");
 
 #ifndef CONFIG_FRAME_ISO_OVERRIDE
         if (fps_sync_shutter && !is_movie_mode() && !CONTROL_BV)
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "Enable exposure override to get proper exposure simulation.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "请启用曝光覆盖以获得正确的曝光模拟。");
 #endif
     }
     else
@@ -971,14 +971,14 @@ static MENU_UPDATE_FUNC(fps_print)
 
         if (frame_readout_time_percent)
         {
-            MENU_APPEND_RINFO(", Rs.%d%%", frame_readout_time_percent);
+            MENU_APPEND_RINFO("，卷帘 %d%%", frame_readout_time_percent);
         }
     }
 
 #ifdef CONFIG_7D
     if (is_movie_mode() && !raw_lv_is_enabled())
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "On 7D, FPS override can be used only with RAW, or in photo mode.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "在 7D 上，帧率覆盖仅可配合 RAW 使用，或用于照片模式。");
     }
 #endif
 
@@ -1002,17 +1002,17 @@ static MENU_UPDATE_FUNC(desired_fps_print)
     int default_fps = lv ? calc_fps_x1000(fps_timer_a_orig, fps_timer_b_orig) : 0;
     if (desired_fps % 1000)
         MENU_SET_VALUE(
-            "%d.%03d (from %d)",
+            "%d.%03d（默认 %d）",
             desired_fps/1000, desired_fps%1000, (default_fps+500)/1000
         );
     else
         MENU_SET_VALUE(
-            "%d (from %d)",
+            "%d（默认 %d）",
             desired_fps/1000, (default_fps+500)/1000
         );
 
     if (fps_sync_shutter && !is_movie_mode())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "FPS value is computed from photo shutter speed.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "FPS 值由照片快门速度计算得出。");
 }
 
 static void calc_rolling_shutter(int * line_ns, int * frame_us, int * frame_percent, int * xres, int * yres)
@@ -1076,7 +1076,7 @@ static MENU_UPDATE_FUNC(rolling_shutter_print)
     int line_readout_time_us_x10 = line_readout_time_ns / 100;
 
     /* since we don't know exactly the recording resolution, that's the only reliable value that we can display */
-    MENU_SET_VALUE("%s%d.%d "SYM_MICRO"s / line", FMT_FIXEDPOINT1(line_readout_time_us_x10));
+    MENU_SET_VALUE("%s%d.%d "SYM_MICRO"s / 行", FMT_FIXEDPOINT1(line_readout_time_us_x10));
 
     /* trick to display status messages even with FPS override turned off */
     int old_warn = info->warning_level;
@@ -1086,7 +1086,7 @@ static MENU_UPDATE_FUNC(rolling_shutter_print)
     {
         int rolling_shutter_ms_x10 = frame_readout_time_us / 100;
 
-        MENU_SET_WARNING(MAX(MENU_WARN_INFO, old_warn), "Rolling shutter: %s%d.%d ms (%d%%) at %dx%d.",
+        MENU_SET_WARNING(MAX(MENU_WARN_INFO, old_warn), "卷帘快门：%s%d.%d ms（%d%%），分辨率 %dx%d。",
             FMT_FIXEDPOINT1(rolling_shutter_ms_x10),
             frame_readout_time_percent, 0,
             horizontal_res, vertical_res
@@ -1094,7 +1094,7 @@ static MENU_UPDATE_FUNC(rolling_shutter_print)
     }
     else
     {
-        MENU_SET_WARNING(MAX(MENU_WARN_ADVICE, old_warn), "Start recording to find out the vertical resolution.");
+        MENU_SET_WARNING(MAX(MENU_WARN_ADVICE, old_warn), "请开始录制以测定垂直分辨率。");
     }
 }
 
@@ -1275,19 +1275,19 @@ static MENU_UPDATE_FUNC(fps_timer_print)
     if (!finetune_delta && ABS(delta) >= 100)
         snprintf(dec, sizeof(dec), ".%02d", ((t * 100 / t0) % 100));
     MENU_SET_NAME(
-        "FPS timer %s",
+        "FPS 计时器 %s",
         A ? "A" : "B"
     );
     MENU_SET_VALUE(
-        "%d (%s%d%s)",
+        "%d（%s%d%s）",
         t,
-        finetune_delta > 0 ? "FT+" : finetune_delta < 0 ? "FT" : ABS(delta) >= 100 ? "x" : delta >= 0 ? "+" : "",
+        finetune_delta > 0 ? "微调+" : finetune_delta < 0 ? "微调" : ABS(delta) >= 100 ? "x" : delta >= 0 ? "+" : "",
         finetune_delta ? finetune_delta : ABS(delta) >= 100 ? t / t0 : delta,
         dec
     );
 
     if (t_max <= t_min)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Internal error - please report to ML devs.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "内部错误——请向 ML 开发者报告。");
     else
         MENU_SET_ICON(MNI_PERCENT, sqrtf(t - t_min) * 100  / sqrtf(t_max - t_min));
 }
@@ -1528,151 +1528,151 @@ static MENU_UPDATE_FUNC(fps_wav_record_print)
 
 static MENU_UPDATE_FUNC(fps_ramp_duration_update)
 {
-    if (!fps_ramp) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "FPS ramping disabled.");
+    if (!fps_ramp) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "帧率渐变已禁用。");
 }
 static MENU_UPDATE_FUNC(fps_const_expo_update)
 {
     extern int smooth_iso;
-    if (smooth_iso) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "You need to disable gradual exposure.");
+    if (smooth_iso) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "需要禁用渐进曝光。");
 }
 
 static struct menu_entry fps_menu[] = {
     #ifdef FEATURE_FPS_OVERRIDE
     {
-        .name = "FPS override",
+        .name = "帧率覆盖",
         .priv = &fps_override,
         .select = fps_enable_disable,
         .update = fps_print,
         .max = 1,
-        .help = "Changes FPS. Also disables sound and alters shutter speeds.",
-        .help2 = "Tip: in photo mode, it makes LiveView usable in darkness.",
+        .help = "更改 FPS。同时会禁用录音并改变快门速度。",
+        .help2 = "提示：照片模式下可让实时取景在黑暗中可用。",
         .depends_on = DEP_LIVEVIEW,
         .submenu_width = 650,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Desired FPS",
+                .name = "目标帧率",
                 .priv    = &fps_override_index,
                 .update = desired_fps_print,
                 .min = 0,
                 .max = COUNT(fps_values_x1000) - 1,
                 .select = fps_change_value,
                 .icon_type = IT_PERCENT,
-                .help = "FPS value for recording. Video will play back at Canon FPS.",
+                .help = "录制所用帧率。视频回放仍为佳能帧率。",
             },
             {
-                .name = "Optimize for",
+                .name = "优化目标",
                 .priv       = &fps_criteria,
                 .choices = (const char *[]) {
-                    "Low light",
-                    "Exact FPS",
+                    "弱光",
+                    "精确FPS",
                     #if defined(NEW_FPS_METHOD) || defined(FRAME_SHUTTER_BLANKING_WRITE)
-                    "High FPS",
-                    "High Jello",
+                    "高FPS",
+                    "强果冻",
                     #else
-                    "Low Jello, 180d",
-                    "HiJello, FastTv",
+                    "低果冻，180度",
+                    "强果冻，短快门",
                     #endif
                 },
                 .icon_type = IT_DICE,
                 .max = 3,
                 .select = fps_criteria_change,
-                .help = "Changing FPS has side effects - choose what's best for you:",
+                .help = "更改帧率有副作用——请选择最适合的方案：",
                 .help2 =
                         #ifdef FRAME_SHUTTER_BLANKING_WRITE
-                        "Low light: slow shutter speeds. Shutter angle is constant.\n"
+                        "弱光：慢快门。快门角度保持恒定。\n"
                         #else
-                        "Low light: at low FPS, use 1/FPS (360 deg) shutter speeds.\n"
+                        "弱光：低帧率时使用 1/FPS（360度）快门速度。\n"
                         #endif
-                        "Exact FPS: for 24.000 instead of 23.976 and similar.\n"
+                        "精确FPS：得到 24.000 而非 23.976 等。\n"
                         #if defined(NEW_FPS_METHOD) || defined(FRAME_SHUTTER_BLANKING_WRITE)
-                        "High FPS: best for slight overcranking (eg 35fps from 30).\n"
-                        "High Jello: slit-scan effect (use 2-5 fps and fast shutter).\n"
+                        "高FPS：适合轻微升格（如从 30fps 提到 35fps）。\n"
+                        "强果冻：狭缝扫描效果（用 2-5fps 与高速快门）。\n"
                         #else
-                        "Low Jello, 180d: for 1/2fps shutter speed (1/20 at 10fps).\n"
-                        "HiJello, FastTv: jello effects and fast shutters (2-5 fps).\n"
+                        "低果冻，180度：获得 1/2fps 快门速度（10fps 时为 1/20）。\n"
+                        "强果冻，短快门：果冻效果与高速快门（2-5fps）。\n"
                         #endif
             },
             #ifndef FRAME_SHUTTER_BLANKING_WRITE
             {
-                .name = "Shutter range",
+                .name = "快门范围",
                 .update = shutter_range_print,
                 .select = fps_timer_fine_tune_a_big,
                 .icon_type = IT_ALWAYS_ON,
-                .help  = "Shutter speed range, when Canon shows 1/30-1/4000.",
-                .help2 = "You can fine-tune this, but don't expect miracles.",
+                .help  = "佳能显示 1/30-1/4000 时的快门速度范围。",
+                .help2 = "可微调，但别指望奇迹。",
                 .advanced = 1,
             },
             #endif
             {
-                .name = "FPS timer A",
+                .name = "FPS 计时器 A",
                 .update = fps_timer_print,
                 .priv = &desired_fps_timer_a_offset,
                 .select = fps_timer_fine_tune_a,
                 .icon_type = IT_PERCENT,
-                .help = "High values = lower FPS, more jello effect, faster shutter.",
+                .help = "值越大 = 帧率越低、果冻效应越强、快门越快。",
                 .advanced = 1,
             },
             {
-                .name = "FPS timer B",
+                .name = "FPS 计时器 B",
                 .update = fps_timer_print,
                 .priv = &desired_fps_timer_b_offset,
                 .select = fps_timer_fine_tune_b,
                 .icon_type = IT_PERCENT,
-                .help = "High values = lower FPS, shutter speed converges to 1/fps.",
+                .help = "值越大 = 帧率越低，快门速度趋近 1/fps。",
                 .advanced = 1,
             },
             {
-                .name = "Main Clock",
+                .name = "主时钟",
                 .update = tg_freq_print,
                 .icon_type = IT_ALWAYS_ON,
-                .help = "Timing generator freq. (READ-ONLY). FPS = F/timerA/timerB.",
+                .help = "时序发生器频率（只读）。FPS = F/计时器A/计时器B。",
                 .advanced = 1,
             },
             {
-                .name = "Actual FPS",
+                .name = "实际帧率",
                 .update = fps_current_print,
                 .icon_type = IT_ALWAYS_ON,
-                .help = "Exact FPS (computed). For fine tuning, change timer values.",
+                .help = "精确 FPS（计算值）。微调请修改计时器数值。",
             },
 
             {
-                .name = "Rolling shutter",
+                .name = "卷帘快门",
                 .update = rolling_shutter_print,
                 .icon_type = IT_ALWAYS_ON,
-                .help = "Amount of jello effect. Multiply \""SYM_MICRO"s/line\" by vertical resolution.",
+                .help = "果冻效应程度。将“"SYM_MICRO"s/行”乘以垂直分辨率。",
             },
 
             #ifdef CONFIG_FRAME_ISO_OVERRIDE
             #ifndef FRAME_SHUTTER_BLANKING_WRITE
             {
-                .name = "Constant expo",
+                .name = "固定曝光",
                 .priv = &fps_const_expo,
                 .max = 1,
                 .update = fps_const_expo_update,
-                .help  = "Keep the same exposure (brightness) as with default FPS.",
-                .help2 = "This works by lowering ISO => you may get pink highlights.",
+                .help  = "保持与默认帧率相同的曝光（亮度）。",
+                .help2 = "通过降低 ISO 实现 => 高光可能发粉。",
                 .depends_on = DEP_MANUAL_ISO | DEP_MOVIE_MODE,
             },
             #endif
             #endif
 
             {
-                .name = "Sync w. Shutter",
+                .name = "与快门同步",
                 .priv = &fps_sync_shutter,
                 .max = 1,
-                .help  = "Sync FPS with shutter speed, for long exposures in LiveView.",
+                .help  = "使 FPS 与快门速度同步，用于实时取景长曝光。",
                 .depends_on = DEP_PHOTO_MODE,
                 .advanced = 1,
             },
 
             #ifdef FEATURE_FPS_WAV_RECORD
             {
-                .name = "Sound Record",
+                .name = "录音",
                 .priv = &fps_wav_record,
                 .max = 1,
                 .update = fps_wav_record_print,
-                .choices = (const char *[]) {"Disabled", "Separate WAV"},
-                .help = "Sound goes out of sync, so it has to be recorded separately.",
+                .choices = (const char *[]) {"禁用", "单独 WAV"},
+                .help = "声音会失步，因此必须单独录制。",
                 .advanced = 1,
             },
             #endif
@@ -1680,23 +1680,23 @@ static struct menu_entry fps_menu[] = {
 
             #ifdef FEATURE_FPS_RAMPING
             {
-                .name = "FPS ramping",
+                .name = "帧率渐变",
                 .priv = &fps_ramp,
                 .max = 1,
-                .help = "Ramp between overridden FPS and default FPS. Undercrank only.",
-                .help2 = "To start ramping, press " INFO_BTN_NAME " or just start recording.",
+                .help = "在覆盖帧率与默认帧率之间渐变。仅支持降格。",
+                .help2 = "开始渐变：按 " INFO_BTN_NAME " 或直接开始录制。",
                 .depends_on = DEP_MOVIE_MODE,
                 .advanced = 1,
             },
 
             {
-                .name = "Ramp duration",
+                .name = "渐变时长",
                 .priv = &fps_ramp_duration,
                 .max = 10,
                 .update = fps_ramp_duration_update,
                 .choices = (const char *[]) {"1s", "2s", "5s", "15s", "30s", "1min", "2min", "5min", "10min", "20min", "30min"},
                 .icon_type = IT_PERCENT,
-                .help = "Duration of FPS ramping (in real-time, not in playback).",
+                .help = "帧率渐变的持续时间（实际时间，非回放时间）。",
                 .depends_on = DEP_MOVIE_MODE,
                 .advanced = 1,
             },
@@ -1967,7 +1967,7 @@ static void fps_task()
             if (current_fps == 0)
                 return;
             char msg[30];
-            snprintf(msg, sizeof(msg), "FPS override: %d.%03d",
+            snprintf(msg, sizeof(msg), "帧率覆盖：%d.%03d",
                 current_fps/1000, current_fps%1000
                 );
             NotifyBox(2000, msg);
@@ -1978,7 +1978,7 @@ static void fps_task()
         // http://www.magiclantern.fm/forum/index.php?topic=6537.0
         #ifdef CONFIG_50D
         if (fps_warned && ((fps_get_current_x1000()/1000) == 22) && (fps_get_current_x1000() != fps_values_x1000[fps_override_index]) )
-            NotifyBox(2000, "FPS warning, possible overheating!\n");
+            NotifyBox(2000, "FPS 警告：可能过热！\n");
         #endif
 
         #ifdef FEATURE_EXPO_OVERRIDE

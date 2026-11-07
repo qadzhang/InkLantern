@@ -485,26 +485,26 @@ static MENU_UPDATE_FUNC(audio_dgain_display)
     int dgainval = get_dgain_val(entry->priv == &dgain_l ? 1 : 0);
     MENU_SET_VALUE("%d dB", dgainval);
     if (alc_enable)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AGC is enabled.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AGC 已启用。");
 }
 
 static MENU_UPDATE_FUNC(audio_lovl_display)
 {
     if (!audio_monitoring)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Headphone monitoring is disabled");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "耳机监听已禁用");
 }
 
 static MENU_UPDATE_FUNC(audio_input_display)
 {
     if(input_choice == 3)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "The 'Balanced' option is not working");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "“平衡”选项暂不可用");
 }
 
 static MENU_UPDATE_FUNC(audio_filter_dc_display)
 {
     if(cfg_filter_dc == 0){
         // what does this mean?!
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Now you got under 10Hz, but meter is wrong value signed");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "已可录制 10Hz 以下低频，但电平表读数会不准确");
     }
 
 }
@@ -535,78 +535,78 @@ static MENU_UPDATE_FUNC(audio_recdgain_display)
     );
     
     if (alc_enable)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AGC is enabled");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AGC 已启用");
 
 }
 
 static struct menu_entry audio_menus[] = {
     {
-        .name        = "Override audio settings",
+        .name        = "接管音频设置",
         .priv           = &cfg_override_audio,
         .max            = 1,
         .depends_on     = DEP_SOUND_RECORDING,
-        .help = "Override audio setting by ML",
+        .help = "由 ML 接管音频设置",
     },
     {
-        .name        = "Analog gain",
+        .name        = "模拟增益",
         .priv           = &cfg_analog_gain,
         .max            = 5,
         .icon_type      = IT_PERCENT,
         .choices        = CHOICES("0 dB", "+6 dB", "+15 dB", "+24 dB", "+33 dB", "+35 dB"),
         .depends_on     = DEP_SOUND_RECORDING,
-        .help = "Gain applied to both inputs in analog domain.",
+        .help = "在模拟域对两路输入施加增益。",
     },
     {
-        .name        = "Mic Boost",
+        .name        = "话筒增强",
         .priv           = &cfg_analog_boost,
         .max            = 6,
         .icon_type      = IT_PERCENT,
         .choices        = CHOICES("0 dB","+5 dB","+10 dB","+15 dB","+20 dB","+25 dB","+30 dB"),
         .depends_on     = DEP_SOUND_RECORDING,
-        .help = "Analog mic boost.",
+        .help = "模拟话筒增益提升。",
     },
     {
-        .name = "Digital Gain", 
+        .name = "数字增益",
         .select = menu_open_submenu, 
-        .help = "Digital Volume and R-L gain",
+        .help = "数字音量与左右声道平衡",
         .depends_on = DEP_SOUND_RECORDING,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Record Effect Mode",
+                .name = "录音效果模式",
                 .priv           = &cfg_effect_mode,
                 .max            = 5,
                 .icon_type      = IT_DICE,
-                .choices        = CHOICES("Notch Filter", "EQ", "Notch EQ", "Enhnc REC", "Enhnc RECPLAY", "Loud"),
-                .help           = "Choose mode :Notch,EQ,Notch/EQ,Enhance [12],Loudness.",
+                .choices        = CHOICES("陷波滤波", "均衡 EQ", "陷波+EQ", "增强录音", "增强录放", "响度"),
+                .help           = "选择模式：陷波、EQ、陷波/EQ、增强[12]、响度。",
             },
             {
-                .name = "Record Digital Volume ",
+                .name = "录音数字音量 ",
                 .priv           = &cfg_recdgain,
                 .max            = 126,
                 .icon_type      = IT_PERCENT,
-                .help = "Record Digital Volume. ",
+                .help = "录音数字音量。",
             },
             {
-                .name = "Left Digital Gain ",
+                .name = "左声道数字增益 ",
                 .priv           = &dgain_l,
                 .max            = 15,
                 .icon_type      = IT_PERCENT,
                 .update         = audio_dgain_display,
-                .help = "Digital gain (LEFT). Any nonzero value reduces quality.",
+                .help = "左声道数字增益。非零值都会降低音质。",
             },
             {
-                .name = "Right Digital Gain",
+                .name = "右声道数字增益",
                 .priv           = &dgain_r,
                 .max            = 15,
                 .icon_type      = IT_PERCENT,
                 .update         = audio_dgain_display,
-                .help = "Digital gain (RIGHT). Any nonzero value reduces quality.",
+                .help = "右声道数字增益。非零值都会降低音质。",
             },
             {
                 .name = "AGC",
                 .priv           = &alc_enable,
                 .max            = 1,
-                .help = "Automatic Gain Control - turn it off :)",
+                .help = "自动增益控制（AGC）——建议关闭 :)",
                 //~ .icon_type = IT_DISABLE_SOME_FEATURE_NEG,
                 //.essential = FOR_MOVIE, // nobody needs to toggle this, but newbies want to see "AGC:OFF", manual controls are not enough...
             },
@@ -614,49 +614,49 @@ static struct menu_entry audio_menus[] = {
         },
     },
     {
-        .name = "Input source",
+        .name = "输入源",
         .priv           = &input_choice,
         .update         = audio_input_display,
         .max            = 4,
         .icon_type      = IT_ALWAYS_ON,
-        .choices = (const char *[]) {"Internal mic", "L:int R:ext", "External stereo", "Balanced (N/A)", "Auto int/ext"},
-        .help = "Audio input: internal / external / both / auto.",
+        .choices = (const char *[]) {"内置麦克风", "左:内置 右:外接", "外接立体声", "平衡（不可用）", "自动 内置/外接"},
+        .help = "音频输入：内置 / 外接 / 混合 / 自动。",
         .depends_on        = DEP_SOUND_RECORDING,
     },
     {
-        .name = "Wind Filter",
-        .help = "High pass filter for wind noise reduction. ML26121A.pdf p77",
+        .name = "风声滤波",
+        .help = "降低风噪的高通滤波器。详见 ML26121A.pdf p77",
         .select            =  menu_open_submenu,
         .depends_on        = DEP_SOUND_RECORDING,
         .submenu_width = 650,
         .children =  (struct menu_entry[]) {
             {
-                .name = "DC filter",
+                .name = "直流滤波",
                 .priv              = &cfg_filter_dc,
                 .max               = 1,
                 .update            = audio_filter_dc_display,
-                .help = "first-order high pass filter for DC cut",
+                .help = "一阶高通滤波，滤除直流分量",
             },
             {
-                .name = "High Pass filter",
+                .name = "高通滤波",
                 .priv              = &cfg_filter_hpf2,
                 .max                = 1,
-                .help = "second-order high pass filter for noise cut",
+                .help = "二阶高通滤波，滤除噪声",
             },
             {
-                .name = "HPF2 Cutoff Hz",
+                .name = "HPF2 截止频率",
                 .priv           = &cfg_filter_hpf2config,
                 .max            = 7,
                 .icon_type      = IT_PERCENT,
                 .choices        = CHOICES("80Hz", "100Hz", "130Hz", "160Hz", "200Hz", "260Hz", "320Hz", "400Hz"),
-                .help = "Set the cut off frequency for noise reduction",
+                .help = "设置降噪用截止频率",
             },
             MENU_EOL
         }
     },
 #ifdef CONFIG_AUDIO_REG_LOG
     {
-        .priv           = "Close register log",
+        .priv           = "关闭寄存器日志",
         .select         = audio_reg_close,
         .update        = menu_print,
     },
@@ -667,20 +667,20 @@ static struct menu_entry audio_menus[] = {
       .update   = audio_loopback_display,
       },*/
     {
-        .name = "Headphone Mon.",
+        .name = "耳机监听",
         .priv = &audio_monitoring,
         .max  = 1,
-        .help = "Monitoring via A-V jack. Disable if you use a SD display.",
+        .help = "通过 A-V 接口监听。使用 SD 显示时请禁用。",
         .depends_on     = DEP_SOUND_RECORDING,
     },
     {
-        .name = "Headphone Volume",
+        .name = "耳机音量",
         .priv           = &lovl,
         .max            = 6,
         .icon_type      = IT_PERCENT,
         .update         = audio_lovl_display,
         .choices        = CHOICES("0 dB","+2 dB","+4 dB","+6 dB","+8 dB","+10 dB","+11 dB"),
-        .help = "Output volume for audio monitoring (headphones only).",
+        .help = "音频监听的输出音量（仅限耳机）。",
         .depends_on     = DEP_SOUND_RECORDING,
     },
 /* any reason to turn these off?
@@ -697,7 +697,7 @@ static struct menu_entry audio_menus[] = {
 static void volume_display()
 {
     char dbval[14][4] = {"  0", " +6", "+15", "+24", "+33", "+35"};
-    NotifyBox(2000, "Volume: %s + (%d,%d) dB", dbval[cfg_analog_gain], get_dgain_val(1),get_dgain_val(0));
+    NotifyBox(2000, "音量：%s + (%d,%d) dB", dbval[cfg_analog_gain], get_dgain_val(1),get_dgain_val(0));
 }
 
 void volume_up()
@@ -714,7 +714,7 @@ void volume_down()
 
 static void out_volume_display()
 {
-    NotifyBox(2000, "Out Volume: %d dB", MIN(lovl*2, 11));
+    NotifyBox(2000, "输出音量：%d dB", MIN(lovl*2, 11));
 }
 void out_volume_up()
 {

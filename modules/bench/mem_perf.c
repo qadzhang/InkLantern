@@ -158,16 +158,16 @@ static void mem_perf_test(uint32_t address)
             break;
         }
         
-        bmp_printf(FONT_MONO_20, 5, 5, "Benchmarking from address 0x%X... ", address);
-        bmp_printf(FONT_MONO_20, 5, 410, "Now :%6d bytes (%d MiB/s)    ", block_size, (uint32_t)speed);
-        bmp_printf(FONT_MONO_20, 5, 430, "Peak:%6d bytes (%d MiB/s)    ", max_speed_size, (uint32_t)max_speed);
-        bmp_printf(FONT_MONO_20, 5, 450, "Drop:%6d bytes (%d MiB/s)    ", drop_speed_size, (uint32_t)drop_speed);
+        bmp_printf(FONT_MONO_20, 5, 5, "正在测试地址 0x%X... ", address);
+        bmp_printf(FONT_MONO_20, 5, 410, "当前：%6d 字节 (%d MiB/s)    ", block_size, (uint32_t)speed);
+        bmp_printf(FONT_MONO_20, 5, 430, "峰值：%6d 字节 (%d MiB/s)    ", max_speed_size, (uint32_t)max_speed);
+        bmp_printf(FONT_MONO_20, 5, 450, "骤降：%6d 字节 (%d MiB/s)    ", drop_speed_size, (uint32_t)drop_speed);
         
         prev_speed = speed;
         msleep(20);
     }
     
-    bmp_printf(FONT_MONO_20, 5, 5, "Benchmarking from address 0x%X done.", address);
+    bmp_printf(FONT_MONO_20, 5, 5, "地址 0x%X 测试完成。", address);
     take_screenshot("cache%d.bmp", SCREENSHOT_BMP);
     msleep(3000);
     canon_gui_enable_front_buffer(1);

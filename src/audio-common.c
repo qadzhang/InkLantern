@@ -200,8 +200,8 @@ void draw_meters(void)
 }
 #else
 
-static char left_label[10] = "LEFT ";
-static char right_label[10] = "RIGHT";
+static char left_label[10] = "左声道";
+static char right_label[10] = "右声道";
 
 static uint8_t
 db_to_color(
@@ -903,7 +903,7 @@ audio_reg_dump_once()
             msleep(10);
         }
         FIO_CloseFile(f);
-        NotifyBox(4000, "log audio%02d.log saved", log_number );
+        NotifyBox(4000, "日志 audio%02d.log 已保存", log_number );
     }
 }
 #endif
@@ -915,10 +915,10 @@ PROP_HANDLER( PROP_MIC_INSERTED )
     if (mic_inserted != -1)
         {
             NotifyBox(2000,
-                      "Microphone %s", 
+                      "麦克风%s",
                       buf[0] ? 
-                      "connected" :
-                      "disconnected");
+                      "已连接" :
+                      "已断开");
         }
     
     mic_inserted = buf[0];
@@ -958,24 +958,24 @@ audio_set_meterlabel(){
         {
         case 0:
             #if (defined(CONFIG_500D) || defined(CONFIG_1100D))
-            snprintf(left_label,  sizeof(left_label),  " MIC ");
-            snprintf(right_label, sizeof(right_label), " N/C ");
+            snprintf(left_label,  sizeof(left_label),  " 内置 ");
+            snprintf(right_label, sizeof(right_label), " 未接 ");
             #else
-            snprintf(left_label,  sizeof(left_label),  "L INT");
-            snprintf(right_label, sizeof(right_label), "R INT");
+            snprintf(left_label,  sizeof(left_label),  "L内置");
+            snprintf(right_label, sizeof(right_label), "R内置");
             #endif
             break;
         case 1:
-            snprintf(left_label,  sizeof(left_label),  "L INT");
-            snprintf(right_label, sizeof(right_label), "R EXT");
+            snprintf(left_label,  sizeof(left_label),  "L内置");
+            snprintf(right_label, sizeof(right_label), "R外接");
             break;
         case 2:
-            snprintf(left_label,  sizeof(left_label),  "L EXT");
-            snprintf(right_label, sizeof(right_label), "R EXT");
+            snprintf(left_label,  sizeof(left_label),  "L外接");
+            snprintf(right_label, sizeof(right_label), "R外接");
             break;
         case 3:
-            snprintf(left_label,  sizeof(left_label),  "L INT");
-            snprintf(right_label, sizeof(right_label), "R BAL");
+            snprintf(left_label,  sizeof(left_label),  "L内置");
+            snprintf(right_label, sizeof(right_label), "R平衡");
             break;
         }
 
@@ -1004,19 +1004,19 @@ static const char* get_audio_input_string()
 {
     switch(input_choice) {
         case 0:
-            return "Internal mic";
+            return "内置麦克风";
         case 1:
-            return "L:int R:ext";
+            return "左:内置 右:外接";
         case 2:
-            return "External Stereo";
+            return "外接立体声";
         case 3:
-            return "L:int R:balanced";
+            return "左:内置 右:平衡";
         case 4:
-            return (mic_inserted? "Auto int/EXT" : "Auto INT/ext");
+            return (mic_inserted? "自动：外接" : "自动：内置");
         default:
             break;
     }
-    return "error";
+    return "错误";
 }
 
 
@@ -1030,10 +1030,10 @@ static void audio_monitoring_force_display(int x)
 void audio_monitoring_display_headphones_connected_or_not()
 {
     NotifyBox(2000,
-              "Headphones %s", 
+              "耳机%s",
               AUDIO_MONITORING_HEADPHONES_CONNECTED ? 
-              "connected" :
-              "disconnected");
+              "已连接" :
+              "已断开");
 #ifdef CONFIG_600D
     audio_configure(1);
 #endif
@@ -1112,6 +1112,6 @@ void input_toggle()
 {
 #ifdef FEATURE_INPUT_SOURCE
     set_config_var_ptr(&input_choice, input_choice + 1);
-    NotifyBox(2000, "Input: %s", get_audio_input_string());
+    NotifyBox(2000, "输入：%s", get_audio_input_string());
 #endif
 }

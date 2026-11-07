@@ -143,7 +143,7 @@ static picstyle_ID get_picstyle_ID(picstyle_index index)
         case FINEDETAIL: return FINEDETAIL_ID;
 #endif
     }
-    bmp_printf(FONT_LARGE, 0, 0, "get_picstyle_ID() unk. index: %x", index);
+    bmp_printf(FONT_LARGE, 0, 0, "get_picstyle_ID() 未知索引: %x", index);
     return STD_ID;  // Fallback to something safe
 }
 
@@ -168,7 +168,7 @@ static picstyle_index get_prop_picstyle_index(picstyle_ID pic_style)
         case FINEDETAIL_ID: return FINEDETAIL;
 #endif
     }
-    bmp_printf(FONT_LARGE, 0, 0, "get_prop_picstyle_index() unk. id: %x", pic_style);
+    bmp_printf(FONT_LARGE, 0, 0, "get_prop_picstyle_index() 未知ID: %x", pic_style);
     return STD; // Fallback to something safe
 }
 
@@ -326,23 +326,23 @@ static const char* picstyle_get_name(picstyle_ID pic_style)
 {
     switch(pic_style)
     {
-        case STD_ID:        return "Standard";
-        case PORTRAIT_ID:   return "Portrait";
-        case LANDSCAPE_ID:  return "Landscape";
-        case NEUTRAL_ID:    return "Neutral";
-        case FAITHFUL_ID:   return "Faithful";
-        case MONO_ID:       return "Monochrome";
-        case USER1_ID:      return (picstyle_of_user1 < 0x80 ? user_picstyle_name_1 : "UserDef1");
-        case USER2_ID:      return (picstyle_of_user2 < 0x80 ? user_picstyle_name_2 : "UserDef2");
-        case USER3_ID:      return (picstyle_of_user3 < 0x80 ? user_picstyle_name_3 : "UserDef3");
+        case STD_ID:        return "标准";
+        case PORTRAIT_ID:   return "人像";
+        case LANDSCAPE_ID:  return "风光";
+        case NEUTRAL_ID:    return "中性";
+        case FAITHFUL_ID:   return "可靠设置";
+        case MONO_ID:       return "单色";
+        case USER1_ID:      return (picstyle_of_user1 < 0x80 ? user_picstyle_name_1 : "用户定义1");
+        case USER2_ID:      return (picstyle_of_user2 < 0x80 ? user_picstyle_name_2 : "用户定义2");
+        case USER3_ID:      return (picstyle_of_user3 < 0x80 ? user_picstyle_name_3 : "用户定义3");
 #if NUM_PICSTYLES > 9
-        case AUTO_ID:       return "Auto";
+        case AUTO_ID:       return "自动";
 #endif
 #if NUM_PICSTYLES > 10
-        case FINEDETAIL_ID: return "Fine Detail";
+        case FINEDETAIL_ID: return "精细细节";
 #endif
     }
-    return "Unknown";
+    return "未知";
 }
 
 // Returns picstyle display name for active picstyle
@@ -548,10 +548,10 @@ static MENU_UPDATE_FUNC(saturation_display)
 {
     int s = picstyle_get_current_saturation();
     int ok = (s >= -4 && s <= 4);
-    MENU_SET_VALUE(ok ? "%d " : "N/A", s);
+    MENU_SET_VALUE(ok ? "%d " : "不可用", s);
     MENU_SET_ENABLED(ok);
     if (ok) MENU_SET_ICON(MNI_PERCENT, (s+4) * 100 / 8);
-    else { MENU_SET_ICON(MNI_OFF, 0); MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "N/A"); }
+    else { MENU_SET_ICON(MNI_OFF, 0); MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "不可用"); }
 }
 
 // Color tone
@@ -567,10 +567,10 @@ static MENU_UPDATE_FUNC(color_tone_display)
 {
     int s = picstyle_get_current_color_tone();
     int ok = (s >= -4 && s <= 4);
-    MENU_SET_VALUE(ok ? "%d " : "N/A", s );
+    MENU_SET_VALUE(ok ? "%d " : "不可用", s );
     MENU_SET_ENABLED(ok);
     if (ok) MENU_SET_ICON(MNI_PERCENT, (s+4) * 100 / 8);
-    else { MENU_SET_ICON(MNI_OFF, 0); MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "N/A"); }
+    else { MENU_SET_ICON(MNI_OFF, 0); MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "不可用"); }
 }
 
 
@@ -593,7 +593,7 @@ static MENU_UPDATE_FUNC(picstyle_display)
     if (picstyle_rec_enable && is_movie_mode())
     {
         MENU_SET_RINFO(
-            "REC:%s",
+            "录制:%s",
             picstyle_get_name(get_picstyle_ID(picstyle_rec))
         );
     }
@@ -670,7 +670,7 @@ void picstyle_change_for_rec(int rec)
             int p = get_picstyle_ID(picstyle_rec);
             if (p)
             {
-                NotifyBox(2000, "Picture Style : %s", picstyle_get_name(p));
+                NotifyBox(2000, "照片风格 : %s", picstyle_get_name(p));
                 prop_request_change(PROP_PICTURE_STYLE, &p, 4);
             }
         }
@@ -678,7 +678,7 @@ void picstyle_change_for_rec(int rec)
         {
             int p = get_picstyle_ID(picstyle_before_rec);
             {
-                NotifyBox(2000, "Picture Style : %s", picstyle_get_name(p));
+                NotifyBox(2000, "照片风格 : %s", picstyle_get_name(p));
                 prop_request_change(PROP_PICTURE_STYLE, &p, 4);
             }
             picstyle_before_rec = 0;
@@ -691,113 +691,113 @@ void picstyle_change_for_rec(int rec)
 
 const char * style_choices[] = {
 #if NUM_PICSTYLES > 9 // 600D, 5D3...
-    "Auto",
+    "自动",
 #endif
-    "Standard", "Portrait", "Landscape",
+    "标准", "人像", "风光",
 #if NUM_PICSTYLES == 11 // D8 and up
-    "FineDetail",
+    "精细细节",
 #endif
-    "Neutral", "Faithful", "Monochrome", "UserDef1", "UserDef2", "UserDef3"
+    "中性", "可靠设置", "单色", "用户定义1", "用户定义2", "用户定义3"
 };
 
 static struct menu_entry picstyle_features_menu[] = {
     {
-        .name = "Picture Style",
+        .name = "照片风格",
         .priv = &lens_info.picstyle,
         .min = 0,
         .max = NUM_PICSTYLES - 1,
         .choices = style_choices,
         .update     = picstyle_display,
         .select     = picstyle_toggle,
-        .help = "Change current picture style.",
+        .help = "更改当前照片风格。",
         .edit_mode = EM_SHOW_LIVEVIEW,
         .icon_type = IT_DICE,
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Active style",
+                .name = "当前风格",
                 .priv = &lens_info.picstyle,
                 .min = 0,
                 .max = NUM_PICSTYLES - 1,
                 .choices = style_choices,
                 .update = picstyle_display_submenu,
                 .select = picstyle_toggle,
-                .help = "Change current picture style.",
+                .help = "更改当前照片风格。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
                 .icon_type = IT_DICE,
             },
 #if NUM_PICSTYLE_SLIDERS == 6
             {
-                .name = "Sharpness strength",
+                .name = "锐度强度",
                 .update = sharpness_display,
                 .select = sharpness_toggle,
-                .help = "Adjust sharpness strength in current picture style.",
+                .help = "调整当前照片风格的锐度强度。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Sharpness fineness",
+                .name = "锐度精细度",
                 .update = sharpness_fineness_display,
                 .select = sharpness_fineness_toggle,
-                .help = "Adjust sharpness fineness in current picture style.",
+                .help = "调整当前照片风格的锐度精细度。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Sharpness threshold",
+                .name = "锐度临界值",
                 .update = sharpness_threshold_display,
                 .select = sharpness_threshold_toggle,
-                .help = "Adjust sharpness threshold in current picture style.",
+                .help = "调整当前照片风格的锐度临界值。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
 #else // Same as first param above, just under a different name
             {
-                .name = "Sharpness",
+                .name = "锐度",
                 .update = sharpness_display,
                 .select = sharpness_toggle,
-                .help = "Adjust sharpness in current picture style.",
+                .help = "调整当前照片风格的锐度。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
 #endif
             {
-                .name = "Contrast",
+                .name = "对比度",
                 .update = contrast_display,
                 .select = contrast_toggle,
-                .help = "Adjust contrast in current picture style.",
+                .help = "调整当前照片风格的对比度。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Saturation",
+                .name = "饱和度",
                 .update = saturation_display,
                 .select = saturation_toggle,
-                .help = "Adjust saturation in current picture style.",
+                .help = "调整当前照片风格的饱和度。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Color Tone",
+                .name = "色调",
                 .update = color_tone_display,
                 .select = color_tone_toggle,
-                .help = "Adjust color tone in current picture style.",
+                .help = "调整当前照片风格的色调。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
 #ifdef FEATURE_REC_PICSTYLE
             {
-                .name = "Force style for REC",
+                .name = "录制时强制风格",
                 .priv = &picstyle_rec_enable,
                 .min = 0,
                 .max = 1,
-                .choices = CHOICES("OFF", "ON"),
-                .help = "Enable to override active picture style while recording.",
+                .choices = CHOICES("关", "开"),
+                .help = "启用后，录制时覆盖当前照片风格。",
                 .icon_type = IT_BOOL,
                 .depends_on = DEP_MOVIE_MODE,
             },
             {
-                .name = "Style for recording",
+                .name = "录制用风格",
                 .priv = &picstyle_rec,
                 .min = 0,
                 .max = NUM_PICSTYLES - 1,
                 .choices = style_choices,
                 .update = picstyle_rec_display,
                 .select = picstyle_rec_toggle,
-                .help = "Select which PicStyle to use while recording.",
+                .help = "选择录制时使用的照片风格。",
                 .icon_type = IT_DICE,
                 .depends_on = DEP_MOVIE_MODE,
             },

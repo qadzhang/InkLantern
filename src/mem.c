@@ -505,10 +505,10 @@ static unsigned int memcheck_check(unsigned int ptr, unsigned int entry)
         int size = ((struct memcheck_hdr *)ptr)->length;
         int allocator = ((struct memcheck_hdr *)ptr)->allocator;
 
-        const char *file = "unk";
+        const char *file = "未知";
         int line = 0;
-        const char *task_name = "unk";
-        const char *allocator_name = "unk";
+        const char *task_name = "未知";
+        const char *allocator_name = "未知";
         if (id_ok)
         {
             file = memcheck_entries[id].file;
@@ -527,20 +527,20 @@ static unsigned int memcheck_check(unsigned int ptr, unsigned int entry)
 
         char err_flags[20] = "";
         if (failed & 2)
-            STR_APPEND(err_flags, "underflow,");
+            STR_APPEND(err_flags, "下溢,");
         if (failed & 4)
-            STR_APPEND(err_flags, "overflow,");
+            STR_APPEND(err_flags, "上溢,");
         if (failed & 8)
-            STR_APPEND(err_flags, "ID error,");
+            STR_APPEND(err_flags, "ID 错误,");
         if (failed & 16)
-            STR_APPEND(err_flags, "double free,");
+            STR_APPEND(err_flags, "重复释放,");
         if (failed & ~(2|4|8|16))
-            STR_APPEND(err_flags, "unknown error,");
+            STR_APPEND(err_flags, "未知错误,");
         err_flags[strlen(err_flags)-1] = 0;
         int index_err = (failed & 6);
         snprintf(last_error_msg_short, sizeof(last_error_msg_short), err_flags);
         snprintf(last_error_msg, sizeof(last_error_msg),
-            "%s[%d/%d] %s(%s) at %s:%d, task %s.",
+            "%s[%d/%d] %s(%s) 位于 %s:%d，任务 %s。",
             err_flags, index_err ? failed_pos - MEM_SEC_ZONE : 0, index_err ? size : 0,
             allocator_name, format_memory_size_and_flags(size, flags),
             file, line, task_name
@@ -980,7 +980,7 @@ void* __mem_malloc(size_t size, unsigned int flags, const char *file, unsigned i
         {
             /* didn't work? */
             snprintf(last_error_msg_short, sizeof(last_error_msg_short), "%s(%s,%x)", allocators[allocator_index].name, format_memory_size_and_flags(size, flags));
-            snprintf(last_error_msg, sizeof(last_error_msg), "%s(%s) failed at %s:%d, %s.", allocators[allocator_index].name, format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
+            snprintf(last_error_msg, sizeof(last_error_msg), "%s(%s) 分配失败：位于 %s:%d，任务 %s。", allocators[allocator_index].name, format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
             dbg_printf("alloc fail, took %s%d.%03d s\n", FMT_FIXEDPOINT3(t1-t0));
         }
         else
@@ -998,7 +998,7 @@ void* __mem_malloc(size_t size, unsigned int flags, const char *file, unsigned i
     
     /* could not find an allocator (maybe out of memory?) */
     snprintf(last_error_msg_short, sizeof(last_error_msg_short), "alloc(%s)", format_memory_size_and_flags(size, flags));
-    snprintf(last_error_msg, sizeof(last_error_msg), "No allocator for %s at %s:%d, %s.", format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
+    snprintf(last_error_msg, sizeof(last_error_msg), "没有适合 %s 的分配器：位于 %s:%d，任务 %s。", format_memory_size_and_flags(size, flags), file, line, get_current_task_name());
     dbg_printf("alloc not found\n");
     give_semaphore(mem_sem);
     return 0;
@@ -1327,7 +1327,7 @@ static MENU_UPDATE_FUNC(meminfo_display)
         "%dK",
         M / 1024
     );
-    if (M < 1024*1024) MENU_SET_WARNING(MENU_WARN_ADVICE, "Not enough free memory.");
+    if (M < 1024*1024) MENU_SET_WARNING(MENU_WARN_ADVICE, "剩余内存不足。");
 #else
 
     int guess_needed = 0;
@@ -1428,13 +1428,13 @@ static MENU_UPDATE_FUNC(meminfo_display)
             }
             else
             {
-                MENU_SET_VALUE("%s of ",format_memory_size(ml_used_mem));
+                MENU_SET_VALUE("已用 %s，保留 ",format_memory_size(ml_used_mem));
                 MENU_APPEND_VALUE("%s", format_memory_size(ml_reserved_mem));
             }
             
             if (ml_reserved_mem < ml_used_mem)
             {
-                MENU_SET_WARNING(MENU_WARN_ADVICE, "ML uses too much memory!!");
+                MENU_SET_WARNING(MENU_WARN_ADVICE, "ML 占用内存过多！！");
             }
 
             break;
@@ -1453,9 +1453,9 @@ static MENU_UPDATE_FUNC(meminfo_display)
     }
 
     if (guess_mem_running)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Trying to guess how much RAM we have...");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "正在估算可用 RAM 大小...");
     else
-        MENU_SET_HELP("GREEN=shoot, CYAN=srm, BLUE=maybe free, RED=maybe used.");
+        MENU_SET_HELP("绿=shoot，青=srm，蓝=可能空闲，红=可能占用。");
 #endif
 }
 
@@ -1477,31 +1477,31 @@ static MENU_UPDATE_FUNC(mem_pool_display)
     if (free_space > 0)
     {
         MENU_SET_VALUE("%s", format_memory_size(free_space));
-        MENU_APPEND_VALUE(", %s used", format_memory_size(used));
-        MENU_SET_HELP("Free & used memory from %s. %d blocks allocated.",
+        MENU_APPEND_VALUE("，已用 %s", format_memory_size(used));
+        MENU_SET_HELP("%s 内存池的空闲与已用内存，已分配 %d 个块。",
                       allocators[index].name, allocators[index].num_blocks);
     }
     else
     {
-        MENU_SET_VALUE("%s used", format_memory_size(used));
-        MENU_SET_HELP("Memory used from %s. %d blocks allocated.",
+        MENU_SET_VALUE("已用 %s", format_memory_size(used));
+        MENU_SET_HELP("%s 内存池的已用内存，已分配 %d 个块。",
                       allocators[index].name, allocators[index].num_blocks);
     }
     
     if (allocators[index].get_max_region)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Max region: %s.",
+        MENU_SET_WARNING(MENU_WARN_INFO, "最大连续区域：%s。",
                          format_memory_size(allocators[index].get_max_region()));
     }
     else
     {
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "This allocator does not implement get_max_region.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "此分配器未实现 get_max_region。");
     }
     
     if (free_space > 0 && free_space < allocators[index].preferred_free_space)
     {
         MENU_SET_WARNING(MENU_WARN_ADVICE,
-                         "Would be nice to have at least %s free here.",
+                         "此处最好保有至少 %s 空闲内存。",
                          format_memory_size(allocators[index].preferred_free_space));
     }
 }
@@ -1517,7 +1517,7 @@ static MENU_UPDATE_FUNC(mem_error_display)
     
     if (strlen(last_error_msg))
     {
-        MENU_SET_NAME("Memory Error");
+        MENU_SET_NAME("内存错误");
         MENU_SET_VALUE(last_error_msg_short);
         MENU_SET_WARNING(MENU_WARN_ADVICE, last_error_msg);
         MENU_SET_ICON(MNI_RECORD, 0); /* red dot */
@@ -1534,7 +1534,7 @@ static MENU_UPDATE_FUNC(mem_total_display)
         info->custom_drawing = CUSTOM_DRAW_THIS_MENU;
         bmp_fill(COLOR_BLACK, 0, 0, 720, 480);
 
-        bmp_printf(FONT_LARGE, 10, 10, "Allocated memory");
+        bmp_printf(FONT_LARGE, 10, 10, "已分配内存");
         int x = 10;
         int y = 50;
 
@@ -1562,9 +1562,9 @@ static MENU_UPDATE_FUNC(mem_total_display)
             const char *task_name = memcheck_entries[buf_pos].task_name;
             const char *allocator_name = allocators[allocator].name;
             bmp_printf(FONT_MED, x, y, "%s%s",
-                       memcheck_entries[buf_pos].failed ? "[FAIL] " : "",
+                       memcheck_entries[buf_pos].failed ? "[异常] " : "",
                        format_memory_size_and_flags(size, flags));
-            bmp_printf(FONT_MED, 180, y, "%s:%d task %s", file, line, task_name);
+            bmp_printf(FONT_MED, 180, y, "%s:%d 任务 %s", file, line, task_name);
             bmp_printf(FONT_MED | FONT_ALIGN_RIGHT, 710, y, allocator_name);
             y += font_med.height;
         }
@@ -1578,11 +1578,11 @@ static MENU_UPDATE_FUNC(mem_total_display)
         }
 
         char msg[256] = "";
-        STR_APPEND(msg, "%d tracked small blocks (%s), ", small_blocks, format_memory_size(small_blocks_size));
-        STR_APPEND(msg, "%d total (%s), ", total_blocks, format_memory_size(total_alloc));
-        STR_APPEND(msg, "\noverhead %s (dynamic)", format_memory_size(total_blocks * 2 * MEM_SEC_ZONE));
-        STR_APPEND(msg, " + %s (fixed)", format_memory_size(sizeof(memcheck_entries)));
-        STR_APPEND(msg, " + %s (history)", format_memory_size(sizeof(history)));
+        STR_APPEND(msg, "已跟踪小块 %d 个（%s），", small_blocks, format_memory_size(small_blocks_size));
+        STR_APPEND(msg, "共 %d 个（%s），", total_blocks, format_memory_size(total_alloc));
+        STR_APPEND(msg, "\n开销 %s（动态）", format_memory_size(total_blocks * 2 * MEM_SEC_ZONE));
+        STR_APPEND(msg, " + %s（固定）", format_memory_size(sizeof(memcheck_entries)));
+        STR_APPEND(msg, " + %s（历史）", format_memory_size(sizeof(history)));
 
         bmp_printf(FONT_MED, x, y, msg);
         y += font_med.height * 2;
@@ -1615,9 +1615,9 @@ static MENU_UPDATE_FUNC(mem_total_display)
     {
         total_ram_detailed = 0;
         MENU_SET_VALUE("%s", format_memory_size(alloc_total_with_memcheck));
-        MENU_APPEND_VALUE(", peak %s", format_memory_size(alloc_total_peak_with_memcheck));
+        MENU_APPEND_VALUE("，峰值 %s", format_memory_size(alloc_total_peak_with_memcheck));
         int ovh = (alloc_total_with_memcheck + sizeof(memcheck_entries) - alloc_total) * 1000 / alloc_total;
-        MENU_SET_WARNING(MENU_WARN_INFO, "Memcheck overhead: %d.%d%%.", ovh/10, ovh%10, 0);
+        MENU_SET_WARNING(MENU_WARN_INFO, "内存检查开销：%d.%d%%。", ovh/10, ovh%10, 0);
     }
 }
 
@@ -1625,26 +1625,26 @@ static MENU_UPDATE_FUNC(mem_total_display)
 static struct menu_entry mem_menus[] = {
 #ifdef CONFIG_VXWORKS
     {
-        .name = "Free Memory",
+        .name = "剩余内存",
         .update = meminfo_display,
         .icon_type = IT_ALWAYS_ON,
-        .help = "Free memory, shared between ML and Canon firmware.",
+        .help = "ML 与佳能固件共享的剩余内存。",
     },
 #else // dryos
     {
-        .name = "Free Memory",
+        .name = "剩余内存",
         .update = meminfo_display,
         .select = menu_open_submenu,
-        .help = "Free memory, shared between ML and Canon firmware.",
-        .help2 = "Press SET for detailed info.",
+        .help = "ML 与佳能固件共享的剩余内存。",
+        .help2 = "按 SET 查看详细信息。",
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Allocated RAM",
+                .name = "已分配内存",
                 .update = mem_total_display,
                 .priv = &total_ram_detailed,
                 .max = 1,
-                .help = "Total memory allocated by ML. Press SET for detailed info.",
+                .help = "ML 已分配的内存总量。按 SET 查看详细信息。",
                 .icon_type = IT_ALWAYS_ON,
             },
             {
@@ -1666,39 +1666,39 @@ static struct menu_entry mem_menus[] = {
                 .update = mem_pool_display,
             },
             {
-                .name = "stack space",
+                .name = "栈空间",
                 .icon_type = IT_ALWAYS_ON,
                 .priv = (int *)3,
                 .update = meminfo_display,
-                .help = "Free memory available as stack space for user tasks.",
+                .help = "可供用户任务用作栈空间的剩余内存。",
             },
             {
-                .name = "shoot contig",
+                .name = "shoot 连续块",
                 .icon_type = IT_ALWAYS_ON,
                 .priv = (int *)4,
                 .update = meminfo_display,
-                .help = "Largest contiguous block from shoot memory.",
+                .help = "shoot 内存中最大的连续块。",
             },
             {
-                .name = "shoot total",
+                .name = "shoot 总量",
                 .icon_type = IT_ALWAYS_ON,
                 .priv = (int *)5,
                 .update = meminfo_display,
-                .help = "Largest fragmented block from shoot memory.",
+                .help = "shoot 内存中分片后的最大可用空间。",
             },
             {
-                .name = "SRM job total",
+                .name = "SRM 作业总量",
                 .icon_type = IT_ALWAYS_ON,
                 .priv = (int *)6,
                 .update = meminfo_display,
-                .help = "Free memory from SRM_AllocateMemoryResourceFor1stJob.",
+                .help = "SRM_AllocateMemoryResourceFor1stJob 的可用内存。",
             },
             {
                 .name = "AUTOEXEC.BIN",
                 .icon_type = IT_ALWAYS_ON,
                 .priv = (int *)7,
                 .update = meminfo_display,
-                .help = "Memory reserved statically at startup for ML binary.",
+                .help = "启动时为 ML 主程序静态保留的内存。",
             },
             MENU_EOL
         },

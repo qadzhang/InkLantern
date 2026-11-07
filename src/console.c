@@ -68,7 +68,7 @@ console_test( void * priv )
 
 static struct menu_entry script_menu[] = {
     {
-        .name       = "Debug Console",
+        .name       = "调试控制台",
         .priv		= &console_visible,
         .select     = console_toggle_menu,
 		.min		= 0,

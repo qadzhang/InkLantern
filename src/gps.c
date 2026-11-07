@@ -133,11 +133,11 @@ static MENU_UPDATE_FUNC(gps_powersave_tweak_update)
 
 static struct menu_entry gps_menus[] = {
     {
-        .name   = "GPS Power Save",
+        .name   = "GPS省电",
         .priv   = &gps_powersave_tweak,
         .max    = 1,
         .update = gps_powersave_tweak_update,
-        .help   = "Disable the internal GPS at power off to save power.",
+        .help   = "关机时关闭内置 GPS 以节省电量。",
     },
 };
 

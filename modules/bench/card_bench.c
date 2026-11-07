@@ -28,7 +28,7 @@ static void card_benchmark_wr(uint32_t bufsize, int K, int N, int test_length)
     for (n = 1; n <= max_loops; n++)
     {
         uint32_t start = 0x50000000;
-        bmp_printf(FONT_LARGE, 0, 0, "[%d/%d] Writing: %d/100 (buf=%dK)... ",
+        bmp_printf(FONT_LARGE, 0, 0, "[%d/%d] 正在写入：%d/100 (buf=%dK)... ",
                    K, N, n * 100 / max_loops, bufsize/1024);
         bytes_written += FIO_WriteFile(f, (const void *) start, bufsize);
 
@@ -54,7 +54,7 @@ static void card_benchmark_wr(uint32_t bufsize, int K, int N, int test_length)
     // e.g. %02d formatting and will accumulate more than 9 into a single digit.
     // So you get stuff like 10.f5 MB/s printed.
     int MB_per_s_x10 = (bytes_per_ms * 1000 * 10) / (1024 * 1024);
-    bmp_printf(FONT_MONO_20, x, y += 20, "Write speed (buffer=%dk):\t %d.%d MB/s\n",
+    bmp_printf(FONT_MONO_20, x, y += 20, "写入速度(缓冲区=%dk)：\t %d.%d MB/s\n",
                buf_size_kb, MB_per_s_x10 / 10, MB_per_s_x10 % 10);
     DryosDebugMsg(0, 15, "Write speed (buffer=%dk):\t %d.%d MB/s",
                buf_size_kb, MB_per_s_x10 / 10, MB_per_s_x10 % 10);
@@ -74,7 +74,7 @@ static void card_benchmark_wr(uint32_t bufsize, int K, int N, int test_length)
         uint32_t bytes_read = 0;
         for (n = 1; n <= max_loops; n++)
         {
-            bmp_printf(FONT_LARGE, 0, 0, "[%d/%d] Reading: %d/100 (buf=%dK)... ",
+            bmp_printf(FONT_LARGE, 0, 0, "[%d/%d] 正在读取：%d/100 (buf=%dK)... ",
                        K, N, n * 100 / max_loops, bufsize/1024);
             bytes_read += FIO_ReadFile(f, UNCACHEABLE(buf), bufsize);
 
@@ -95,7 +95,7 @@ static void card_benchmark_wr(uint32_t bufsize, int K, int N, int test_length)
             bytes_per_ms = bytes_read / read_time;
             int buf_size_kb = bufsize / 1024;
             int MB_per_s_x10 = (bytes_per_ms * 1000 * 10) / (1024 * 1024);
-            bmp_printf(FONT_MONO_20, x, y += 20, "Read speed  (buffer=%dk):\t %d.%d MB/s\n",
+            bmp_printf(FONT_MONO_20, x, y += 20, "读取速度(缓冲区=%dk)：\t %d.%d MB/s\n",
                        buf_size_kb, MB_per_s_x10 / 10, MB_per_s_x10 % 10);
             DryosDebugMsg(0, 15, "Read speed (buffer=%dk):\t %d.%d MB/s",
                        buf_size_kb, MB_per_s_x10 / 10, MB_per_s_x10 % 10);
@@ -103,7 +103,7 @@ static void card_benchmark_wr(uint32_t bufsize, int K, int N, int test_length)
     }
     else
     {
-        bmp_printf(FONT_MONO_20, x, y += 20, "malloc error: buffer=%d\n", bufsize);
+        bmp_printf(FONT_MONO_20, x, y += 20, "内存分配错误：buffer=%d\n", bufsize);
     }
 
     FIO_RemoveFile(CARD_BENCHMARK_FILE);
@@ -116,9 +116,9 @@ static char* print_benchmark_header()
 
     static char mode[100];
     snprintf(mode, sizeof(mode),
-        "Mode: %s %s, Global Draw: %s",
+        "模式：%s %s，全局绘制：%s",
         get_video_mode_name(1), get_display_device_name(),
-        get_global_draw() ? "ON" : "OFF"
+        get_global_draw() ? "开" : "关"
     );
 
     bmp_printf(FONT_MONO_20, 0, 60, mode);
@@ -134,7 +134,7 @@ static void card_benchmark_run(int full_test)
         enter_play_mode();
     }
 
-    NotifyBox(2000, "%s Card benchmark (1 GB)...", get_shooting_card()->type);
+    NotifyBox(2000, "%s 存储卡性能测试(1GB)...", get_shooting_card()->type);
     msleep(3000);
     canon_gui_disable_front_buffer();
     clrscr();
@@ -160,7 +160,7 @@ static void card_benchmark_run(int full_test)
         card_benchmark_wr(128*1024,     8, 8, 5000);
     }
     bmp_fill(COLOR_BLACK, 0, 0, 720, font_large.height);
-    bmp_printf(FONT_LARGE, 0, 0, "Benchmark complete.");
+    bmp_printf(FONT_LARGE, 0, 0, "基准测试完成。");
     take_screenshot("bench%d.bmp", SCREENSHOT_BMP);
     msleep(3000);
     canon_gui_enable_front_buffer(0);
@@ -193,7 +193,7 @@ static void twocard_write_task(char* filename)
         while (msg_queue_receive(twocard_mq, (struct event **) &msg, 1000) == 0)
         {
             uint32_t start = 0x50000000;
-            bmp_printf(FONT_MONO_20, 0, cf*20, "[%s] Writing chunk %d [total=%d MB] (buf=%dK)... ", cf ? "CF" : "SD", msg, filesize, bufsize/1024);
+            bmp_printf(FONT_MONO_20, 0, cf*20, "[%s] 正在写入数据块 %d [共 %d MB] (buf=%dK)... ", cf ? "CF" : "SD", msg, filesize, bufsize/1024);
             int r = FIO_WriteFile( f, (const void *) start, bufsize );
             if (r != bufsize)
                 break; // card full?
@@ -203,7 +203,7 @@ static void twocard_write_task(char* filename)
         FIO_RemoveFile(filename);
         int t1 = get_ms_clock() - 1000;
         int speed = filesize * 1000 * 10 / (t1 - t0);
-        bmp_printf(FONT_MONO_20, 0, 120+cf*20, "[%s] Write speed (buffer=%dk):\t %d.%d MB/s\n", cf ? "CF" : "SD", bufsize/1024, speed/10, speed % 10);
+        bmp_printf(FONT_MONO_20, 0, 120+cf*20, "[%s] 写入速度(缓冲区=%dk)：\t %d.%d MB/s\n", cf ? "CF" : "SD", bufsize/1024, speed/10, speed % 10);
     }
     twocard_done++;
 }
@@ -296,7 +296,7 @@ static void card_bufsize_benchmark_task()
         for (uint32_t i = 0; i < n; i++)
         {
             uint32_t start = 0x50000000;
-            bmp_printf(FONT_LARGE, 0, 0, "Writing: %d/100 (buf=%dK)... ", i * 100 / n, bufsize/1024);
+            bmp_printf(FONT_LARGE, 0, 0, "正在写入：%d/100 (buf=%dK)... ", i * 100 / n, bufsize/1024);
             uint32_t r = FIO_WriteFile( f, (const void *) start, bufsize );
             total += r;
             if (r != bufsize)
@@ -306,7 +306,7 @@ static void card_bufsize_benchmark_task()
 
         int t1 = get_ms_clock();
         int speed = total / 1024 * 1000 / 1024 * 10 / (t1 - t0);
-        bmp_printf(FONT_MONO_20, x, y += 20, "Write speed (buffer=%dk):\t %d.%d MB/s\n", bufsize/1024, speed/10, speed % 10);
+        bmp_printf(FONT_MONO_20, x, y += 20, "写入速度(缓冲区=%dk)：\t %d.%d MB/s\n", bufsize/1024, speed/10, speed % 10);
         if (y > 450)
             y = 100;
 

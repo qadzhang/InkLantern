@@ -540,7 +540,7 @@ static void _module_load_all(uint32_t list_only)
     tcc_set_options(state, "-nostdlib");
     if(module_load_symbols(state, MAGIC_SYMBOLS) < 0)
     {
-        NotifyBox(2000, "Missing symbol file: " MAGIC_SYMBOLS );
+        NotifyBox(2000, "缺少符号文件：" MAGIC_SYMBOLS );
         tcc_delete(state); console_show();
         return;
     }
@@ -549,7 +549,7 @@ static void _module_load_all(uint32_t list_only)
     struct fio_dirent * dirent = FIO_FindFirstEx( MODULE_PATH, &file );
     if( IS_ERROR(dirent) )
     {
-        NotifyBox(2000, "Module dir missing" );
+        NotifyBox(2000, "未找到模块目录" );
         tcc_delete(state); console_show();
         return;
     }
@@ -603,7 +603,7 @@ static void _module_load_all(uint32_t list_only)
             {
                 module_list[module_cnt].enabled = 0;
                 snprintf(module_list[module_cnt].status, sizeof(module_list[module_cnt].status), "OFF");
-                snprintf(module_list[module_cnt].long_status, sizeof(module_list[module_cnt].long_status), "Module disabled");
+                snprintf(module_list[module_cnt].long_status, sizeof(module_list[module_cnt].long_status), "模块已禁用");
                 //printf("  [i] %s\n", module_list[module_cnt].long_status);
             }
             else
@@ -613,19 +613,19 @@ static void _module_load_all(uint32_t list_only)
                 if(list_only)
                 {
                     snprintf(module_list[module_cnt].status, sizeof(module_list[module_cnt].status), "");
-                    snprintf(module_list[module_cnt].long_status, sizeof(module_list[module_cnt].long_status), "Module not loaded");
+                    snprintf(module_list[module_cnt].long_status, sizeof(module_list[module_cnt].long_status), "模块未加载");
                 }
                 else
                 {
                     snprintf(module_list[module_cnt].status, sizeof(module_list[module_cnt].status), "???");
-                    snprintf(module_list[module_cnt].long_status, sizeof(module_list[module_cnt].long_status), "Seems linking failed. Unknown symbols?");
+                    snprintf(module_list[module_cnt].long_status, sizeof(module_list[module_cnt].long_status), "链接似乎失败，可能是未知符号？");
                 }
             }
 
             module_cnt++;
             if (module_cnt >= MODULE_COUNT_MAX)
             {
-                NotifyBox(2000, "Too many modules" );
+                NotifyBox(2000, "模块数量过多" );
                 break;
             }
         }
@@ -699,7 +699,7 @@ static void _module_load_all(uint32_t list_only)
             {
                 module_list[mod].error = 1;
                 snprintf(module_list[mod].status, sizeof(module_list[mod].status), "FileErr");
-                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "Load failed: %s, ret 0x%02X");
+                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "加载失败：%s，ret 0x%02X");
                 printf("  [E] %s\n", module_list[mod].long_status);
             }
         }
@@ -730,7 +730,7 @@ static void _module_load_all(uint32_t list_only)
             {
                 module_list[mod].error = 1;
                 snprintf(module_list[mod].status, sizeof(module_list[mod].status), "Err");
-                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "Linking failed");
+                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "链接失败");
             }
         }
         tcc_delete(state); console_show();
@@ -770,7 +770,7 @@ static void _module_load_all(uint32_t list_only)
                     {
                         module_list[mod].error = 1;
                         snprintf(module_list[mod].status, sizeof(module_list[mod].status), "OldAPI");
-                        snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "Wrong version (v%d.%d, expected v%d.%d)\n", module_list[mod].info->api_major, module_list[mod].info->api_minor, MODULE_MAJOR, MODULE_MINOR);
+                        snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "版本不匹配（v%d.%d，应为 v%d.%d）\n", module_list[mod].info->api_major, module_list[mod].info->api_minor, MODULE_MAJOR, MODULE_MINOR);
                         printf("  [E] %s\n", module_list[mod].long_status);
                         
                         /* disable active stuff, since the results are unpredictable */
@@ -782,7 +782,7 @@ static void _module_load_all(uint32_t list_only)
                 {
                     module_list[mod].error = 1;
                     snprintf(module_list[mod].status, sizeof(module_list[mod].status), "Magic");
-                    snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "Invalid Magic (0x%X)\n", module_list[mod].info->api_magic);
+                    snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "无效魔数（0x%X）\n", module_list[mod].info->api_magic);
                     printf("  [E] %s\n", module_list[mod].long_status);
                 }
             }
@@ -790,7 +790,7 @@ static void _module_load_all(uint32_t list_only)
             {
                 module_list[mod].error = 1;
                 snprintf(module_list[mod].status, sizeof(module_list[mod].status), "noInfo");
-                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "No info structure found (addr 0x%X)\n", (uint32_t)module_list[mod].info);
+                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "未找到信息结构（地址 0x%X）\n", (uint32_t)module_list[mod].info);
                 printf("  [E] %s\n", module_list[mod].long_status);
             }
         }
@@ -837,7 +837,7 @@ static void _module_load_all(uint32_t list_only)
                     module_list[mod].error = err;
 
                     snprintf(module_list[mod].status, sizeof(module_list[mod].status), "Err");
-                    snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "Module init failed");
+                    snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "模块初始化失败");
 
                     /* disable active stuff, since the results are unpredictable */
                     module_list[mod].cbr = 0;
@@ -884,7 +884,7 @@ static void _module_load_all(uint32_t list_only)
             if (!module_list[mod].error)
             {
                 snprintf(module_list[mod].status, sizeof(module_list[mod].status), "OK");
-                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "Module loaded successfully");
+                snprintf(module_list[mod].long_status, sizeof(module_list[mod].long_status), "模块加载成功");
             }
         }
     }
@@ -947,7 +947,7 @@ void* module_load(char *filename)
 
     if(module_load_symbols(state, MAGIC_SYMBOLS) < 0)
     {
-        NotifyBox(2000, "Missing symbol file: " MAGIC_SYMBOLS );
+        NotifyBox(2000, "缺少符号文件：" MAGIC_SYMBOLS );
         tcc_delete(state);
         return NULL;
     }
@@ -1043,7 +1043,7 @@ int module_exec(void *module, char *symbol, int count, ...)
                     break;
                 default:
                     /* so many parameters?! */
-                    NotifyBox(2000, "Passing too many parameters to '%s'", symbol );
+                    NotifyBox(2000, "传递给“%s”的参数过多", symbol );
                     break;
             }
         }
@@ -1480,8 +1480,8 @@ static MENU_UPDATE_FUNC(module_menu_update_entry)
         {
             MENU_SET_ICON(MNI_NEUTRAL, 0);
             MENU_SET_ENABLED(0);
-            MENU_SET_VALUE("OFF, will not load");
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This module will no longer be loaded at next reboot.");
+            MENU_SET_VALUE("关，不会加载");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "下次重启后该模块将不再被加载。");
         }
         else
         {
@@ -1494,7 +1494,7 @@ static MENU_UPDATE_FUNC(module_menu_update_entry)
             }
             else
             {
-                MENU_SET_WARNING(MENU_WARN_INFO, "%s. Press %s for more info.", module_list[mod_number].long_status, Q_BTN_NAME);
+                MENU_SET_WARNING(MENU_WARN_INFO, "%s。按 %s 查看更多信息。", module_list[mod_number].long_status, Q_BTN_NAME);
             }
         }
     }
@@ -1506,8 +1506,8 @@ static MENU_UPDATE_FUNC(module_menu_update_entry)
         {
             MENU_SET_ICON(MNI_ON, 0);
             MENU_SET_ENABLED(0);
-            MENU_SET_VALUE("ON, will load");
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "This module will be loaded at next reboot.");
+            MENU_SET_VALUE("开，将会加载");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "该模块将在下次重启时加载。");
         }
         else
         {
@@ -1516,7 +1516,7 @@ static MENU_UPDATE_FUNC(module_menu_update_entry)
             MENU_SET_VALUE(module_list[mod_number].status);
             if (module_list[mod_number].strings && module_list[mod_number].strings != module_default_strings)
             {
-                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "%s. Press %s for more info.", module_list[mod_number].long_status, Q_BTN_NAME);
+                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "%s。按 %s 查看更多信息。", module_list[mod_number].long_status, Q_BTN_NAME);
             }
             else
             {
@@ -1529,8 +1529,8 @@ static MENU_UPDATE_FUNC(module_menu_update_entry)
         MENU_SET_NAME("");
         MENU_SET_ICON(MNI_NONE, 0);
         MENU_SET_ENABLED(1);
-        MENU_SET_VALUE("(nonexistent)");
-        MENU_SET_HELP("You should never see this");
+        MENU_SET_VALUE("（不存在）");
+        MENU_SET_HELP("正常情况下不应看到此项");
     }
 
     static int last_menu_activity_time = 0;
@@ -1792,19 +1792,19 @@ static int module_show_about_page(int mod_number)
                 if (!module_is_special_string(strings->name))
                 {
                     bmp_printf(fnt_special, xl, yr, "%s", strings->name);
-                    bmp_printf(fnt_special, xm, yr, ": %s", strings->value);
+                    bmp_printf(fnt_special, xm, yr, "：%s", strings->value);
                     yr += font_med.height;
                 }
             }
             
             if (module_build_date && module_build_user)
             {
-                bmp_printf(fnt_special, 10, 480-font_med.height, "Built on %s by %s.", module_build_date, module_build_user);
+                bmp_printf(fnt_special, 10, 480-font_med.height, "构建于 %s，构建者 %s。", module_build_date, module_build_user);
             }
             
             if (module_last_update)
             {
-                bmp_printf(fnt_special, 10, 480-font_med.height * lines_for_update_msg, "Last update: %s", module_last_update);
+                bmp_printf(fnt_special, 10, 480-font_med.height * lines_for_update_msg, "最近更新：%s", module_last_update);
             }
             
             return 1;
@@ -1843,7 +1843,7 @@ static MENU_UPDATE_FUNC(module_menu_info_update)
         if (strings)
         {
             y += 10;
-            bmp_printf(FONT_MED, x - 32, y, "Information:");
+            bmp_printf(FONT_MED, x - 32, y, "信息：");
             y += font_med.height;
             for ( ; strings->name != NULL; strings++)
             {
@@ -1891,9 +1891,9 @@ static MENU_UPDATE_FUNC(module_menu_info_update)
             y += 10;
             bmp_printf(FONT_MED, x - 32, y, 
                 #if defined(CONFIG_UNREGISTER_PROP)
-                "Properties:"
+                "属性："
                 #else
-                "Properties (no support):"
+                "属性（不支持）："
                 #endif
             );
             y += font_med.height;
@@ -1907,7 +1907,7 @@ static MENU_UPDATE_FUNC(module_menu_info_update)
         if (cbr)
         {
             y += 10;
-            bmp_printf(FONT_MED, x - 32, y, "Callbacks:");
+            bmp_printf(FONT_MED, x - 32, y, "回调：");
             y += font_med.height;
 
             for ( ; cbr->name != NULL; cbr++)
@@ -1922,7 +1922,7 @@ static MENU_UPDATE_FUNC(module_menu_info_update)
     {
         bmp_printf(FONT_MED, x - 32, y, "%s", module_list[mod_number].long_filename);
         y += font_med.height;
-        bmp_printf(FONT_MED, x - 32, y, "More info after you load this module.");
+        bmp_printf(FONT_MED, x - 32, y, "加载该模块后可查看更多信息。");
     }
 }
 
@@ -1944,7 +1944,7 @@ static MENU_SELECT_FUNC(console_toggle)
 
 static struct menu_entry module_submenu[] = {
         {
-            .name = "Module info",
+            .name = "模块信息",
             .update = module_menu_info_update,
             .select = module_info_toggle,
             .icon_type = IT_ACTION,
@@ -1954,7 +1954,7 @@ static struct menu_entry module_submenu[] = {
 
 #define MODULE_ENTRY(i) \
         { \
-            .name = "Module", \
+            .name = "模块", \
             .priv = (void*)i, \
             .select = module_menu_update_select, \
             .select_Q = module_open_submenu, \
@@ -2035,35 +2035,35 @@ static struct menu_entry module_menu[] = {
 
 static struct menu_entry module_debug_menu[] = {
     {
-        .name = "Show console",
+        .name = "显示控制台",
         .priv = &module_console_enabled,
         .select = console_toggle,
         .max = 1,
-        .help = "Keep console shown after modules were loaded",
+        .help = "模块加载完成后保持控制台显示",
     },
     {
-        .name = "Modules debug",
+        .name = "模块调试",
         .select = menu_open_submenu,
         .submenu_width = 710,
-        .help = "Diagnostic options for modules.",
+        .help = "模块诊断选项。",
         .children =  (struct menu_entry[]) {
             {
-                 .name = "Disable all modules",
+                 .name = "禁用所有模块",
                  .priv = &module_autoload_disabled,
                  .max = 1,
-                 .help = "For troubleshooting.",
+                 .help = "用于故障排查。",
             },
             {
-                .name = "Load modules after crash",
+                .name = "崩溃后仍加载模块",
                 .priv = &module_ignore_crashes,
                 .max = 1,
-                .help = "Load modules even after camera crashed and you took battery out.",
+                .help = "即使相机曾崩溃且取出过电池，仍然加载模块。",
             },
             {
-                .name = "Show hidden modules",
+                .name = "显示隐藏模块",
                 .priv = &module_show_hidden,
                 .max = 1,
-                .help = "If modules have .hid files, show them anyway. Requires restart.",
+                .help = "即使模块带有 .hid 文件也强制显示。需重启生效。",
             },
             MENU_EOL,
         },
@@ -2174,7 +2174,7 @@ static void module_load_task(void* unused)
         {
             /* uh, it seems the camera didnt shut down cleanly, skip module loading this time */
             msleep(1000);
-            NotifyBox(10000, "Camera was not shut down cleanly.\r\nSkipping module loading." );
+            NotifyBox(10000, "上次未正常关机。\r\n本次跳过模块加载。" );
         }
         else
         {

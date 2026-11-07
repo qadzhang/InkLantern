@@ -253,7 +253,7 @@ static void mlv_snd_stop()
 
     if(mlv_snd_state != MLV_SND_STATE_SOUND_STOPPED)
     {
-        bmp_printf(FONT(FONT_MED, COLOR_RED, COLOR_BLACK), 10, 130, "audio failed to stop, state %d", mlv_snd_state);
+        bmp_printf(FONT(FONT_MED, COLOR_RED, COLOR_BLACK), 10, 130, "音频停止失败，状态 %d", mlv_snd_state);
         trace_write(trace_ctx, "mlv_snd_stop: failed to stop audio (state %d)", mlv_snd_state);
         beep();
     }
@@ -531,7 +531,7 @@ static void mlv_snd_cbr_started(uint32_t event, void *ctx, mlv_hdr_t *hdr)
     if(msgs < 2)
     {
         trace_write(trace_ctx, "mlv_snd_cbr_started: fatal error, no buffers");
-        bmp_printf(FONT(FONT_MED, COLOR_RED, COLOR_BLACK), 10, 130, "fatal: no buffers");
+        bmp_printf(FONT(FONT_MED, COLOR_RED, COLOR_BLACK), 10, 130, "严重错误：无缓冲区");
         beep();
         return;
     }
@@ -548,7 +548,7 @@ static void mlv_snd_cbr_started(uint32_t event, void *ctx, mlv_hdr_t *hdr)
     if(!mlv_snd_current_buffer || !mlv_snd_next_buffer)
     {
         trace_write(trace_ctx, "mlv_snd_cbr_started: fatal error, no buffers");
-        bmp_printf(FONT(FONT_MED, COLOR_RED, COLOR_BLACK), 10, 130, "fatal: no buffers");
+        bmp_printf(FONT(FONT_MED, COLOR_RED, COLOR_BLACK), 10, 130, "严重错误：无缓冲区");
         beep();
         return;
     }
@@ -652,39 +652,39 @@ static void mlv_snd_trace_buf(char *caption, uint8_t *buffer, uint32_t length)
 static struct menu_entry mlv_snd_menu[] =
 {
     {
-        .name       = "Sound recording",
+        .name       = "录音",
         .select     = menu_open_submenu,
         .priv       = &mlv_snd_enabled,
-        .help       = "Sound recording options provided by mlv_snd.",
+        .help       = "由 mlv_snd 提供的录音选项。",
         .children   = (struct menu_entry[])
         {
             {
-                .name       = "Enable sound",
+                .name       = "启用录音",
                 .priv       = &mlv_snd_enabled,
                 .max        = 1,
-                .help       = "[mlv_snd] Enable sound recording for MLV.",
+                .help       = "[mlv_snd] 启用 MLV 录音。",
             },
             {
-                .name       = "Sampling rate",
+                .name       = "采样率",
                 .priv       = &mlv_snd_rate_sel,
                 .min        = 0,
                 .max        = COUNT(mlv_snd_rates)-1,
                 .choices    = CHOICES(MLV_SND_RATE_TEXT),
-                .help       = "[mlv_snd] Select your sampling rate.",
+                .help       = "[mlv_snd] 选择采样率。",
             },
             {
-                .name = "Audio delay",
+                .name = "音频延迟",
                 .priv = &mlv_snd_vsync_delay,
                 .min = 0,
                 .max = 32,
-                .help = "Delay the audio that many frames. (experimental)",
+                .help = "将音频延迟相应帧数。（实验性）",
             },
             {
-                .name       = "Trace output",
+                .name       = "跟踪输出",
                 .priv       = &mlv_snd_enable_tracing,
                 .min        = 0,
                 .max        = 1,
-                .help       = "[mlv_snd] Enable log file tracing. Needs camera restart.",
+                .help       = "[mlv_snd] 启用日志文件跟踪。需重启相机。",
             },
             MENU_EOL,
         },
@@ -706,11 +706,11 @@ static unsigned int mlv_snd_init()
     mlv_snd_buffers_done = (struct msg_queue *) msg_queue_create("mlv_snd_buffers_done", MLV_SND_BLOCKS_PER_SLOT * MLV_SND_SLOTS);
 
     /* will the same menu work in both submenus? probably not */
-    if (menu_get_value_from_script("Movie", "RAW video") != INT_MIN)
+    if (menu_get_value_from_script("视频", "RAW video") != INT_MIN)
     {
         menu_add("RAW video", mlv_snd_menu, COUNT(mlv_snd_menu));
     }
-    else if (menu_get_value_from_script("Movie", "RAW video (MLV)") != INT_MIN)
+    else if (menu_get_value_from_script("视频", "RAW video (MLV)") != INT_MIN)
     {
         menu_add("RAW video (MLV)", mlv_snd_menu, COUNT(mlv_snd_menu));
     }

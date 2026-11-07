@@ -27,6 +27,242 @@ struct font font_dynamic[MAX_DYN_FONTS+1];
 static char *dyn_font_name[MAX_DYN_FONTS+1];
 uint32_t dyn_fonts = 0;
 
+/* ------------------------------------------------------------------
+ * CJK (Chinese/Japanese/Korean) glyph font, loaded from ML/FONTS/CJK.RBF
+ *
+ * The stock RBF fonts only cover single byte charsets.  All menu and
+ * UI strings are UTF-8; codepoints >= 0x2000 that are not covered by
+ * the active RBF font are looked up in this shared glyph table and
+ * drawn on top of the current fontspec (colors from fontspec, size
+ * fixed by the font file, typically 16px).
+ *
+ * File layout ("CJK1", little endian):
+ *   u32 magic 'C','J','K','1' packed LE = 0x314B4A43
+ *   u16 height          glyph height in pixels (e.g. 16)
+ *   u16 wbytes          bytes per glyph row (e.g. 2 => 16px wide)
+ *   u32 count           number of glyphs
+ *   u32 index_off       file offset of index table (count * u16 codepoints, ascending)
+ *   u32 glyphs_off      file offset of glyph bitmaps (count * height * wbytes bytes)
+ *   index table and glyph data follow; pixel bit order: LSB first
+ * ------------------------------------------------------------------ */
+#define CJK_MAGIC       0x314B4A43
+#define CJK_CODEPOINT_MIN 0x2000   /* below this, base RBF fonts are used */
+
+typedef struct __attribute__((packed))
+{
+    uint32_t magic;
+    uint16_t height;
+    uint16_t wbytes;
+    uint32_t count;
+    uint32_t index_off;
+    uint32_t glyphs_off;
+} cjk_hdr_t;
+
+static struct
+{
+    cjk_hdr_t   hdr;        /* copy of the file header */
+    uint16_t*   index;      /* count codepoints, ascending */
+    uint8_t*    glyphs;     /* count * height * wbytes */
+} cjk_font;
+
+/* read a chunk from an open file into cached memory, via a small temporary
+ * DMA buffer (same pattern as font_read below: the MEM_TEMPORARY/DMA pool
+ * is scarce on some cams - notably EOSM - so it must only be used
+ * transiently and in small blocks, never held) */
+static int cjk_read_chunk(FILE* fd, uint8_t* dest, int len)
+{
+    int bytes_read = 0;
+    uint8_t* ubuf = (uint8_t*) fio_malloc(len);
+    if (ubuf)
+    {
+        bytes_read = FIO_ReadFile(fd, ubuf, len);
+        memcpy(dest, ubuf, len);
+        fio_free(ubuf);
+    }
+    return bytes_read;
+}
+
+/* must be called before any CJK-aware draw / measure call */
+static void cjk_font_load(void)
+{
+    char filename[] = "ML/FONTS/CJK.RBF";
+    uint32_t size = 0;
+    if (FIO_GetFileSize(filename, &size) != 0 || size < sizeof(cjk_hdr_t))
+        return;
+
+    FILE* fd = FIO_OpenFile(filename, O_RDONLY | O_SYNC);
+    if (!fd)
+        return;
+
+    cjk_hdr_t h;
+    uint16_t* index = 0;
+    uint8_t* glyphs = 0;
+
+    do
+    {
+        if (cjk_read_chunk(fd, (uint8_t*)&h, sizeof(h)) != (int)sizeof(h))
+            break;
+
+        if (   h.magic != CJK_MAGIC
+            || h.height == 0 || h.height > 64
+            || h.wbytes == 0 || h.wbytes > 8
+            || h.count == 0
+            || (uint64_t)h.index_off + (uint64_t)h.count * 2 > size
+            || (uint64_t)h.glyphs_off + (uint64_t)h.count * h.height * h.wbytes > size )
+            break;
+
+        uint32_t sizes[2]  = { h.count * 2, h.count * h.height * h.wbytes };
+        uint32_t offsets[2] = { h.index_off, h.glyphs_off };
+        uint8_t* dests[2];
+
+        index  = (uint16_t*) malloc(sizes[0]);
+        glyphs = (uint8_t*)  malloc(sizes[1]);
+        dests[0] = (uint8_t*) index;
+        dests[1] = glyphs;
+        if (!index || !glyphs)
+            break;
+
+        int ok = 1;
+        for (int part = 0; part < 2 && ok; part++)
+        {
+            FIO_SeekSkipFile(fd, offsets[part], SEEK_SET);
+            uint32_t remaining = sizes[part];
+            while (remaining)
+            {
+                int chunk = MIN(remaining, 8192);
+                if (cjk_read_chunk(fd, dests[part], chunk) != chunk)
+                {
+                    ok = 0;
+                    break;
+                }
+                dests[part] += chunk;
+                remaining -= chunk;
+            }
+        }
+        if (!ok)
+            break;
+
+        /* only publish once both tables are fully loaded */
+        cjk_font.hdr = h;
+        cjk_font.index = index;
+        cjk_font.glyphs = glyphs;
+        index = 0;
+        glyphs = 0;
+    } while (0);
+
+    free(index);
+    free(glyphs);
+    FIO_CloseFile(fd);
+}
+
+/* binary search; returns glyph index or -1 */
+static int cjk_glyph_lookup(int cp)
+{
+    if (!cjk_font.index || cp < CJK_CODEPOINT_MIN || cp > 0xFFFF)
+        return -1;
+
+    int lo = 0;
+    int hi = (int)cjk_font.hdr.count - 1;
+    while (lo <= hi)
+    {
+        int mid = (lo + hi) / 2;
+        uint16_t code = cjk_font.index[mid];    /* u16 aligned */
+        if (code == cp)     return mid;
+        else if (code < cp) lo = mid + 1;
+        else                hi = mid - 1;
+    }
+    return -1;
+}
+
+/* CJK advance follows the base font height (square em), so Chinese text
+ * is optically the same size as the surrounding Latin glyphs */
+static int cjk_char_width(const font * base)
+{
+    return base->hdr.height;
+}
+
+/* draw one glyph, nearest-neighbour scaled from the native cell to the
+ * base font's height; returns advance in px */
+static int FAST cjk_draw_glyph(int idx, int x, int y, int fontspec, const font * base)
+{
+    const int sh = cjk_font.hdr.height;            /* native cell height */
+    const int swb = cjk_font.hdr.wbytes;           /* native bytes per row */
+    const int sw  = swb * 8;                       /* native cell width */
+    const int th  = base->hdr.height;              /* target height */
+    const int tw  = th;                            /* square em */
+    const uint8_t* g = cjk_font.glyphs + (uint32_t)idx * sh * swb;
+
+    int fg = FG_COLOR(fontspec);
+    int bg = BG_COLOR(fontspec);
+    uint8_t * bmp = bmp_vram();
+
+    if (bg != NO_BG_ERASE)
+    {
+        bmp_fill(bg, x, y, tw, th);
+    }
+
+    for (int dy = 0; dy < th; ++dy)
+    {
+        if (y+dy <= BMP_H_MINUS || y+dy >= BMP_H_PLUS)
+        {
+            break;
+        }
+        const uint8_t* srow = g + (uint32_t)(dy * sh / th) * swb;
+        for (int dx = 0; dx < tw; ++dx)
+        {
+            const int sx = dx * sw / tw;
+            if (srow[sx >> 3] & (1 << (sx & 7)))
+            {
+                bmp_putpixel_fast(bmp, x+dx, y+dy, fg);
+            }
+        }
+    }
+
+    ml_refresh_display_needed = 1;
+    return tw;
+}
+
+/* Decode the next UTF-8 codepoint from *sp, advancing the pointer.
+ * Invalid sequences decode as '?' but always consume at least the lead
+ * byte, so callers walking a string always make progress. */
+static int utf8_next(const char** sp)
+{
+    const unsigned char* s = (const unsigned char*)*sp;
+    const unsigned char* s0 = s;
+    unsigned char c = *s++;
+    if (c < 0x80)
+    {
+        *sp = (const char*)s;
+        return c;
+    }
+
+    int cp;
+    int extra;
+    if ((c & 0xE0) == 0xC0)      { cp = c & 0x1F; extra = 1; }
+    else if ((c & 0xF0) == 0xE0) { cp = c & 0x0F; extra = 2; }
+    else if ((c & 0xF8) == 0xF0) { cp = c & 0x07; extra = 3; }
+    else
+    {
+        *sp = (const char*)s;        /* bad lead byte: consume it */
+        return '?';
+    }
+
+    for (int i = 0; i < extra; i++)
+    {
+        unsigned char cc = *s;
+        if ((cc & 0xC0) != 0x80)
+        {
+            *sp = (const char*)(s0 + 1);  /* bad sequence: consume lead only */
+            return '?';
+        }
+        cp = (cp << 6) | (cc & 0x3F);
+        s++;
+    }
+
+    *sp = (const char*)s;
+    return cp;
+}
+
 #ifdef CONFIG_NO_BFNT
 /* kitor: Those replace entries in platform consts.h for DIGIC6+
  *        that does not use BMP fonts anymore.  */
@@ -228,7 +464,12 @@ static inline int rbf_font_height(font *rbf_font) {
     return rbf_font->hdr.height;
 }
 //-------------------------------------------------------------------
+/* ch is a Unicode codepoint (from utf8_next); ASCII/Latin-1 go through
+ * the stock width table, CJK codepoints fall back to the shared CJK font */
 static inline int rbf_char_width(font *rbf_font, int ch) {
+    if (ch >= CJK_CODEPOINT_MIN && cjk_glyph_lookup(ch) >= 0)
+        return cjk_char_width(rbf_font);
+    if (ch < 0 || ch > 0xFF) ch = '?';
     return rbf_font->wTable[ch];
 }
 
@@ -245,12 +486,13 @@ int rbf_str_width(font *rbf_font, const char *str) {
         {
             maxl = MAX(l, maxl);
             l = 0;
+            str++;
         }
         else
         {
-            l += rbf_char_width(rbf_font, *str);
+            int cp = utf8_next(&str);
+            l += rbf_char_width(rbf_font, cp);
         }
-        str++;
     }
     maxl = MAX(l, maxl);
 
@@ -260,18 +502,29 @@ int rbf_str_width(font *rbf_font, const char *str) {
 int rbf_str_clipped_width(font *rbf_font, const char *str, int maxlen) {
     int l = 0;
     // Calculate how long the string is in pixels (possibly clipped to 'maxlen')
-    while (*str && l+rbf_char_width(rbf_font, *str)<=maxlen)
-        l+=rbf_char_width(rbf_font, *str++);
+    while (*str) {
+        int cp = utf8_next(&str);
+        int w = rbf_char_width(rbf_font, cp);
+        if (l+w > maxlen) break;
+        l += w;
+    }
 
     return l;
 }
 
 int rbf_strlen_clipped(font *rbf_font, const char *str, int maxlen) {
     int l = 0;
-    // Calculate how long the string is in characters (possibly clipped to 'maxlen')
+    // Calculate how long the string is in bytes (possibly clipped to 'maxlen' pixels)
+    // note: only counts characters that fit, like the original byte-wise version
     char* str0 = (char*) str;
-    while (*str && l+rbf_char_width(rbf_font, *str)<=maxlen)
-        l+=rbf_char_width(rbf_font, *str++);
+    while (*str) {
+        const char* next = str;
+        int cp = utf8_next(&next);
+        int w = rbf_char_width(rbf_font, cp);
+        if (l + w > maxlen) break;
+        l += w;
+        str = next;
+    }
 
     return str - str0;
 }
@@ -352,6 +605,18 @@ static void FAST font_draw_char_shadow(font *rbf_font, int x, int y, char *cdata
 
 //-------------------------------------------------------------------
 static int FAST rbf_draw_char(font *rbf_font, int x, int y, int ch, int fontspec) {
+    // CJK codepoints: draw from the shared CJK glyph font
+    if (ch >= CJK_CODEPOINT_MIN)
+    {
+        int idx = cjk_glyph_lookup(ch);
+        if (idx >= 0)
+            return cjk_draw_glyph(idx, x, y, fontspec, rbf_font);
+        ch = '?';
+    }
+
+    // anything outside the single byte range of the stock fonts -> '?'
+    if (ch < 0 || ch > 0xFF) ch = '?';
+
     // Get char data pointer
     char* cdata = rbf_font_char(rbf_font, ch);
     
@@ -388,7 +653,8 @@ static int rbf_draw_string_c(font *rbf_font, int x, int y, const char *str, int 
               i++;
               continue;
           }
-          l+=rbf_draw_char(rbf_font, x+l, y, *str++, (i==c)?fontspec1:fontspec2);
+          int cp = utf8_next(&str);
+          l+=rbf_draw_char(rbf_font, x+l, y, cp, (i==c)?fontspec1:fontspec2);
           ++i;
      }
      return l;
@@ -423,9 +689,9 @@ static int rbf_draw_clipped_string(font *rbf_font, int x, int y, const char *str
         int indent = 1;
         while (*c && *(c+1))    /* note: last char should not be stretched */
         {
-            if (*c != ' ' && *c != '*') indent = 0;
-            bins += is_mono ? 3 : indent ? 0 : space < 0 ? 1 : *c == ' ' ? 10 : 2;
-            c++;
+            int ccp = utf8_next((const char**)&c);
+            if (ccp != ' ' && ccp != '*') indent = 0;
+            bins += is_mono ? 3 : indent ? 0 : space < 0 ? 1 : ccp == ' ' ? 10 : 2;
         }
         
         /* use Bresenham line-drawing algorithm to divide space with integer-only math */
@@ -443,15 +709,20 @@ static int rbf_draw_clipped_string(font *rbf_font, int x, int y, const char *str
         // Draw chars from string up to max pixel length
         indent = 1;
         int condensed = 0;
-        while (*str && l+rbf_char_width(rbf_font, *str)<=maxlen)
+        while (*str)
         {
-            l += rbf_draw_char(rbf_font, x+l, y, *str, fontspec | (condensed ? FONT_CONDENSED : 0) );
+            const char* str_next = str;
+            int cp = utf8_next(&str_next);
+            if (l+rbf_char_width(rbf_font, cp) > maxlen) break;
+            str = str_next;
+
+            l += rbf_draw_char(rbf_font, x+l, y, cp, fontspec | (condensed ? FONT_CONDENSED : 0) );
             int l0 = l;
 
-            if (*(str+1))
+            if (*str)      /* more characters follow (last char is not stretched) */
             {
                 /* Bresenham step */
-                if (*str != ' ' && *str != '*') indent = 0;
+                if (cp != ' ' && cp != '*') indent = 0;
                 int repeat = is_mono ? 3 : indent ? 0 : space < 0 ? 1 : *c == ' ' ? 10 : 2;
                 condensed = 0;
                 for (int i = 0; i < repeat; i++)
@@ -468,21 +739,23 @@ static int rbf_draw_clipped_string(font *rbf_font, int x, int y, const char *str
                     }
                 }
             }
-            
+
             if (should_fill && l > l0)
             {
                 bmp_fill(bg, x+l0, y, l-l0, rbf_font->hdr.height);
             }
-            
-            i++; str++;
+
+            i++;
         }
     }
     else
     {
         // Draw chars from string up to max pixel length
-        while (*str && l+rbf_char_width(rbf_font, *str)<=maxlen)
+        while (*str)
         {
-            l+=rbf_draw_char(rbf_font, x+l, y, *str++, fontspec);
+            int cp = utf8_next(&str);
+            if (l+rbf_char_width(rbf_font, cp) > maxlen) break;
+            l+=rbf_draw_char(rbf_font, x+l, y, cp, fontspec);
             i++;
         }
     }
@@ -633,16 +906,19 @@ static int bfnt_load_from_card()
 }
 #endif
 
-/* must be called before menu_init, otherwise it can't measure strings */
-void _load_fonts()
-{
-    /* tolerate multiple calls, but only run the first */
-    static int fonts_loaded = 0;
-    if (fonts_loaded)
-        return;
-    fonts_loaded = 1;
+    /* must be called before menu_init, otherwise it can't measure strings */
+    void _load_fonts()
+    {
+        /* tolerate multiple calls, but only run the first */
+        static int fonts_loaded = 0;
+        if (fonts_loaded)
+            return;
+        fonts_loaded = 1;
 
-    int bfnt_status = -1;
+        /* shared CJK glyph font (optional; absent => CJK shows as '?') */
+        cjk_font_load();
+
+        int bfnt_status = -1;
 
     #ifdef CONFIG_NO_BFNT
     //Try to load BFNT from card on newer generations

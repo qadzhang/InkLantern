@@ -138,13 +138,13 @@ static void chunk_save(FILE *f, uint32_t src_addr, int chunk_size, int chunk_cou
     char *buf = malloc(chunk_size);
     if (buf == NULL)
     {
-        bmp_printf(FONT_LARGE, 0, y, "Couldn't alloc for chunk save");
+        bmp_printf(FONT_LARGE, 0, y, "无法为分块保存分配内存");
         return;
     }
 
     for (int i = 0; i < chunk_count; i++)
     {
-        bmp_printf(FONT_LARGE, 0, y, "chunk: %d", i);
+        bmp_printf(FONT_LARGE, 0, y, "分块：%d", i);
         memcpy(buf, (uint32_t *)(src_addr + chunk_size * i), chunk_size);
         sync_caches();
         FIO_WriteFile(f, buf, chunk_size);
@@ -165,14 +165,14 @@ static void dump_rom_task(void* priv, int unused)
     f = FIO_CreateFile("ML/LOGS/ROM0.BIN");
     if (f)
     {
-        bmp_printf(FONT_LARGE, 0, 100, "Writing ROM0");
+        bmp_printf(FONT_LARGE, 0, 100, "正在写入 ROM0");
 
         #ifdef CONFIG_DIGIC_8X // these can't FIO_WriteFile() direct from ROM
         const int chunk_count = 32;
         const int chunk_size = ROM0_SIZE / chunk_count;
         if (chunk_size * chunk_count != ROM0_SIZE) // didn't divide cleanly by chunk_count
         {
-            bmp_printf(FONT_LARGE, 0, 130, "Err, unexpected ROM size: %d", ROM0_SIZE);
+            bmp_printf(FONT_LARGE, 0, 130, "错误：意外的 ROM 大小：%d", ROM0_SIZE);
             return;
         }
         chunk_save(f, ROM0_ADDR, chunk_size, chunk_count, 130);
@@ -182,7 +182,7 @@ static void dump_rom_task(void* priv, int unused)
         #endif
 
         FIO_CloseFile(f);
-        bmp_printf(FONT_LARGE, 0, 160, "ROM0 done");
+        bmp_printf(FONT_LARGE, 0, 160, "ROM0 完成");
     }
     msleep(200);
 #endif
@@ -191,14 +191,14 @@ static void dump_rom_task(void* priv, int unused)
     f = FIO_CreateFile("ML/LOGS/ROM1.BIN");
     if (f)
     {
-        bmp_printf(FONT_LARGE, 0, 190, "Writing ROM1");
+        bmp_printf(FONT_LARGE, 0, 190, "正在写入 ROM1");
 
         #ifdef CONFIG_DIGIC_8X
         const int chunk_count = 32;
         const int chunk_size = ROM1_SIZE / chunk_count;
         if (chunk_size * chunk_count != ROM1_SIZE) // didn't divide cleanly by chunk_count
         {
-            bmp_printf(FONT_LARGE, 0, 220, "Err, unexpected ROM size: %d", ROM1_SIZE);
+            bmp_printf(FONT_LARGE, 0, 220, "错误：意外的 ROM 大小：%d", ROM1_SIZE);
             return;
         }
         chunk_save(f, ROM1_ADDR, chunk_size, chunk_count, 220);
@@ -208,7 +208,7 @@ static void dump_rom_task(void* priv, int unused)
         #endif
 
         FIO_CloseFile(f);
-        bmp_printf(FONT_LARGE, 0, 250, "ROM1 done");
+        bmp_printf(FONT_LARGE, 0, 250, "ROM1 完成");
     }
     msleep(200);
 #endif
@@ -220,10 +220,10 @@ static void dump_img_task(void* priv, int unused)
 {
     for (int i = 5; i > 0; i--)
     {
-        NotifyBox(1000, "Will dump VRAMs in %d s...", i);
+        NotifyBox(1000, "将在 %d 秒后转储 VRAM...", i);
         msleep(1000);
     }
-    NotifyBox(5000, "Dumping VRAMs...");
+    NotifyBox(5000, "正在转储 VRAM...");
     
     FILE * f = NULL;
     char pattern[0x80];
@@ -305,7 +305,7 @@ static void dump_img_task(void* priv, int unused)
         FIO_CloseFile(f);
     }
 
-    NotifyBox(2000, "Done :)");
+    NotifyBox(2000, "完成 :)");
     beep();
 }
 
@@ -324,7 +324,7 @@ void guimode_test()
         if (FIO_GetFileSize_direct(fn) != 0xFFFFFFFF) // this gui mode was already tested?
             continue;
 
-        NotifyBox(500, "Trying GUI mode %d...", i);
+        NotifyBox(500, "正在测试 GUI 模式 %d...", i);
         save_mem_to_file(fn, 0, fn); // temporary flag to indicate that this GUI mode was tried (and probably found to be troublesome)
         msleep(200);
 
@@ -582,8 +582,8 @@ static void save_crash_log()
 
     if (crash_log_requested == 1)
     {
-        NotifyBox(5000, "Crash detected - log file saved.\n"
-                        "Pls send CRASH%02d.LOG to ML devs.\n"
+        NotifyBox(5000, "已检测到崩溃，日志文件已保存。\n"
+                        "请将 CRASH%02d.LOG 发送给 ML 开发者。\n"
                         "\n"
                         "%s", log_number, get_assert_msg());
     }
@@ -608,9 +608,9 @@ static void crash_log_step()
 
     if (core_dump_requested)
     {
-        NotifyBox(100000, "Saving core dump, please wait...\n");
+        NotifyBox(100000, "正在保存核心转储，请稍候...\n");
         save_mem_to_file((void*)core_dump_req_from, core_dump_req_from + core_dump_req_size, "COREDUMP.DAT");
-        NotifyBox(10000, "Pls send COREDUMP.DAT to ML devs.\n");
+        NotifyBox(10000, "请将 COREDUMP.DAT 发送给 ML 开发者。\n");
         core_dump_requested = 0;
     }
 
@@ -621,7 +621,7 @@ static void crash_log_step()
         if (!dmlog_saved)
         {
             beep();
-            NotifyBox(10000, "Saving debug log...");
+            NotifyBox(10000, "正在保存调试日志...");
             call("dumpf");
         }
         dmlog_saved = 1;
@@ -704,19 +704,19 @@ static MENU_UPDATE_FUNC(shuttercount_display)
 
     if (shutter_count_plus_lv_actuations > CANON_SHUTTER_RATING*2)
     {
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Lets break Guiness World Records (rated lifespan %d).", CANON_SHUTTER_RATING);
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "快去冲击吉尼斯世界纪录吧（额定寿命 %d）。", CANON_SHUTTER_RATING);
     }
     else if (shutter_count_plus_lv_actuations > CANON_SHUTTER_RATING)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Lifespans are for wimps (rated lifespan %d).", CANON_SHUTTER_RATING);
+        MENU_SET_WARNING(MENU_WARN_INFO, "快门寿命什么的无所谓（额定寿命 %d）。", CANON_SHUTTER_RATING);
     }
     else if (shutter_count_plus_lv_actuations > CANON_SHUTTER_RATING/2)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "I hope I get to rated lifespan (rated lifespan %d).", CANON_SHUTTER_RATING);
+        MENU_SET_WARNING(MENU_WARN_INFO, "希望能用到额定寿命（额定寿命 %d）。", CANON_SHUTTER_RATING);
     }
     else
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "You may get around %d.", CANON_SHUTTER_RATING);
+        MENU_SET_WARNING(MENU_WARN_INFO, "预计寿命约 %d 次。", CANON_SHUTTER_RATING);
     }
 }
 
@@ -726,21 +726,21 @@ static MENU_UPDATE_FUNC(totalshutter_display)
     MENU_SET_VALUE("%d", shutter_count);
     MENU_SET_WARNING(
         MENU_WARN_ADVICE,
-        "May drift a bit - check after restart for accurate values.");
+        "数值可能略有偏差，重启后可查看准确值。");
 }
 static MENU_UPDATE_FUNC(totalmirror_display)
 {
     MENU_SET_VALUE("%d", total_mirror_count);
     MENU_SET_WARNING(
         MENU_WARN_ADVICE,
-        "May drift a bit - check after restart for accurate values.");
+        "数值可能略有偏差，重启后可查看准确值。");
 }
 static MENU_UPDATE_FUNC(totalshoot_display)
 {
     MENU_SET_VALUE("%d", total_shots_count);
     MENU_SET_WARNING(
         MENU_WARN_ADVICE,
-        "May drift a bit - check after restart for accurate values.");
+        "数值可能略有偏差，重启后可查看准确值。");
 }
 #endif
 
@@ -758,7 +758,7 @@ static MENU_UPDATE_FUNC(efictemp_display)
 static MENU_UPDATE_FUNC(efictemp_display)
 {
     MENU_SET_VALUE(
-        "%d raw (help needed)",
+        "%d raw（待破解）",
         efic_temp
     );
 }
@@ -885,54 +885,54 @@ static int gui_events_show = 0;
 static MENU_SELECT_FUNC(gui_events_toggle);
 
 static struct menu_entry debug_menus[] = {
-    MENU_PLACEHOLDER("File Manager"),
+    MENU_PLACEHOLDER("文件管理器"),
 #ifdef CONFIG_HEXDUMP
     {
-        .name = "Memory Browser",
+        .name = "内存浏览",
         .priv = &hexdump_enabled,
         .max = 1,
-        .help = "Display memory contents in real-time (hexdump).",
+        .help = "实时查看内存内容（十六进制转储）。",
         .children =  (struct menu_entry[]) {
             {
-                .name = "HexDump",
+                .name = "十六进制转储",
                 .priv = &hexdump_addr,
                 .max = 0x20000000,
                 .unit = UNIT_HEX,
                 .icon_type = IT_PERCENT,
-                .help = "Address to be analyzed. Press Q to select the digit to edit."
+                .help = "要分析的内存地址。按 Q 可选择要编辑的数位。"
             },
             {
-                .name = "Pointer dereference",
+                .name = "指针解引用",
                 .select = hexdump_deref,
-                .help = "Changes address to *(int*)addr [SET] or goes back [PLAY]."
+                .help = "按 SET 将地址改为 *(int*)addr，按 PLAY 返回上级。"
             },
             {
-                .name = "Val hex32",
+                .name = "值(hex32)",
                 .update = hexdump_print_value_hex,
                 .select = hexdump_toggle_value_int32,
-                .help = "Value as hex."
+                .help = "以十六进制显示数值。"
             },
             {
-                .name = "Val int32",
+                .name = "值(int32)",
                 .update = hexdump_print_value_int32,
                 .select = hexdump_toggle_value_int32,
-                .help = "Value as int32."
+                .help = "以 32 位整数显示数值。"
             },
             {
-                .name = "Val int16",
+                .name = "值(int16)",
                 .update = hexdump_print_value_int16,
                 .select = hexdump_toggle_value_int16,
-                .help = "Value as 2 x int16. Toggle: changes second value."
+                .help = "以 2 个 16 位整数显示数值，修改时改变第二个值。"
             },
             {
-                .name = "Val int8",
+                .name = "值(int8)",
                 .update = hexdump_print_value_int8,
-                .help = "Value as 4 x int8."
+                .help = "以 4 个 8 位整数显示数值。"
             },
             {
-                .name = "Val string",
+                .name = "字符串值",
                 .update = hexdump_print_value_str,
-                .help = "Value as string."
+                .help = "以字符串显示数值。"
             },
             MENU_EOL
         },
@@ -946,10 +946,10 @@ static struct menu_entry debug_menus[] = {
     },*/
     #ifdef FEATURE_SCREENSHOT
     {
-        .name   = "Screenshot - 10s",
+        .name   = "屏幕截图 - 10秒",
         .select = screenshot_start,
-        .help   = "Screenshot after 10 seconds => VRAMx.BMP.",
-        .help2  = "The screenshot will contain BMP and YUV overlays."
+        .help   = "10 秒后自动截图，保存为 VRAMx.BMP。",
+        .help2  = "截图将包含 BMP 与 YUV 叠加层。"
     },
     #endif
 /*    {
@@ -967,10 +967,10 @@ static struct menu_entry debug_menus[] = {
     },
     #endif
     {
-        .name = "Spy properties",
+        .name = "属性监视",
         .priv = &draw_prop,
         .max = 1,
-        .help = "Show properties as they change."
+        .help = "实时显示属性(Prop)的变化。"
     },
 /*    {
         .name        = "Dialog test",
@@ -979,7 +979,7 @@ static struct menu_entry debug_menus[] = {
     },*/
 #endif
     {
-        .name        = "Dump ROM and RAM",
+        .name        = "转储 ROM 和 RAM",
         .priv        = dump_rom_task,
         .select      = run_in_separate_task,
     #if defined(CONFIG_DIGIC_45)
@@ -991,43 +991,43 @@ static struct menu_entry debug_menus[] = {
     #endif
     },
     {
-        .name        = "Dump image buffers",
+        .name        = "转储图像缓冲区",
         .priv        = dump_img_task,
         .select      = run_in_separate_task,
-        .help = "Dump all image buffers (LV, HD, RAW) from current video mode."
+        .help = "以当前视频模式转储全部图像缓冲区（LV、HD、RAW）。"
     },
 #ifdef FEATURE_UNMOUNT_SD_CARD
     {
-        .name        = "Unmount SD card",
+        .name        = "卸载 SD 卡",
         .priv        = unmount_sd_card,
         .select      = run_in_separate_task,
-        .help        = "Run before uploading files to a Wi-Fi card, to avoid data corruption.",
-        .help2       = "No further writes will be performed on your card from the camera.",
+        .help        = "向 Wi-Fi 卡上传文件前请先运行，避免数据损坏。",
+        .help2       = "此后相机不再对存储卡进行任何写入。",
     },
 #endif
 #ifdef FEATURE_DONT_CLICK_ME
     {
-        .name        = "Don't click me!",
+        .name        = "别点我！",
         .priv =         run_test,
         .select        = run_in_separate_task,
-        .help = "The camera may turn into a 1DX or it may explode."
+        .help = "相机可能会变成 1DX，也可能会爆炸。"
     },
 #endif
 #ifdef FEATURE_BOOTFLAG_MENU
     {
-        .name       = "Bootflag settings",
+        .name       = "引导标志设置",
         .select     = menu_open_submenu,
-        .help       = "Change camera bootflag status",
+        .help       = "修改相机的引导标志状态",
         .children =  (struct menu_entry[]) {
             {
-                .name   = "Disable bootflag",
+                .name   = "禁用引导标志",
                 .select = bootflag_disable,
-                .help   = "Calls DisableBootDisk EvProc"
+                .help   = "调用 DisableBootDisk 事件处理(EvProc)"
             },
             {
-                .name   = "Enable bootflag",
+                .name   = "启用引导标志",
                 .select = bootflag_enable,
-                .help   = "Calls EnableBootDisk EvProc"
+                .help   = "调用 EnableBootDisk 事件处理(EvProc)"
             },
             MENU_EOL,
         },
@@ -1035,32 +1035,32 @@ static struct menu_entry debug_menus[] = {
 #endif
 #ifdef CONFIG_DEBUG_INTERCEPT
     {
-        .name        = "DM Log",
+        .name        = "DM 日志",
         .priv        = j_debug_intercept,
         .select      = run_in_separate_task,
-        .help = "Log DebugMessages"
+        .help = "记录调试消息(DebugMsg)"
     },
     {
-        .name        = "TryPostEvent Log",
+        .name        = "TryPostEvent 日志",
         .priv        = j_tp_intercept,
         .select      = run_in_separate_task,
-        .help = "Log TryPostEvents"
+        .help = "记录 TryPostEvents 事件"
     },
 #endif
 #ifdef FEATURE_SHOW_TASKS
     {
-        .name = "Show tasks",
+        .name = "显示任务",
         .select = menu_open_submenu,
-        .help = "Displays the tasks started by Canon and Magic Lantern.",
+        .help = "显示佳能固件与 Magic Lantern 启动的任务。",
         .children =  (struct menu_entry[]) {
             {
-                .name = "Task list",
+                .name = "任务列表",
                 .update = tasks_print,
                 .select = tasks_toggle_flags,
                 #ifdef CONFIG_VXWORKS
-                .help = "Task info: name, priority, stack memory usage.",
+                .help = "任务信息：名称、优先级、栈内存占用。",
                 #else
-                .help = "Task info: ID, name, priority, wait_id, mem, state.",
+                .help = "任务信息：ID、名称、优先级、wait_id、内存、状态。",
                 #endif
             },
             MENU_EOL
@@ -1070,73 +1070,73 @@ static struct menu_entry debug_menus[] = {
 #ifdef FEATURE_SHOW_CPU_USAGE
 #ifdef CONFIG_TSKMON
     {
-        .name = "Show CPU usage",
+        .name = "显示 CPU 占用",
         .priv = &show_cpu_usage_flag,
         .max = 3,
-        .choices = (const char *[]) {"OFF", "Percentage", "Busy tasks (ABS)", "Busy tasks (REL)"},
-        .help = "Display total CPU usage (percentage).",
+        .choices = (const char *[]) {"关", "百分比", "繁忙任务(绝对)", "繁忙任务(相对)"},
+        .help = "显示 CPU 总占用率（百分比）。",
     },
 #endif
 #endif
 #ifdef FEATURE_SHOW_GUI_EVENTS
     {
-        .name   = "Show GUI events",
+        .name   = "显示 GUI 事件",
         .priv   = &gui_events_show,
         .select = gui_events_toggle,
         .max    = 1,
-        .help   = "Display GUI events (button codes).",
+        .help   = "显示 GUI 事件（按键代码）。",
     },
 #endif
 #ifdef FEATURE_GUIMODE_TEST
     {
-        .name = "Test GUI modes (DANGEROUS!!!)",
+        .name = "测试 GUI 模式（危险！！！）",
         .select = run_in_separate_task,
         .priv = guimode_test,
-        .help = "Cycle through all GUI modes and take screenshots.",
+        .help = "遍历所有 GUI 模式并逐一截图。",
     },
 #endif
-    MENU_PLACEHOLDER("Free Memory"),
+    MENU_PLACEHOLDER("剩余内存"),
 #ifdef FEATURE_SHOW_IMAGE_BUFFERS_INFO
     {
-        .name = "Image buffers",
+        .name = "图像缓冲区",
         .update = image_buf_display,
         .icon_type = IT_ALWAYS_ON,
-        .help = "Display the image buffer sizes (LiveView and Craw).",
+        .help = "显示图像缓冲区大小（实时取景与 CRAW）。",
         //.essential = 0,
     },
 #endif
 #ifdef FEATURE_SHOW_SHUTTER_COUNT
     {
-        .name = "Shutter Count",
+        .name = "快门数",
         .update = shuttercount_display,
         //.essential = FOR_MOVIE | FOR_PHOTO,
         #if defined(CONFIG_DIGIC_8X)
-        .help = "Number of shutter actions. Open submenu to learn more.",
+        .help = "快门动作次数。打开子菜单查看详情。",
         .select = menu_open_submenu,
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Total Shutter",
+                .name = "快门总数",
                 .update = totalshutter_display,
                 .icon_type = IT_ALWAYS_ON,
-                .help = "Number of mechanical shutter actions (incl. sensor cleaning)",
+                .help = "机械快门动作次数（含传感器清洁）",
             },
             {
-                .name = "Total Mirror",
+                .name = "反光板总数",
                 .update = totalmirror_display,
                 .icon_type = IT_ALWAYS_ON,
-                .help = "Number of mirror move actions (DSLR, 0 on mirrorless)",
+                .help = "反光板升降次数（单反为实数，无反为 0）",
             },
             {
-                .name = "Total Shots",
+                .name = "拍摄总数",
                 .update = totalshoot_display,
                 .icon_type = IT_ALWAYS_ON,
-                .help = "Number of photos made. Incl. silent (electronic) shots",
+                .help = "拍摄照片总数，含静音（电子）快门",
             },
             MENU_EOL,
         },
         #else // no submenu, classic style
-        .help = "Number of pics taken + number of LiveView actuations",
+        .help = "拍照张数 + 实时取景启动次数",
         .icon_type = IT_ALWAYS_ON,
         #endif
     },
@@ -1144,13 +1144,13 @@ static struct menu_entry debug_menus[] = {
 
 #ifdef FEATURE_SHOW_CMOS_TEMPERATURE
     {
-        .name = "Internal Temp",
+        .name = "内部温度",
         .update = efictemp_display,
         .icon_type = IT_ALWAYS_ON,
 	 #ifdef EFIC_CELSIUS
-        .help = "EFIC chip temperature (somewhere on the mainboard).",
+        .help = "EFIC 芯片温度（位于主板某处）。",
 	 #else
-	.help = "EFIC chip temperature (raw values).",
+	.help = "EFIC 芯片温度（原始数值）。",
 	.help2 = "http://www.magiclantern.fm/forum/index.php?topic=9673.0",
 	 #endif
         //.essential = FOR_MOVIE | FOR_PHOTO,
@@ -1166,20 +1166,20 @@ static struct menu_entry debug_menus[] = {
     #endif
 #ifdef CONFIG_BATTERY_INFO
     {
-        .name = "Battery level",
+        .name = "电池电量",
         .update = batt_display,
-        .help = "Battery remaining. Wait for 2% discharge before reading.",
+        .help = "电池剩余电量。读数前请等待电量下降 2%。",
         .icon_type = IT_ALWAYS_ON,
     },
 #endif
 #ifdef FEATURE_DEBUG_PROP_DISPLAY
     {
-        .name = "PROP Display",
+        .name = "PROP 显示",
         .update = prop_display,
         .select = prop_toggle_k,
         // .select_reverse = prop_toggle_j,
         .select_Q = prop_toggle_i,
-        .help = "Raw property display (read-only)",
+        .help = "属性原始值显示（只读）",
     },
 #endif
 };
@@ -1490,9 +1490,9 @@ static void HijackFormatDialogBox()
     if (dialog && !streq(dialog->type, "DIALOG")) return;
 
     if (keep_ml_after_format)
-        dialog_set_property_str(dialog, 4, "Format card, keep ML " FORMAT_BTN_NAME);
+        dialog_set_property_str(dialog, 4, "格式化存储卡，保留 ML " FORMAT_BTN_NAME);
     else
-        dialog_set_property_str(dialog, 4, "Format card, remove ML " FORMAT_BTN_NAME);
+        dialog_set_property_str(dialog, 4, "格式化存储卡，移除 ML " FORMAT_BTN_NAME);
     dialog_redraw(dialog);
 }
 
@@ -1559,8 +1559,8 @@ static int TmpMem_Init()
     {
         retries++;
         HijackCurrentDialogBox(4,
-            retries > 2 ? "Restart your camera (malloc error)." :
-                          "Format: malloc error :("
+            retries > 2 ? "请重启相机（malloc 出错）。" :
+                          "格式化：内存分配出错 :("
             );
         beep();
         msleep(2000);
@@ -1572,8 +1572,8 @@ static int TmpMem_Init()
     {
         retries++;
         HijackCurrentDialogBox(4,
-            retries > 2 ? "Restart your camera (fio_malloc err)." :
-                          "Format: fio_malloc error, retrying..."
+            retries > 2 ? "请重启相机（fio_malloc 出错）。" :
+                          "格式化：fio_malloc 出错，正在重试..."
         );
         beep();
         msleep(2000);
@@ -1599,7 +1599,7 @@ static void TmpMem_UpdateSizeDisplay(int counting)
     int size_mb = size * 10 / 1024 / 1024;
 
     char msg[100];
-    snprintf(msg, sizeof(msg), "Format       (ML size: %s%d.%d MB%s)", counting ? "> " : "", size_mb/10, size_mb%10, counting ? "..." : "");
+    snprintf(msg, sizeof(msg), "格式化       (ML 大小: %s%d.%d MB%s)", counting ? "> " : "", size_mb/10, size_mb%10, counting ? "..." : "");
     HijackCurrentDialogBox(3, msg);
 }
 
@@ -1632,7 +1632,7 @@ static void TmpMem_AddFile(char* filename)
     {
         char msg[100];
 
-        snprintf(msg, sizeof(msg), "Reading %s...", filename, tmp_buffer_ptr);
+        snprintf(msg, sizeof(msg), "正在读取 %s...", filename, tmp_buffer_ptr);
         HijackCurrentDialogBox(4, msg);
         TmpMem_UpdateSizeDisplay(1);
     }
@@ -1731,14 +1731,14 @@ static void CopyMLFilesBack_AfterFormat()
     {
         if(should_run_polling_action(500, &aux))
         {
-            snprintf(msg, sizeof(msg), "Restoring %s...", tmp_files[i].name);
+            snprintf(msg, sizeof(msg), "正在恢复 %s...", tmp_files[i].name);
             HijackCurrentDialogBox(FORMAT_STR_LOC, msg);
         }
         save_mem_to_file(tmp_files[i].buf, tmp_files[i].size, tmp_files[i].name);
         int sig = compute_signature(tmp_files[i].buf, tmp_files[i].size/4);
         if (sig != tmp_files[i].sig)
         {
-            snprintf(msg, sizeof(msg), "Could not restore %s :(", tmp_files[i].name);
+            snprintf(msg, sizeof(msg), "无法恢复 %s :(", tmp_files[i].name);
             HijackCurrentDialogBox(FORMAT_STR_LOC, msg);
             msleep(2000);
             FIO_RemoveFile(tmp_files[i].name);
@@ -1750,24 +1750,24 @@ static void CopyMLFilesBack_AfterFormat()
     /* make sure we don't enable bootflag when there is no autoexec.bin (anymore) */
     if(check_autoexec())
     {
-        HijackCurrentDialogBox(FORMAT_STR_LOC, "Writing bootflags...");
+        HijackCurrentDialogBox(FORMAT_STR_LOC, "正在写入引导标志...");
         
         extern int bootflag_write_bootblock(void);
         if (!bootflag_write_bootblock())
         {
             beep_times(3);
-            NotifyBox(5000, "Bootflags not written, use EosCard");
+            NotifyBox(5000, "引导标志未写入，请改用 EosCard 工具");
         }
     }
 
-    HijackCurrentDialogBox(FORMAT_STR_LOC, "Magic Lantern restored :)");
+    HijackCurrentDialogBox(FORMAT_STR_LOC, "Magic Lantern 已恢复 :)");
     msleep(2000);
 }
 
 static void restart_after_format()
 {
     /* restart the camera after formatting */
-    HijackCurrentDialogBox(FORMAT_STR_LOC, "Restarting camera...");
+    HijackCurrentDialogBox(FORMAT_STR_LOC, "正在重启相机...");
     msleep(1000);
     
     int reboot = 0;

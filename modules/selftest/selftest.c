@@ -65,7 +65,7 @@ static void stress_test_picture(int n, int delay)
 {
     if (shutter_count > 20000)
     {
-        NotifyBox(2000, "Skipping picture taking test");
+        NotifyBox(2000, "跳过拍照测试");
         msleep(2000);
         beep();
         return;
@@ -74,7 +74,7 @@ static void stress_test_picture(int n, int delay)
     msleep(delay);
     for (int i = 0; i < n; i++)
     {
-        NotifyBox(10000, "Picture taking: %d/%d", i+1, n);
+        NotifyBox(10000, "拍照测试：%d/%d", i+1, n);
         msleep(200);
         lens_take_picture(64, 0);
     }
@@ -520,8 +520,8 @@ static void stub_test_af()
         while (is_manual_focus())
         {
             NotifyBox(2000, 
-                "Please enable autofocus.\n"
-                "Press half-shutter to skip."
+                "请启用自动对焦。\n"
+                "半按快门可跳过。"
             );
             msleep(1000);
 
@@ -1390,7 +1390,7 @@ static void rpc_test_task(void* unused)
 
 static void stress_test_task(void* unused)
 {
-    NotifyBox(10000, "Stability Test..."); msleep(2000);
+    NotifyBox(10000, "稳定性测试..."); msleep(2000);
 
     msleep(2000);
 
@@ -1401,7 +1401,7 @@ static void stress_test_task(void* unused)
         msleep(1000);
         for (int i = 0; i <= 5; i++)
         {
-            NotifyBox(1000, "Pics while recording: %d", i);
+            NotifyBox(1000, "录制中拍照：%d", i);
             movie_start();
             msleep(1000);
             lens_take_picture(64, 0);
@@ -1425,7 +1425,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 0; i <= 1000; i++)
     {
-        NotifyBox(1000, "ML menu toggle: %d", i);
+        NotifyBox(1000, "ML 菜单切换：%d", i);
 
         if (i == 250)
         {
@@ -1466,8 +1466,8 @@ static void stress_test_task(void* unused)
     if (!lv) force_liveview();
     msleep(2000);
 
-    NotifyBox(1000, "Cropmarks preview...");
-    select_menu_by_name("Overlay", "Cropmarks");
+    NotifyBox(1000, "剪裁标记预览...");
+    select_menu_by_name("Overlay", "剪裁标记");
     give_semaphore( gui_sem );
     msleep(500);
     menu_open_submenu();
@@ -1480,7 +1480,7 @@ static void stress_test_task(void* unused)
     gui_stop_menu();
     msleep(2000);
 
-    NotifyBox(1000, "ML menu scroll...");
+    NotifyBox(1000, "ML 菜单滚动...");
     give_semaphore(gui_sem);
     msleep(1000);
     for (int i = 0; i <= 5000; i++)
@@ -1507,7 +1507,7 @@ static void stress_test_task(void* unused)
     fake_simple_button(BGMT_PLAY); msleep(1000);
     for (int i = 0; i < 100; i++)
     {
-        NotifyBox(1000, "PLAY: image compare: %d", i);
+        NotifyBox(1000, "回放：图像对比：%d", i);
         playback_compare_images_task(1);
     }
     exit_play_qr_mode();
@@ -1516,7 +1516,7 @@ static void stress_test_task(void* unused)
     fake_simple_button(BGMT_PLAY); msleep(1000);
     for (int i = 0; i < 10; i++)
     {
-        NotifyBox(1000, "PLAY: exposure fusion: %d", i);
+        NotifyBox(1000, "回放：曝光融合：%d", i);
         expfuse_preview_update_task(1);
     }
     exit_play_qr_mode();
@@ -1525,14 +1525,14 @@ static void stress_test_task(void* unused)
     fake_simple_button(BGMT_PLAY); msleep(1000);
     for (int i = 0; i < 50; i++)
     {
-        NotifyBox(1000, "PLAY scrolling: %d", i);
+        NotifyBox(1000, "回放滚动：%d", i);
         next_image_in_play_mode(1);
     }
     extern int timelapse_playback;
     timelapse_playback = 1;
     for (int i = 0; i < 50; i++)
     {
-        NotifyBox(1000, "PLAY scrolling: %d", i+50);
+        NotifyBox(1000, "回放滚动：%d", i+50);
         msleep(200);
     }
     timelapse_playback = 0;
@@ -1546,7 +1546,7 @@ static void stress_test_task(void* unused)
     {
         int r = rand()%3;
         set_lv_zoom(r == 0 ? 1 : r == 1 ? 5 : 10);
-        NotifyBox(1000, "LV zoom test: %d", i);
+        NotifyBox(1000, "实时取景变焦测试：%d", i);
         msleep(rand()%200);
     }
     set_lv_zoom(1);
@@ -1555,7 +1555,7 @@ static void stress_test_task(void* unused)
     for (int i = 0; i <= 100; i++)
     {
         set_expsim(i%3);
-        NotifyBox(1000, "ExpSim toggle: %d", i/10);
+        NotifyBox(1000, "曝光模拟切换：%d", i/10);
         msleep(rand()%100);
     }
 
@@ -1564,14 +1564,14 @@ static void stress_test_task(void* unused)
     for (int i = 0; i <= 100; i++)
     {
         bv_toggle(0, 1);
-        NotifyBox(1000, "Exp.Override toggle: %d", i/10);
+        NotifyBox(1000, "曝光覆盖切换：%d", i/10);
         msleep(rand()%100);
     }
     msleep(2000);
 
 /*    for (int i = 0; i < 100; i++)
     {
-        NotifyBox(1000, "Disabling Canon GUI (%d)...", i);
+        NotifyBox(1000, "禁用 Canon 界面 (%d)...", i);
         canon_gui_disable();
         msleep(rand()%300);
         canon_gui_enable();
@@ -1580,7 +1580,7 @@ static void stress_test_task(void* unused)
 
     msleep(2000);
 
-    NotifyBox(10000, "LCD backlight...");
+    NotifyBox(10000, "LCD 背光...");
     int old_backlight_level = backlight_level;
     for (int i = 0; i < 5; i++)
     {
@@ -1600,7 +1600,7 @@ static void stress_test_task(void* unused)
     if (!lv) force_liveview();
     for (int k = 0; k < 10; k++)
     {
-        NotifyBox(1000, "LiveView / Playback (%d)...", k*10);
+        NotifyBox(1000, "实时取景/回放 (%d)...", k*10);
         fake_simple_button(BGMT_PLAY);
         msleep(rand() % 1000);
         SW1(1, rand()%100);
@@ -1612,7 +1612,7 @@ static void stress_test_task(void* unused)
     lens_set_rawiso(0);
     for (int k = 0; k < 5; k++)
     {
-        NotifyBox(1000, "LiveView gain test: %d", k*20);
+        NotifyBox(1000, "实时取景增益测试：%d", k*20);
         for (int i = 0; i <= 16; i++)
         {
             set_display_gain_equiv(1<<i);
@@ -1630,7 +1630,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 0; i <= 10; i++)
     {
-        NotifyBox(1000, "LED blinking: %d", i*10);
+        NotifyBox(1000, "LED 闪烁：%d", i*10);
         info_led_blink(10, i*3, (10-i)*3);
     }
 
@@ -1638,7 +1638,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 0; i <= 100; i++)
     {
-        NotifyBox(1000, "Redraw test: %d", i);
+        NotifyBox(1000, "重绘测试：%d", i);
         msleep(50);
         redraw();
         msleep(50);
@@ -1646,7 +1646,7 @@ static void stress_test_task(void* unused)
 
     msleep(2000);
 
-    NotifyBox(10000, "Menu scrolling");
+    NotifyBox(10000, "菜单滚动");
     fake_simple_button(BGMT_MENU);
     msleep(1000);
     for (int i = 0; i < 5000; i++)
@@ -1663,7 +1663,7 @@ static void stress_test_task(void* unused)
 #if 0 // unsafe
     for (int i = 0; i <= 10; i++)
     {
-        NotifyBox(1000, "Mode switching: %d", i*10);
+        NotifyBox(1000, "模式切换：%d", i*10);
         set_shooting_mode(SHOOTMODE_AUTO);    msleep(100);
         set_shooting_mode(SHOOTMODE_MOVIE);    msleep(2000);
         set_shooting_mode(SHOOTMODE_SPORTS);    msleep(100);
@@ -1680,7 +1680,7 @@ static void stress_test_task(void* unused)
 #endif
 
     if (!lv) force_liveview();
-    NotifyBox(10000, "Focus tests...");
+    NotifyBox(10000, "对焦测试...");
     msleep(2000);
     for (int i = 1; i <= 3; i++)
     {
@@ -1693,13 +1693,13 @@ static void stress_test_task(void* unused)
 
     msleep(2000);
 
-    NotifyBox(10000, "Expo tests...");
+    NotifyBox(10000, "曝光测试...");
 
     if (!lv) force_liveview();
     msleep(1000);
     for (int i = KELVIN_MIN; i <= KELVIN_MAX; i += KELVIN_STEP)
     {
-        NotifyBox(1000, "Kelvin: %d", i);
+        NotifyBox(1000, "色温：%d", i);
         lens_set_kelvin(i); msleep(200);
     }
     lens_set_kelvin(6500);
@@ -1713,7 +1713,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 72; i <= 136; i++)
     {
-        NotifyBox(1000, "ISO: raw %d  ", i);
+        NotifyBox(1000, "ISO：raw %d  ", i);
         lens_set_rawiso(i); msleep(200);
     }
     lens_set_rawiso(ISO_400);
@@ -1726,7 +1726,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 0; i <= 100; i++)
     {
-        NotifyBox(1000, "Pause LiveView: %d", i);
+        NotifyBox(1000, "暂停实时取景：%d", i);
         PauseLiveView(); msleep(rand()%200);
         ResumeLiveView(); msleep(rand()%200);
     }
@@ -1739,7 +1739,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 0; i <= 100; i++)
     {
-        NotifyBox(1000, "BMP overlay: %d", i);
+        NotifyBox(1000, "BMP 叠加：%d", i);
         bmp_off(); msleep(rand()%200);
         bmp_on(); msleep(rand()%200);
     }
@@ -1752,7 +1752,7 @@ static void stress_test_task(void* unused)
 
     for (int i = 0; i <= 100; i++)
     {
-        NotifyBox(1000, "Display on/off: %d", i);
+        NotifyBox(1000, "显示开/关：%d", i);
         display_off(); msleep(rand()%200);
         display_on(); msleep(rand()%200);
     }
@@ -1763,7 +1763,7 @@ static void stress_test_task(void* unused)
 
     stress_test_picture(2, 2000);
 
-    NotifyBox(10000, "LiveView switch...");
+    NotifyBox(10000, "实时取景切换...");
     set_shooting_mode(SHOOTMODE_M);
     for (int i = 0; i < 21; i++)
     {
@@ -1775,7 +1775,7 @@ static void stress_test_task(void* unused)
     set_shooting_mode(SHOOTMODE_BULB);
 
     msleep(1000);
-    NotifyBox(10000, "Bulb picture taking");
+    NotifyBox(10000, "B门拍照");
     bulb_take_pic(2000);
     bulb_take_pic(100);
     bulb_take_pic(1500);
@@ -1783,12 +1783,12 @@ static void stress_test_task(void* unused)
     bulb_take_pic(1000);
     bulb_take_pic(1);
 
-    NotifyBox(10000, "Movie recording");
+    NotifyBox(10000, "视频录制");
     ensure_movie_mode();
     msleep(1000);
     for (int i = 0; i <= 5; i++)
     {
-        NotifyBox(10000, "Movie recording: %d", i);
+        NotifyBox(10000, "视频录制：%d", i);
         movie_start();
         msleep(5000);
         movie_end();
@@ -1797,8 +1797,8 @@ static void stress_test_task(void* unused)
 
     stress_test_picture(2, 2000);
 
-    NotifyBox(2000, "Test complete."); msleep(2000);
-    NotifyBox(2000, "Is the camera still working?"); msleep(2000);
+    NotifyBox(2000, "测试完成。"); msleep(2000);
+    NotifyBox(2000, "相机还能正常工作吗？"); msleep(2000);
     NotifyBox(10000, ":)");
     //~ NotifyBox(10000, "Burn-in test (will take hours!)");
     //~ set_shooting_mode(SHOOTMODE_M);
@@ -1880,7 +1880,7 @@ static void stress_test_random_task(void* unused)
         {
             case 0:
             {
-                stress_test_toggle_menu_item("Overlay", "Global Draw");
+                stress_test_toggle_menu_item("叠加", "全局绘制");
                 return;
             }
             case 1:
@@ -2353,7 +2353,7 @@ static void lockup_task()
 
 static void freeze_gui_task()
 {
-    NotifyBox(2000, "GUI task locked up.");
+    NotifyBox(2000, "GUI 任务已卡死。");
     while(1) msleep(1000);
 }
 
@@ -2394,146 +2394,146 @@ static void alloc_10M_task()
 static struct menu_entry selftest_menu[] =
 {
     {
-        .name       = "Self tests",
+        .name       = "自测",
         .select     = menu_open_submenu,
-        .help       = "Tests to make sure Magic Lantern is stable and won't crash.",
+        .help       = "测试 Magic Lantern 的稳定性，确保不会死机。",
         .submenu_width = 650,
         .children   = (struct menu_entry[]) {
             {
-                .name       = "Stubs API test",
+                .name       = "Stub API 测试",
                 .select     = run_in_separate_task,
                 .priv       = stub_test_task,
-                .help       = "Tests Canon functions called by ML. SET=once, PLAY=100x."
+                .help       = "测试 ML 调用的 Canon 函数。SET=1 次，PLAY=100 次。"
             },
             {
-                .name       = "Thread safety test",
+                .name       = "线程安全测试",
                 .select     = run_in_separate_task,
                 .priv       = thread_test_task,
-                .help       = "Tests various functions for thread safety. WIP."
+                .help       = "测试各种函数的线程安全性。开发中。"
             },
             {
-                .name       = "RPC reliability test (infinite)",
+                .name       = "RPC 可靠性测试(无限)",
                 .select     = run_in_separate_task,
                 .priv       = rpc_test_task,
-                .help       = "Flood master with RPC requests and print delay. ",
+                .help       = "向主机发送大量 RPC 请求并显示延迟。 ",
                 .shidden    = 1,    /* 7D only */
             },
             {
-                .name       = "Quick test (around 15 min)",
+                .name       = "快速测试(约15分钟)",
                 .select     = run_in_separate_task,
                 .priv       = stress_test_task,
-                .help       = "A quick test which covers basic functionality. "
+                .help       = "覆盖基本功能的快速测试。 "
             },
             {
-                .name       = "Random tests (infinite loop)",
+                .name       = "随机测试(无限循环)",
                 .select     = run_in_separate_task,
                 .priv       = stress_test_random_task,
-                .help       = "A thorough test which randomly enables functions from menu. "
+                .help       = "从菜单中随机启用各项功能的全面测试。 "
             },
             {
-                .name       = "Menu backend test (infinite)",
+                .name       = "菜单后端测试(无限)",
                 .select     = run_in_separate_task,
                 .priv       = stress_test_menu_dlg_api_task,
-                .help       = "Tests proper usage of Canon API calls in ML menu backend."
+                .help       = "测试 ML 菜单后端对 Canon API 调用的正确性。"
             },
             {
-                .name       = "Redraw test (infinite)",
+                .name       = "重绘测试(无限)",
                 .select     = run_in_separate_task,
                 .priv       = excessive_redraws_task,
-                .help       = "Causes excessive redraws for testing the graphics backend",
+                .help       = "触发大量重绘，用于测试图形后端",
             },
             {
-                .name       = "Rectangle test (infinite)",
+                .name       = "矩形测试(无限)",
                 .select     = run_in_separate_task,
                 .priv       = bmp_fill_test_task,
-                .help       = "Stresses graphics bandwith. Run this while recording.",
+                .help       = "压测图形带宽。请在录制时运行。",
             },
             {
-                .name       = "Info screen test (infinite)",
+                .name       = "INFO 屏测试(无限)",
                 .select     = run_in_separate_task,
                 .priv       = info_screen_test_task,
-                .help       = "Switches INFO screens very quickly.",
-                .help2      = "This used to crash the 500D if the test was run while recording.",
+                .help       = "极快速地切换 INFO 屏幕。",
+                .help2      = "在录制中运行此测试曾导致 500D 死机。",
             },
             {
-                .name       = "SRM memory test (5 minutes)",
+                .name       = "SRM 内存测试(5分钟)",
                 .select     = run_in_separate_task,
                 .priv       = srm_test_task,
-                .help       = "Tests SRM memory allocation routines.",
+                .help       = "测试 SRM 内存分配例程。",
             },
             {
-                .name       = "Small-block malloc test (quick)",
+                .name       = "小块 malloc 测试(快速)",
                 .select     = run_in_separate_task,
                 .priv       = malloc_test_task,
-                .help       = "Allocate up to 50000 small blocks, 32K each, until memory gets full."
+                .help       = "分配最多 50000 个小块(每块 32K)，直到内存占满。"
             },
             {
-                .name       = "Memory leak test (1 minute)",
+                .name       = "内存泄漏测试(1分钟)",
                 .select     = run_in_separate_task,
                 .priv       = memory_leak_test_task,
-                .help       = "Allocate and free a large block of RAM (16 MB); repeat 1000 times."
+                .help       = "分配并释放一大块内存(16 MB)，重复 1000 次。"
             },
             {
-                .name       = "EDMAC screen test (infinite)",
+                .name       = "EDMAC 屏幕测试(无限)",
                 .select     = run_in_separate_task,
                 .priv       = edmac_test_task,
-                .help       = "Shift the entire display left and right with EDMAC routines.",
-                .help2      = "Fixme: this will lock up if you change the video mode during the test.",
+                .help       = "用 EDMAC 例程左右移动整个显示画面。",
+                .help2      = "注意：测试中更改视频模式会导致死机。",
             },
             {
-                .name       = "Null pointer test (quick)",
+                .name       = "空指针测试(快速)",
                 .select     = run_in_separate_task,
                 .priv       = null_pointer_task,
-                .help       = "Writes 0xBAADBAAD to address 0 (simulating a null pointer error).",
-                .help2      = "ML should save a crash log about 0xBAADBAAD and should not crash.",
+                .help       = "向地址 0 写入 0xBAADBAAD(模拟空指针错误)。",
+                .help2      = "ML 应保存关于 0xBAADBAAD 的崩溃日志且不死机。",
             },
             MENU_EOL,
         }
     },
     {
-        .name       = "Fault emulation",
+        .name       = "故障模拟",
         .select     = menu_open_submenu,
-        .help       = "Causes intentionally wrong behavior to see DryOS reaction.",
-        .help2      = "You'll have to take the battery out after running most of these.",
+        .help       = "故意制造错误行为，观察 DryOS 的反应。",
+        .help2      = "运行其中大部分测试后需要取出电池才能恢复。",
         .children   = (struct menu_entry[]) {
             {
-                .name       = "Create a stuck task",
+                .name       = "创建卡死任务",
                 .select     = run_in_separate_task,
                 .priv       = frozen_task,
-                .help       = "Creates a task which will become stuck in an infinite loop.",
-                .help2      = "Low priority tasks (prio >= 0x1A) will no longer be able to run.",
+                .help       = "创建一个会陷入无限循环而卡死的任务。",
+                .help2      = "低优先级任务(prio >= 0x1A)将无法再运行。",
             },
             {
-                .name       = "Freeze the GUI task",
+                .name       = "冻结 GUI 任务",
                 .select     = freeze_gui_task,
-                .help       = "Freezes main GUI task. Camera will stop reacting to buttons.",
+                .help       = "冻结主 GUI 任务，相机将不再响应按键。",
             },
             {
-                .name       = "Lock-up the ARM CPU",
+                .name       = "锁死 ARM CPU",
                 .select     = run_in_separate_task,
                 .priv       = lockup_task,
-                .help       = "Creates a task which will clear the interrupts and execute while(1).",
-                .help2      = "Anything still running after that would be secondary CPUs or hardware.",
+                .help       = "创建一个清除中断并执行 while(1) 的任务。",
+                .help2      = "此后仍在运行的只有副 CPU 或硬件。",
             },
             {
-                .name       = "Division by zero",
+                .name       = "除以零",
                 .select     = run_in_separate_task,
                 .priv       = divzero_task,
-                .help       = "Performs some math operations which will divide by zero.",
+                .help       = "执行一些会除以零的数学运算。",
             },
             {
                 .name       = "AllocateMemory 1MB",
                 .select     = run_in_separate_task,
                 .priv       = alloc_1M_task,
-                .help       = "Allocates 1MB RAM using AllocateMemory, without freeing it.",
-                .help2      = "After running this a few times, you'll get ERR70.",
+                .help       = "用 AllocateMemory 分配 1MB 内存，且不释放。",
+                .help2      = "运行几次后会出现 ERR70。",
             },
             {
-                .name       = "Allocate 10MB of RAM",
+                .name       = "分配 10MB 内存",
                 .select     = run_in_separate_task,
                 .priv       = alloc_10M_task,
-                .help       = "Allocates 1MB RAM from any source, without freeing it.",
-                .help2      = "After running this a few times, you'll run out of memory.",
+                .help       = "从任意来源分配 1MB 内存，且不释放。",
+                .help2      = "运行几次后内存将耗尽。",
             },
             MENU_EOL,
         }
@@ -2551,12 +2551,12 @@ static int menu_vars[25] = {
 static struct menu_entry edit_tests_menu[] =
 {
     {
-        .name = "Menu edit tests",
+        .name = "菜单编辑测试",
         .select = menu_open_submenu,
-        .help = "Dummy variables with various edit ranges.",
+        .help = "各种编辑范围的占位变量。",
         .children =  (struct menu_entry[]) {
             {
-                .name = "Decimal 0..5",
+                .name = "十进制 0..5",
                 .priv = &menu_vars[0],
                 .min = 0,
                 .max = 5,
@@ -2564,7 +2564,7 @@ static struct menu_entry edit_tests_menu[] =
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Decimal 0..10",
+                .name = "十进制 0..10",
                 .priv = &menu_vars[1],
                 .min = 0,
                 .max = 10,
@@ -2572,7 +2572,7 @@ static struct menu_entry edit_tests_menu[] =
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Decimal 0..15",
+                .name = "十进制 0..15",
                 .priv = &menu_vars[2],
                 .min = 1,
                 .max = 15,
@@ -2580,7 +2580,7 @@ static struct menu_entry edit_tests_menu[] =
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Decimal 10..20",
+                .name = "十进制 10..20",
                 .priv = &menu_vars[3],
                 .min = 10,
                 .max = 20,
@@ -2588,147 +2588,147 @@ static struct menu_entry edit_tests_menu[] =
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Decimal 0..99",
+                .name = "十进制 0..99",
                 .priv = &menu_vars[4],
                 .min = 0,
                 .max = 99,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal 0..100",
+                .name = "十进制 0..100",
                 .priv = &menu_vars[5],
                 .min = 0,
                 .max = 100,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal 25..150",
+                .name = "十进制 25..150",
                 .priv = &menu_vars[6],
                 .min = 25,
                 .max = 150,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal -5..5",
+                .name = "十进制 -5..5",
                 .priv = &menu_vars[7],
                 .min = -5,
                 .max = 5,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal -9..9",
+                .name = "十进制 -9..9",
                 .priv = &menu_vars[8],
                 .min = -9,
                 .max = 9,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal -10..10",
+                .name = "十进制 -10..10",
                 .priv = &menu_vars[9],
                 .min = -10,
                 .max = 10,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal -50..500",
+                .name = "十进制 -50..500",
                 .priv = &menu_vars[10],
                 .min = -50,
                 .max = 500,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Decimal 1..10000000",
+                .name = "十进制 1..10000000",
                 .priv = &menu_vars[11],
                 .min = 1,
                 .max = 10000000,
                 .unit = UNIT_DEC,
             },
             {
-                .name = "Hex 0..7",
+                .name = "十六进制 0..7",
                 .priv = &menu_vars[12],
                 .min = 0,
                 .max = 0x7,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Hex 0..F",
+                .name = "十六进制 0..F",
                 .priv = &menu_vars[13],
                 .min = 0,
                 .max = 0xF,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Hex 0..FF",
+                .name = "十六进制 0..FF",
                 .priv = &menu_vars[14],
                 .min = 0,
                 .max = 0xFF,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Hex 0..1FF",
+                .name = "十六进制 0..1FF",
                 .priv = &menu_vars[15],
                 .min = 0,
                 .max = 0x1FF,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Hex 0..3FF",
+                .name = "十六进制 0..3FF",
                 .priv = &menu_vars[16],
                 .min = 0,
                 .max = 0x3FF,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Hex 100..3FF",
+                .name = "十六进制 100..3FF",
                 .priv = &menu_vars[17],
                 .min = 0x100,
                 .max = 0x3FF,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Hex 0..FFFFFFFF",
+                .name = "十六进制 0..FFFFFFFF",
                 .priv = &menu_vars[18],
                 .min = 0,
                 .max = 0xFFFFFFFF,
                 .unit = UNIT_HEX,
             },
             {
-                .name = "Time 0..10s",
+                .name = "时间 0..10s",
                 .priv = &menu_vars[19],
                 .min = 0,
                 .max = 10,
                 .unit = UNIT_TIME,
             },
             {
-                .name = "Time 0..1m",
+                .name = "时间 0..1m",
                 .priv = &menu_vars[20],
                 .min = 0,
                 .max = 60,
                 .unit = UNIT_TIME,
             },
             {
-                .name = "Time 0..1h",
+                .name = "时间 0..1h",
                 .priv = &menu_vars[21],
                 .min = 0,
                 .max = 60 * 60,
                 .unit = UNIT_TIME,
             },
             {
-                .name = "Time 0..24h",
+                .name = "时间 0..24h",
                 .priv = &menu_vars[22],
                 .min = 0,
                 .max = 24 * 60 * 60,
                 .unit = UNIT_TIME,
             },
             {
-                .name = "Time 0..500ms",
+                .name = "时间 0..500ms",
                 .priv = &menu_vars[23],
                 .min = 0,
                 .max = 500,
                 .unit = UNIT_TIME_MS,
             },
             {
-                .name = "Time 113..512"SYM_MICRO"s",
+                .name = "时间 113..512"SYM_MICRO"s",
                 .priv = &menu_vars[24],
                 .min = 113,
                 .max = 512,
@@ -2787,7 +2787,7 @@ static unsigned int selftest_init()
     
     if (is_camera("7D", "*"))
     {
-        selftest_menu_show("RPC reliability test (infinite)");
+        selftest_menu_show("RPC 可靠性测试(无限)");
     }
     
     return 0;

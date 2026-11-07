@@ -99,7 +99,7 @@ static MENU_UPDATE_FUNC(silent_pic_check_mlv)
             /* (normally, the menu backend prints only the first warning with the highest level, but here we want the last one) */
             info->warning_level = 0;
         }
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "To use the MLV file format, you must load the mlv_rec module.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "要使用 MLV 文件格式，必须加载 mlv_rec 模块。");
     }
 }
 
@@ -118,60 +118,60 @@ static MENU_UPDATE_FUNC(silent_pic_display)
     switch (silent_pic_mode)
     {
         case SILENT_PIC_MODE_SIMPLE:
-            MENU_SET_VALUE("Simple");
+            MENU_SET_VALUE("简单");
             break;
 
         case SILENT_PIC_MODE_BURST:
-            MENU_SET_VALUE("Burst");
+            MENU_SET_VALUE("连拍");
             break;
 
         case SILENT_PIC_MODE_BURST_END_TRIGGER:
-            MENU_SET_VALUE("End Trigger");
+            MENU_SET_VALUE("后触发");
             break;
 
         case SILENT_PIC_MODE_BEST_FOCUS:
-            MENU_SET_VALUE("Best Shots");
+            MENU_SET_VALUE("最佳对焦");
             break;
 
         case SILENT_PIC_MODE_SLITSCAN:
-            MENU_SET_VALUE("Slit-Scan");
+            MENU_SET_VALUE("狭缝扫描");
             break;
 
         case SILENT_PIC_MODE_FULLRES:
-            MENU_SET_VALUE("Full-res");
+            MENU_SET_VALUE("全分辨率");
             break;
 
         case SILENT_PIC_MODE_FULLRES_LV:
-            MENU_SET_VALUE("Full-res LV");
+            MENU_SET_VALUE("全分辨率实时取景");
             break;
     }
 
     switch (silent_pic_file_format)
     {
         case SILENT_PIC_FILE_FORMAT_MLV:
-            MENU_SET_HELP("File format: 14-bit MLV, group frames in a single file.");
+            MENU_SET_HELP("文件格式：14 位 MLV，所有帧存入单个文件。");
             MENU_APPEND_VALUE(", MLV");
             break;
 
         case SILENT_PIC_FILE_FORMAT_DNG:
-            MENU_SET_HELP("File format: 14-bit uncompressed DNG, individual files.");
+            MENU_SET_HELP("文件格式：14 位无压缩 DNG，逐张保存。");
             MENU_APPEND_VALUE(", DNG");
             break;
 
         case SILENT_PIC_FILE_FORMAT_LOSSLESS_DNG:
-            MENU_SET_HELP("File format: 14-bit lossless DNG, individual files.");
+            MENU_SET_HELP("文件格式：14 位无损 DNG，逐张保存。");
             MENU_APPEND_VALUE(", L-DNG");
             break;
     }
     
     if (silent_pic_mode == SILENT_PIC_MODE_FULLRES && (shooting_mode != SHOOTMODE_M || is_movie_mode()))
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Full-res pictures only work in Manual (M) photo mode.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "全分辨率照片仅限手动 (M) 拍照模式。");
     }
 
-    if (silent_pic_mode == SILENT_PIC_MODE_FULLRES_LV && menu_get_value_from_script("Movie", "Crop mode") == INT_MIN)
+    if (silent_pic_mode == SILENT_PIC_MODE_FULLRES_LV && menu_get_value_from_script("视频", "裁切模式") == INT_MIN)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Full-res LV requires the crop_rec module loaded.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "全分辨率实时取景需要加载 crop_rec 模块。");
     }
 
     silent_pic_check_mlv(entry, info);
@@ -435,7 +435,7 @@ static int save_mlv(struct raw_info * raw_info)
     
     if (!save_file)
     {
-        bmp_printf( FONT_MED, 0, 83, "File create error");
+        bmp_printf( FONT_MED, 0, 83, "文件创建错误");
         return 0;
     }
     
@@ -459,7 +459,7 @@ static int save_mlv(struct raw_info * raw_info)
 
     if (frame_number)
     {
-        bmp_printf( FONT_MED, 0, 37, "%s: %d MiB, %d frames", 
+        bmp_printf( FONT_MED, 0, 37, "%s：%d MiB，%d 帧", 
             filename,
             (uint32_t)((current_mlv_size + raw_info->frame_size) >> 20),
             frame_number + 1
@@ -507,7 +507,7 @@ static int save_mlv(struct raw_info * raw_info)
 
 write_error:
     FIO_CloseFile(save_file);
-    bmp_printf( FONT_MED, 0, 83, "File write error (card full?)");
+    bmp_printf( FONT_MED, 0, 83, "文件写入错误（卡满？）");
     return 0;
 }
 
@@ -523,7 +523,7 @@ static int save_lossless_dng(char * filename, struct raw_info * raw_info)
 
     if (!out_suite)
     {
-        bmp_printf( FONT_MED, 0, 83, "Out of memory");
+        bmp_printf( FONT_MED, 0, 83, "内存不足");
         return 0;
     }
 
@@ -533,7 +533,7 @@ static int save_lossless_dng(char * filename, struct raw_info * raw_info)
 
     if (out_raw_info.frame_size > out_suite->size)
     {
-        bmp_printf( FONT_MED, 0, 83, "Warning: output truncated (%s)", format_memory_size(out_suite->size));
+        bmp_printf( FONT_MED, 0, 83, "警告：输出被截断（%s）", format_memory_size(out_suite->size));
         out_raw_info.frame_size = out_suite->size;
     }
 
@@ -543,13 +543,13 @@ static int save_lossless_dng(char * filename, struct raw_info * raw_info)
 
         if (!save_dng(filename, &out_raw_info))
         {
-            bmp_printf( FONT_MED, 0, 83, "DNG save error (card full?)");
+            bmp_printf( FONT_MED, 0, 83, "DNG 保存错误（卡满？）");
             return 0;
         }
     }
     else
     {
-        bmp_printf( FONT_MED, 0, 83, "Lossless compression error: %d", out_raw_info.frame_size);
+        bmp_printf( FONT_MED, 0, 83, "无损压缩错误：%d", out_raw_info.frame_size);
     }
 
     shoot_free_suite(out_suite);
@@ -570,7 +570,7 @@ static int silent_pic_save_file(struct raw_info * raw_info)
             silent_set_dng_metadata();
             char* filename = silent_pic_get_name();
             int ok = save_dng(filename, raw_info);
-            if (!ok) bmp_printf( FONT_MED, 0, 83, "DNG save error (card full?)");
+            if (!ok) bmp_printf( FONT_MED, 0, 83, "DNG 保存错误（卡满？）");
             return ok;
         }
 
@@ -602,7 +602,7 @@ silent_pic_take_lv(int interactive)
     raw_update_params();
 
     /* save it to card */
-    bmp_printf(FONT_MED, 0, 60, "Saving %d x %d...", raw_info.jpeg.width, raw_info.jpeg.height);
+    bmp_printf(FONT_MED, 0, 60, "正在保存 %d x %d...", raw_info.jpeg.width, raw_info.jpeg.height);
     int ok = silent_pic_save_file(&raw_info);
     redraw();
     
@@ -730,7 +730,7 @@ static void silent_pic_raw_show_focus(int current)
     if (current >= 0)
     {
         int f = COERCE((sp_focus[current] == INT_MAX ? focus_value_raw : sp_focus[current]) * 100 / maxf, 0, 999);
-        bmp_printf(FONT_MED, 0, 180, "Focus: %d%% ", f);
+        bmp_printf(FONT_MED, 0, 180, "对焦：%d%% ", f);
     }
 }
 
@@ -788,7 +788,7 @@ static void FAST silent_pic_raw_slitscan_vsync()
                 memcpy(CACHEABLE(buf + offset), CACHEABLE(raw_info.buffer + offset), raw_info.pitch);
                 sp_slitscan_line++;
                 sp_num_frames = 1;
-                bmp_printf(FONT_MED, 0, 60, "Slit-scan: %d%%...", sp_slitscan_line * 100 / raw_info.height);
+                bmp_printf(FONT_MED, 0, 60, "狭缝扫描：%d%%...", sp_slitscan_line * 100 / raw_info.height);
             }
             break;
             
@@ -803,7 +803,7 @@ static void FAST silent_pic_raw_slitscan_vsync()
                 memcpy(CACHEABLE(buf + offset), CACHEABLE(raw_info.buffer + offset), raw_info.pitch);
                 sp_slitscan_line++;
                 sp_num_frames = 1;
-                bmp_printf(FONT_MED, 0, 60, "Slit-scan: %d%%...", sp_slitscan_line * 100 / raw_info.height);
+                bmp_printf(FONT_MED, 0, 60, "狭缝扫描：%d%%...", sp_slitscan_line * 100 / raw_info.height);
             }
             break;
             
@@ -825,7 +825,7 @@ static void FAST silent_pic_raw_slitscan_vsync()
                 // move over the 7 bytes at a time.
                 sp_slitscan_line += 7;
                 sp_num_frames = 1;
-                bmp_printf(FONT_MED, 0, 60, "Slit-scan: %d%%...", sp_slitscan_line * 100 / raw_info.pitch);
+                bmp_printf(FONT_MED, 0, 60, "狭缝扫描：%d%%...", sp_slitscan_line * 100 / raw_info.pitch);
             }
             break;
             
@@ -846,7 +846,7 @@ static void FAST silent_pic_raw_slitscan_vsync()
                 // move over the 7 bytes at a time.
                 sp_slitscan_line += 7;
                 sp_num_frames = 1;
-                bmp_printf(FONT_MED, 0, 60, "Slit-scan: %d%%...", sp_slitscan_line * 100 / raw_info.pitch);
+                bmp_printf(FONT_MED, 0, 60, "狭缝扫描：%d%%...", sp_slitscan_line * 100 / raw_info.pitch);
             }
             break;
         /* // not working yet! couldn't get the correct pixels out of the center of the frame.
@@ -881,7 +881,7 @@ static void FAST silent_pic_raw_slitscan_vsync()
                 memcpy(CACHEABLE(buf + offset), CACHEABLE(raw_info.buffer + middle), raw_info.pitch * 2);
                 sp_slitscan_line += 2; // have to copy two lines at a time, or we lose the red or blue pixels
                 sp_num_frames = 1;
-                bmp_printf(FONT_MED, 0, 60, "Slit-scan: %d%%...", sp_slitscan_line * 100 / raw_info.height);
+                bmp_printf(FONT_MED, 0, 60, "狭缝扫描：%d%%...", sp_slitscan_line * 100 / raw_info.height);
             }
             break;
             
@@ -922,7 +922,7 @@ static unsigned int silent_pic_raw_vsync(unsigned int ctx)
     raw_lv_redirect_edmac(sp_frames[next_slot % sp_buffer_count]);
     sp_num_frames++;
     
-    bmp_printf(FONT_MED, 0, 60, "Capturing frame %d...", sp_num_frames);
+    bmp_printf(FONT_MED, 0, 60, "正在捕捉第 %d 帧...", sp_num_frames);
     return 0;
 }
 
@@ -973,7 +973,7 @@ silent_pic_take_lv(int interactive)
         return 0;
     }
 
-    bmp_printf(FONT_MED, 0, 37, "Preparing...");
+    bmp_printf(FONT_MED, 0, 37, "正在准备...");
     int ok = 1;
 
     if (silent_pic_mode == SILENT_PIC_MODE_FULLRES_LV)
@@ -982,7 +982,7 @@ silent_pic_take_lv(int interactive)
         /* also prevent zoom (x5/x10) from being restored by ResumeLiveView */
         lv_dispsize = 1;
         PauseLiveView();
-        menu_set_str_value_from_script("Movie", "Crop mode", "Full-res LiveView", INT_MIN);
+        menu_set_str_value_from_script("视频", "裁切模式", "全分辨率实时取景", INT_MIN);
         ResumeLiveView();
     }
 
@@ -1083,12 +1083,12 @@ silent_pic_take_lv(int interactive)
 
     if (sp_buffer_count > 1)
     {
-        bmp_printf(FONT_MED, 0, 83, "Buffer: %d frames (%d%%)", sp_buffer_count, sp_buffer_count * raw_info.frame_size / (total_size / 100));
+        bmp_printf(FONT_MED, 0, 83, "缓冲：%d 帧（%d%%）", sp_buffer_count, sp_buffer_count * raw_info.frame_size / (total_size / 100));
     }
 
     if (sp_buffer_count == 0)
     {
-        bmp_printf(FONT_MED, 0, 83, "Buffer error");
+        bmp_printf(FONT_MED, 0, 83, "缓冲错误");
         goto cleanup;
     }
 
@@ -1197,7 +1197,7 @@ silent_pic_take_lv(int interactive)
                 metadata.aperture / 10, metadata.aperture % 10
             );
             bmp_printf(FONT_MED, 0, 60,
-                "Saving image %d of %d (%dx%d)...",
+                "正在保存第 %d/%d 张（%dx%d）...",
                 i+1, sp_num_frames,
                 raw_info.jpeg.width, raw_info.jpeg.height
             );
@@ -1217,7 +1217,7 @@ silent_pic_take_lv(int interactive)
             {
                 /* save at least 2 pics, then allow the user to cancel the saving process */
                 beep();
-                bmp_printf(FONT_MED, 0, 60, "Saving canceled.");
+                bmp_printf(FONT_MED, 0, 60, "已取消保存。");
                 while (get_halfshutter_pressed()) msleep(10);
                 break;
             }
@@ -1228,7 +1228,7 @@ silent_pic_take_lv(int interactive)
         if (silent_pic_mode == SILENT_PIC_MODE_SLITSCAN && interactive)
         {
             beep();
-            bmp_printf(FONT_MED, 0, 60, "Done, press shutter half-way to exit.");
+            bmp_printf(FONT_MED, 0, 60, "完成，半按快门退出。");
             while (!get_halfshutter_pressed())
                 msleep(20);
         }
@@ -1264,7 +1264,7 @@ cleanup:
     {
         /* turn off Full-res LiveView from crop_rec */
         PauseLiveView();
-        menu_set_value_from_script("Movie", "Crop mode", 0);
+        menu_set_value_from_script("视频", "裁切模式", 0);
     }
 
     ResumeLiveView();
@@ -1284,7 +1284,7 @@ static void show_battery_status()
     int r = GetBatteryTimeRemaining();
     int d = GetBatteryDrainRate();
     bmp_printf(FONT_MED, 0, 480 - font_med.height,
-        "Battery: %d%%, %dh%02dm, %d%%/h",
+        "电池：%d%%，%dh%02dm，%d%%/h",
         l, 0, 
         r / 3600, (r % 3600) / 60,
         d, 0
@@ -1344,7 +1344,7 @@ silent_pic_take_fullres(int interactive)
         /* trigger on shutter release? */
         while (get_halfshutter_pressed())
         {
-            bmp_printf(FONT_MED, 0, 0, "Half-shutter...");
+            bmp_printf(FONT_MED, 0, 0, "半按快门...");
             msleep(10);
         }
 
@@ -1370,13 +1370,13 @@ silent_pic_take_fullres(int interactive)
 
     if (shooting_mode != SHOOTMODE_M)
     {
-        error_msg = "Manual (M) mode is required.";
+        error_msg = "需要手动 (M) 模式。";
         goto err;
     }
 
     if (prop_iso == 0 || prop_shutter == 0)
     {
-        error_msg = "Manual exposure is required.";
+        error_msg = "需要手动曝光。";
         goto err;
     }
 
@@ -1385,21 +1385,21 @@ silent_pic_take_fullres(int interactive)
     if (prop_shutter < SLOWEST_SHUTTER)
     {
         static char expo_msg[50];
-        snprintf(expo_msg, sizeof(expo_msg), "Exposure too long (max %s).", lens_format_shutter(SLOWEST_SHUTTER));
+        snprintf(expo_msg, sizeof(expo_msg), "曝光时间过长（最长 %s）。", lens_format_shutter(SLOWEST_SHUTTER));
         error_msg = expo_msg;
         goto err;
     }
     
     if (!can_use_raw_overlays_photo())
     {
-        error_msg = "Set picture quality to RAW.";
+        error_msg = "请将照片画质设为 RAW。";
         goto err;
     }
     
     /* Canon photo taking code is busy? (may happen if you press the shutter fully) */
     while (lens_info.job_state)
     {
-        bmp_printf(FONT_MED, 0, 0, "Busy...");
+        bmp_printf(FONT_MED, 0, 0, "处理中...");
         msleep(10);
     }
     
@@ -1461,7 +1461,7 @@ silent_pic_take_fullres(int interactive)
         /* GUI changing may fail if half-shutter is pressed, so wait until user de-presses it */
         while (get_halfshutter_pressed())
         {
-            bmp_printf(FONT_MED, 0, 0, "Half-shutter pressed...");
+            bmp_printf(FONT_MED, 0, 0, "已半按快门...");
             msleep(20);
         }
 
@@ -1475,7 +1475,7 @@ silent_pic_take_fullres(int interactive)
         raw_set_dirty();
         if (!raw_update_params())
         {
-            bmp_printf(FONT_MED, 0, 0, "Raw error");
+            bmp_printf(FONT_MED, 0, 0, "RAW 错误");
             goto cleanup;
         }
         clrscr();
@@ -1503,7 +1503,7 @@ silent_pic_take_fullres(int interactive)
         {
             display_on();
             msleep(100);
-            bmp_printf(FONT_MED, 0, 0, "Raw error");
+            bmp_printf(FONT_MED, 0, 0, "RAW 错误");
             goto cleanup;
         }
     }
@@ -1522,7 +1522,7 @@ silent_pic_take_fullres(int interactive)
 
         if (!copy_buf)
         {
-            bmp_printf(FONT_MED, 0, 0, "Memory error");
+            bmp_printf(FONT_MED, 0, 0, "内存错误");
             goto cleanup;
         }
     }
@@ -1539,8 +1539,8 @@ silent_pic_take_fullres(int interactive)
             metadata.aperture / 10, metadata.aperture % 10
         );
 
-        bmp_printf(FONT_MED, 0, 60, "Saving %d x %d...", local_raw_info.jpeg.width, local_raw_info.jpeg.height);
-        bmp_printf(FONT_MED, 0, 83, "Captured in %d ms.", capture_time);
+        bmp_printf(FONT_MED, 0, 60, "正在保存 %d x %d...", local_raw_info.jpeg.width, local_raw_info.jpeg.height);
+        bmp_printf(FONT_MED, 0, 83, "拍摄用时 %d 毫秒。", capture_time);
         
         int t0 = get_ms_clock();
         
@@ -1556,7 +1556,7 @@ silent_pic_take_fullres(int interactive)
      
         if (ok)
         {
-            bmp_printf(FONT_MED, 0, 60, "Saved %d x %d (%d ms, %d MiB/s).   ", 
+            bmp_printf(FONT_MED, 0, 60, "已保存 %d x %d（%d 毫秒，%d MiB/s）。   ", 
                 local_raw_info.jpeg.width, local_raw_info.jpeg.height,
                 save_time, (int)roundf(local_raw_info.frame_size * 1000.0f / (t1 - t0) / 1024.0f / 1024.0f)
             );
@@ -1576,7 +1576,7 @@ silent_pic_take_fullres(int interactive)
     }
     else
     {
-        bmp_printf(FONT_MED, 0, 106, "Long half-shutter will take another picture.");
+        bmp_printf(FONT_MED, 0, 106, "长按半按快门可再拍一张。");
         image_review_duration = MAX(1000, image_review_time * 1000);
     }
 
@@ -1621,7 +1621,7 @@ silent_pic_take(unsigned int interactive) // for remote release, set interactive
 
     if (silent_pic_file_format == SILENT_PIC_FILE_FORMAT_MLV && !silent_pic_mlv_available)
     {
-        NotifyBox(2000, "MLV module not loaded. Will abort.");
+        NotifyBox(2000, "未加载 MLV 模块，将中止。");
         
         /* user error; do not try to take a regular picture if this fails */
         return CBR_RET_STOP;
@@ -1709,7 +1709,7 @@ static unsigned int silent_pic_polling_cbr(unsigned int ctx)
         {
             /* try to ignore the AF button, and only take pictures on plain half-shutter */
             /* problem: lv_focus_status is not updated right away :( */
-            bmp_printf(FONT_MED, 0, 37, "Hold on...");
+            bmp_printf(FONT_MED, 0, 37, "请稍候...");
             for (int i = 0; i < 10; i++)
             {
                 wait_lv_frames(1);
@@ -1718,7 +1718,7 @@ static unsigned int silent_pic_polling_cbr(unsigned int ctx)
                 {
                     while (get_halfshutter_pressed())
                     {
-                        bmp_printf(FONT_MED, 0, 37, "Focusing...");
+                        bmp_printf(FONT_MED, 0, 37, "对焦中...");
                         msleep(10);
                     }
                     redraw();
@@ -1733,7 +1733,7 @@ static unsigned int silent_pic_polling_cbr(unsigned int ctx)
             /* fixme: with a short half-shutter press, IS may not be activated */
             for (int i = 0; i < 50 && get_halfshutter_pressed() && lens_info.IS != 0xE; i++)
             {
-                bmp_printf(FONT_MED, 0, 37, "Waiting for IS...");
+                bmp_printf(FONT_MED, 0, 37, "等待防抖(IS)...");
                 msleep(10);
             }
         }
@@ -1766,86 +1766,86 @@ static unsigned int silent_pic_polling_cbr(unsigned int ctx)
 
 static struct menu_entry silent_menu[] = {
     {
-        .name = "Silent Picture",
+        .name = "静音拍摄",
         .priv = &silent_pic_enabled,
         .update = silent_pic_display,
         .max  = 1,
         .depends_on = DEP_LIVEVIEW | DEP_CFN_AF_BACK_BUTTON,
-        .help  = "Take pics in LiveView without moving the shutter mechanism.",
+        .help  = "在实时取景下拍照，不带动快门机械。",
         #ifdef FEATURE_SILENT_PIC_RAW_BURST
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Silent Mode",
+                .name = "静音模式",
                 .priv = &silent_pic_mode,
                 .update = silent_pic_mode_update,
                 .max = 6,
                 .choices = CHOICES(
-                    "Simple",
-                    "Burst",
-                    "Burst, End Trigger",
-                    "Best Focus",
-                    "Slit-Scan",
-                    "Full-res",
-                    "Full-res LV",
+                    "简单",
+                    "连拍",
+                    "连拍，后触发",
+                    "最佳对焦",
+                    "狭缝扫描",
+                    "全分辨率",
+                    "全分辨率实时取景",
                 ),
-                .help = "Choose the silent picture mode:",
+                .help = "选择静音拍摄模式：",
                 .help2 = 
-                    "Take a silent picture when you press the shutter halfway.\n"
-                    "Take pictures until memory gets full, then save to card.\n"
-                    "Take pictures continuously, save the last few pics to card.\n"
-                    "Take pictures continuously, save the images with best focus.\n"
-                    "Distorted pictures for funky effects.\n"
-                    "Full-resolution pictures (limited to long exposures).\n"
-                    "Full-resolution pictures (LiveView snapshots, with crop_rec).\n",
+                    "半按快门时拍摄一张静音照片。\n"
+                    "持续拍摄直到内存占满，然后保存到卡。\n"
+                    "持续拍摄，仅保存最后几张到卡。\n"
+                    "持续拍摄，仅保存对焦最好的几张。\n"
+                    "拍摄扭曲变形的特效照片。\n"
+                    "全分辨率照片（仅限长曝光）。\n"
+                    "全分辨率照片（实时取景抓拍，需 crop_rec）。\n",
             },
             {
-                .name = "Slit-Scan Mode",
+                .name = "狭缝扫描方向",
                 .priv = &silent_pic_slitscan_mode,
                 .max = 4,
                 .choices = CHOICES(
-                    "Top->Bottom",
-                    "Bottom->Top",
-                    "Left->Right",
-                    "Right->Left",
-                    "Horizontal",
+                    "上→下",
+                    "下→上",
+                    "左→右",
+                    "右→左",
+                    "水平居中",
                 ),
-                .help = "Choose slitscan mode:",
+                .help = "选择狭缝扫描方式：",
                 .help2 =
-                    "Scan from top to bottom as picture is taken.\n"
-                    "Scan from bottom to top.\n"
-                    "Scan from left to right.\n"
-                    "Scan from right to left.\n"
-                    "Keep scan line in middle of frame, horizontally.\n",
+                    "拍摄时扫描线从上到下移动。\n"
+                    "扫描线从下到上移动。\n"
+                    "扫描线从左到右移动。\n"
+                    "扫描线从右到左移动。\n"
+                    "扫描线保持在画面水平中央。\n",
                 .shidden = 1,   /* enabled only when choosing slit-scan */
             },
             {
-                .name = "Trigger Mode",
+                .name = "触发方式",
                 .priv = &silent_pic_fullres_trigger_mode,
                 .max = 2,
                 .choices = CHOICES(
-                    "Half-shutter press",
-                    "Half-shutter release",
-                    "Delayed",
+                    "半按快门按下",
+                    "半按快门松开",
+                    "延迟",
                 ),
-                .help = "Choose when to capture the image:",
+                .help = "选择拍摄触发时机：",
                 .help2 =
-                    "Start image capture on half-shutter press (quick).\n"
-                    "Start image capture on half-shutter release (end trigger).\n"
-                    "Start image capture 2 seconds after half-shutter release.\n",
+                    "半按快门按下时开始拍摄（较快）。\n"
+                    "半按快门松开时开始拍摄（后触发）。\n"
+                    "半按快门松开 2 秒后开始拍摄。\n",
                 .shidden = 1,   /* enabled only when choosing full-res */
             },
             {
-                .name = "File Format",
+                .name = "文件格式",
                 .update = silent_pic_file_format_display,
                 .priv = &silent_pic_file_format,
                 .max = 2,
-                .help = "File format to save the image as:",
+                .help = "选择图像保存格式：",
                 .help2 =
-                    "DNG is slow, but needs no extra post-processing.\n"
-                    "MLV is fast, and will group all frames into a single video file.\n"
-                    "Lossless DNG is fast and uses CR2 compression routines (experimental).\n",
-                .choices = CHOICES("DNG", "MLV", "Lossless DNG"),
+                    "DNG 较慢，但无需额外后期处理。\n"
+                    "MLV 较快，所有帧合并为单个视频文件。\n"
+                    "无损 DNG 较快，使用 CR2 压缩例程（实验性）。\n",
+                .choices = CHOICES("DNG", "MLV", "无损 DNG"),
             },
             MENU_EOL,
         }

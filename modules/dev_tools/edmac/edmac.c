@@ -35,7 +35,7 @@ static void edmac_display_page(int i0, int x0, int y0)
     bmp_printf(
         FONT_MONO_20,
         x0, y0,
-        "EDM# Address  Size\n"
+        "EDM# 地址  大小\n"
     );
 
     y0 += fontspec_font(FONT_MONO_20)->height * 2;
@@ -115,7 +115,7 @@ static void edmac_display_conn(int page)
     bmp_printf(
         FONT_LARGE,
         50, 20,
-        "EDMAC connections %d - %d", conn0, conn0 + 15
+        "EDMAC 连接 %d - %d", conn0, conn0 + 15
     );
 
     int y = 50;
@@ -277,7 +277,7 @@ static void edmac_display_detailed(int channel)
     bmp_printf(
         FONT_LARGE,
         x, y-30,
-        "EDMAC channel #%d - %x\n",
+        "EDMAC 通道 #%d - %x\n",
         channel,
         base
     );
@@ -287,15 +287,15 @@ static void edmac_display_detailed(int channel)
 
     uint32_t dir     = edmac_get_dir(channel);
     char* dir_s      = 
-        dir == EDMAC_DIR_READ  ? "read"  :
-        dir == EDMAC_DIR_WRITE ? "write" :
-                                 "unused";
+        dir == EDMAC_DIR_READ  ? "读取"  :
+        dir == EDMAC_DIR_WRITE ? "写入" :
+                                 "未使用";
 
     if (dir == EDMAC_DIR_UNUSED)
     {
         /* attempting to get info from unused channels may crash on old models */
         /* if it doesn't crash, the additional info doesn't make any sense */
-        bmp_printf(FONT_MONO_20, 50, y + font_large.height, "Unused");
+        bmp_printf(FONT_MONO_20, 50, y + font_large.height, "未使用");
         return;
     }
 
@@ -307,7 +307,7 @@ static void edmac_display_detailed(int channel)
     if (flags)
     {
         snprintf(flags_desc, sizeof(flags_desc),
-            "(%d bytes per transfer)",
+            "(每次传输 %d 字节)",
             edmac_bytes_per_transfer(flags)
         );
     }
@@ -336,14 +336,14 @@ static void edmac_display_detailed(int channel)
     
     int fh = fontspec_font(FONT_MONO_20)->height;
 
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Address    : %8x ", addr);
-    bmp_printf(FONT_MONO_20, 50, y += fh, "State      : %8x ", state);
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Flags      : %8x %s", flags, flags_desc);
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Size       : %s ", edmac_format_size(&info));
+    bmp_printf(FONT_MONO_20, 50, y += fh, "地址       : %8x ", addr);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "状态       : %8x ", state);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "标志       : %8x %s", flags, flags_desc);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "大小       : %s ", edmac_format_size(&info));
     y += fh;
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Size A     : %8x (%d x %d) ", size_a.raw, size_a.size.x, size_a.size.y);
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Size B     : %8x (%d x %d) ", size_b.raw, size_b.size.x, size_b.size.y);
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Size N     : %8x (%d x %d) ", size_n.raw, size_n.size.x, size_n.size.y);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "大小 A     : %8x (%d x %d) ", size_a.raw, size_a.size.x, size_a.size.y);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "大小 B     : %8x (%d x %d) ", size_b.raw, size_b.size.x, size_b.size.y);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "大小 N     : %8x (%d x %d) ", size_n.raw, size_n.size.x, size_n.size.y);
     bmp_printf(FONT_MONO_20, 50, y += fh, "off1a      : %8x ", off1a);
     bmp_printf(FONT_MONO_20, 50, y += fh, "off1b      : %8x ", off1b);
     bmp_printf(FONT_MONO_20, 50, y += fh, "off2a      : %8x ", off2a);
@@ -351,7 +351,7 @@ static void edmac_display_detailed(int channel)
     bmp_printf(FONT_MONO_20, 50, y += fh, "off3       : %8x ", off3);
     bmp_printf(FONT_MONO_20, 50, y += fh, "off40      : %8x ", off40);
     y += fh;
-    bmp_printf(FONT_MONO_20, 50, y += fh, "Connection : write=0x%x read=0x%x dir=%s", conn_w, conn_r, dir_s);
+    bmp_printf(FONT_MONO_20, 50, y += fh, "连接       : 写入=0x%x 读取=0x%x 方向=%s", conn_w, conn_r, dir_s);
 
     if (is_5d3)
     {
@@ -363,8 +363,8 @@ static void edmac_display_detailed(int channel)
          */
         uint32_t cbr1 = MEM(8 + 32*(channel) + MEM(0x12400));
         uint32_t cbr2 = MEM(12 + 32*(channel) + MEM(0x12400));
-        bmp_printf(FONT_MONO_20, 50, y += fh, "CBR handler: %8x %s", cbr1, asm_guess_func_name_from_string(cbr1));
-        bmp_printf(FONT_MONO_20, 50, y += fh, "CBR abort  : %8x %s", cbr2, asm_guess_func_name_from_string(cbr2));
+        bmp_printf(FONT_MONO_20, 50, y += fh, "CBR 处理   : %8x %s", cbr1, asm_guess_func_name_from_string(cbr1));
+        bmp_printf(FONT_MONO_20, 50, y += fh, "CBR 中止   : %8x %s", cbr2, asm_guess_func_name_from_string(cbr2));
     }
 }
 
@@ -392,22 +392,22 @@ static MENU_UPDATE_FUNC(edmac_display)
 
         bmp_printf(
             FONT_MONO_20,
-            20, 450, "EDMAC state: "
+            20, 450, "EDMAC 状态: "
         );
 
         bmp_printf(
             FONT(FONT_MONO_20, COLOR_GRAY(50), COLOR_BLACK),
-            20+200, 450, "inactive"
+            20+200, 450, "空闲"
         );
 
         bmp_printf(
             FONT(FONT_MONO_20, COLOR_GREEN1, COLOR_BLACK),
-            20+350, 450, "running"
+            20+350, 450, "运行中"
         );
 
         bmp_printf(
             FONT_MONO_20,
-            720 - fontspec_font(FONT_MONO_20)->width * 13, 450, "[Scrollwheel]"
+            720 - fontspec_font(FONT_MONO_20)->width * 13, 450, "[滚轮翻页]"
         );
     }
     else if (edmac_selection >= 2 && edmac_selection <= 5)  /* connections */
@@ -638,7 +638,7 @@ static void edmac_spy_dump()
     char* out = fio_malloc(maxlen);
     if (!out)
     {
-        NotifyBox(2000, "Out of memory");
+        NotifyBox(2000, "内存不足");
         return;
     }
     memset(out, ' ', maxlen);
@@ -684,7 +684,7 @@ static void edmac_spy_dump()
 
     len += snprintf(out+len, maxlen-len, "\nSaved %d events, %d extra infos.\n", edmac_index, edmac_extra_index);
 
-    NotifyBox(2000, "Saved %d events, %d extra infos.", edmac_index, edmac_extra_index);
+    NotifyBox(2000, "已保存 %d 个事件，%d 条附加信息。", edmac_index, edmac_extra_index);
 
 
     char log_filename[100];
@@ -698,13 +698,13 @@ static void edmac_spy_dump()
 
 static void log_edmac_usage()
 {
-    NotifyBox(100000, "Press shutter halfway to start.");
+    NotifyBox(100000, "半按快门开始。");
     while (!get_halfshutter_pressed())
     {
         msleep(10);
     }
 
-    NotifyBox(1000000, "Logging EDMAC usage...");
+    NotifyBox(1000000, "正在记录 EDMAC 活动...");
 
     SetHPTimerAfterNow(1000, edmac_spy_poll, edmac_spy_poll, 0);
     
@@ -716,7 +716,7 @@ static void log_edmac_usage()
     }
     info_led_off();
 
-    NotifyBox(2000, "Saving log...");
+    NotifyBox(2000, "正在保存日志...");
     edmac_spy_dump();
 }
 
@@ -725,7 +725,7 @@ static MENU_UPDATE_FUNC(log_interval_update)
     int log_duration = (int)roundf((float) log_interval * COUNT(edmac_states) / 1e6 * 100.0);
 
     MENU_SET_WARNING(MENU_WARN_INFO,
-        "Will log %d samples = %s%d.%02d seconds.",
+        "将记录 %d 个采样 = %s%d.%02d 秒。",
         COUNT(edmac_states), FMT_FIXEDPOINT2(log_duration)
     );
 }
@@ -736,17 +736,17 @@ extern void edmac_test();
 static struct menu_entry edmac_menu[] =
 {
     {
-        .name   = "EDMAC tools",
+        .name   = "EDMAC 工具",
         .select = menu_open_submenu,
         .children =  (struct menu_entry[]) {
             {
-                .name       = "Show EDMAC channels",
+                .name       = "显示 EDMAC 通道",
                 .select     = menu_open_submenu,
                 .icon_type  = IT_ACTION,
-                .help       = "Useful for finding image buffers.",
+                .help       = "有助于寻找图像缓冲区。",
                 .children =  (struct menu_entry[]) {
                     {
-                        .name   = "EDMAC display",
+                        .name   = "EDMAC 显示",
                         .priv   = &edmac_selection,
                         .max    = 49,
                         .update = edmac_display,
@@ -755,44 +755,44 @@ static struct menu_entry edmac_menu[] =
                 },
             },
             {
-                .name   = "Find free EDMAC channels",
+                .name   = "查找空闲 EDMAC 通道",
                 .select = run_in_separate_task,
                 .priv   = find_free_edmac_channels,
-                .help   = "Useful to find which channels can be used in LiveView.\n",
+                .help   = "可找出实时取景下可用的通道。\n",
             },
             {
-                .name   = "Log EDMAC activity",
+                .name   = "记录 EDMAC 活动",
                 .select = menu_open_submenu,
-                .help   = "Sample EDMAC activity on all channels and save a log file.",
-                .help2  = "Useful for figuring out how image capture/processing works.",
+                .help   = "采样所有通道的 EDMAC 活动并保存日志文件。",
+                .help2  = "有助于弄清图像采集/处理的工作原理。",
                 .children =  (struct menu_entry[]) {
                     {
-                        .name   = "Start logging",
+                        .name   = "开始记录",
                         .select = run_in_separate_task,
                         .priv   = log_edmac_usage,
-                        .help   = "Start logging EDMAC activity.",
-                        .help2  = "Press shutter halfway to choose the exact moment.",
+                        .help   = "开始记录 EDMAC 活动。",
+                        .help2  = "半按快门可选择精确的起始时机。",
                     },
                     {
-                        .name       = "Log every",
+                        .name       = "记录间隔",
                         .priv       = &log_interval,
                         .min        = 50,
                         .max        = 10000,
                         .update     = log_interval_update,
                         .unit       = UNIT_TIME_US,
                         .edit_mode  = EM_ROUND_1_2_5_10,
-                        .help       = "Sampling interval (how often EDMAC channels are polled).",
-                        .help2      = "The logging buffer size is fixed at 2048 samples.",
+                        .help       = "采样间隔(轮询 EDMAC 通道的频率)。",
+                        .help2      = "记录缓冲区大小固定为 2048 个采样。",
                     },
                     MENU_EOL
                 },
             },
             {
-                .name   = "EDMAC model test",
+                .name   = "EDMAC 模型测试",
                 .select = run_in_separate_task,
                 .priv   = edmac_test,
-                .help   = "Tests to confirm our hypothesis on how EDMAC works.",
-                .help2  = "Should be executed on both camera and QEMU."
+                .help   = "验证 EDMAC 工作原理假设的测试。",
+                .help2  = "应在相机和 QEMU 上各执行一次。"
             },
             MENU_EOL
         }

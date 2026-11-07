@@ -453,7 +453,7 @@ static MENU_UPDATE_FUNC(timelapse_calc_display)
     int fps = video_mode_fps;
     if (!fps) fps = video_system_pal ? 25 : 30;
     MENU_SET_WARNING(MENU_WARN_INFO, 
-        "Timelapse: %dh%02dm, %d shots, %d fps => %02dm%02ds.", 
+        "延时拍摄： %d小时%02d分，%d 张，%d fps => %02d分%02d秒。",
         total_time_m / 60, 
         total_time_m % 60, 
         total_shots, fps, 
@@ -467,14 +467,14 @@ static MENU_UPDATE_FUNC(interval_timer_display)
     int d = MENU_CURRENT_VALUE;
     if (!d)
     {
-        MENU_SET_NAME("Take pics...");
-        MENU_SET_VALUE("like crazy");
+        MENU_SET_NAME("连拍…");
+        MENU_SET_VALUE("疯狂连拍");
     }
     MENU_SET_ICON(MNI_PERCENT, MENU_CURRENT_VALUE * 100 / TIME_MAX_VALUE);
     MENU_SET_ENABLED(1);
 
     if (auto_power_off_time && auto_power_off_time <= d)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Check auto power off setting (currently %ds).", auto_power_off_time);
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请检查自动关机设置（当前 %d 秒）。", auto_power_off_time);
 
     timelapse_calc_display(entry, info);
 }
@@ -484,23 +484,23 @@ static MENU_UPDATE_FUNC(interval_start_after_display)
     MENU_SET_ICON(MNI_PERCENT, MENU_CURRENT_VALUE * 100 / TIME_MAX_VALUE);
     
     if (auto_power_off_time && auto_power_off_time <= interval_start_time)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Check auto power off setting (currently %ds).", auto_power_off_time);
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请检查自动关机设置（当前 %d 秒）。", auto_power_off_time);
     
     if(interval_trigger == INTERVAL_TRIGGER_TAKE_PIC)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Has no effect when trigger is set to take a pic");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "触发方式为“拍照”时此项无效");
 }
 
 static MENU_UPDATE_FUNC(interval_stop_after_display)
 {
     int d = MENU_CURRENT_VALUE;
     MENU_SET_VALUE(
-        d ? "%d shots"
+        d ? "%d 张"
           : "%s",
-        d ? d : (intptr_t) "Disabled"
+        d ? d : (intptr_t) "禁用"
     );
     MENU_SET_ENABLED(d);
     if (d > avail_shot)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Not enough space for %d shots (only for %d).", d, avail_shot);
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "剩余空间不足 %d 张（仅够 %d 张）。", d, avail_shot);
     timelapse_calc_display(entry, info);
 }
 
@@ -508,7 +508,7 @@ static MENU_UPDATE_FUNC(interval_trigger_update)
 {
     if(interval_trigger == INTERVAL_TRIGGER_TAKE_PIC)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Also useful to trigger off of motion or trap focus");
+        MENU_SET_WARNING(MENU_WARN_INFO, "也适用于运动检测或陷阱对焦触发");
     }
 }
 
@@ -528,7 +528,7 @@ static MENU_UPDATE_FUNC(intervalometer_display)
         
         int d_start = interval_start_time;
         if (auto_power_off_time && auto_power_off_time <= MAX(d, d_start))
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Check auto power off setting (currently %ds).", auto_power_off_time);
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请检查自动关机设置（当前 %d 秒）。", auto_power_off_time);
         
         #ifdef CONFIG_MODULES
         auto_ettr_intervalometer_warning(entry, info);
@@ -540,17 +540,17 @@ static MENU_UPDATE_FUNC(intervalometer_display)
     }
 
     if (shooting_mode != SHOOTMODE_M && !is_bulb_mode())
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Use M mode to avoid exposure flicker.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请使用 M 模式以避免曝光闪烁。");
     else if (lens_info.raw_aperture != lens_info.raw_aperture_min)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Shoot wide-open or unscrew lens to avoid aperture flicker.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请全开光圈或拧松镜头以避免光圈闪烁。");
     else if (raw2shutter_ms(lens_info.raw_shutter) < 10)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Use slow shutter speeds to avoid shutter flicker.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请使用较慢的快门以避免快门闪烁。");
     else if (lens_info.wb_mode == 0)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Use manual white balance to avoid WB flicker.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请使用手动白平衡以避免白平衡闪烁。");
     else if (shoot_use_af && !is_manual_focus())
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Disable autofocus.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请禁用自动对焦。");
     else if (lens_info.IS && lens_info.IS != 8)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Disable image stabilization.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请禁用镜头防抖。");
 
     if (entry->selected) timelapse_calc_display(entry, info);
 }
@@ -561,7 +561,7 @@ static MENU_UPDATE_FUNC(audio_release_display)
 {
     if (audio_release_running)
     {
-        MENU_SET_VALUE("ON, level=%d", audio_release_level);
+        MENU_SET_VALUE("开，电平=%d", audio_release_level);
         MENU_SET_SHORT_VALUE("%d", audio_release_level);
     }
 }
@@ -586,10 +586,10 @@ static MENU_UPDATE_FUNC(motion_detect_display)
     }
     
     if (motion_detect_trigger == 2) 
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Press shutter halfway and be careful (tricky feature).");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请半按快门并小心使用（此功能较难掌握）。");
 
     if (motion_detect_trigger < 2 && !lv)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "With current settings, motion detect only works in LiveView.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "当前设置下，运动检测仅在实时取景中有效。");
 }
 #endif
 
@@ -628,7 +628,7 @@ void set_flash_firing(int mode)
 static MENU_UPDATE_FUNC(flash_and_no_flash_display)
 {
     if (strobo_firing == 2)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Flash is automatic, can't adjust.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "闪光灯为自动，无法调整。");
 }
 #endif
 
@@ -780,7 +780,7 @@ static int mlu_shake_running = 0;
 static void mlu_shake_task()
 {
     #ifdef FEATURE_MLU_HANDHELD_DEBUG
-    if (mlu_handled_debug) { msleep(1000); NotifyBox(5000, "Taking pic..."); msleep(1000); }
+    if (mlu_handled_debug) { msleep(1000); NotifyBox(5000, "正在拍照…"); msleep(1000); }
     #endif
 
     //~ beep();
@@ -1072,9 +1072,9 @@ void center_lv_afframe_do()
                     focus_box_raw_x5_w = raw_info.jpeg.width;
                     focus_box_raw_x5_h = raw_info.jpeg.height;
                 }
-                else NotifyBox(2000, "Boo...");
+                else NotifyBox(2000, "哎呀…");
             }
-            else NotifyBox(2000, "Raw err");
+            else NotifyBox(2000, "RAW 错误");
             raw_lv_release();
         }
         else
@@ -1100,7 +1100,7 @@ void center_lv_afframe_do()
                 bmp_draw_rect(COLOR_BLACK, x-w/2-1, y-h/2-1, w+2, h+2);
                 redraw_after(1000);
             }
-            else NotifyBox(2000, "Try zooming first");
+            else NotifyBox(2000, "请先放大变焦");
         }
     }
     #endif    
@@ -1306,7 +1306,7 @@ void playback_compare_images_task(int dir)
     
     if (!PLAY_MODE)
     {
-        NotifyBox(1000, "CompareImages: Not in PLAY mode");
+        NotifyBox(1000, "图片对比：未在回放模式");
         return;
     }
 
@@ -1364,7 +1364,7 @@ void expfuse_preview_update_task(int dir)
     weighted_mean_yuv_add_acc32bit_src8bit_ws16bit(buf_acc, buf_lv, buf_ws, numpix);
     weighted_mean_yuv_div_dst8bit_src32bit_ws16bit(buf_lv, buf_acc, buf_ws, numpix);
     expfuse_num_images++;
-    bmp_printf(FONT_MED, 0, 0, "%d images  ", expfuse_num_images);
+    bmp_printf(FONT_MED, 0, 0, "%d 张照片  ", expfuse_num_images);
     //~ bmp_printf(FONT_LARGE, 0, 480 - font_large.height, "Do not press Delete!");
 
 end:
@@ -1510,7 +1510,7 @@ void ensure_movie_mode()
         #else
         while (!is_movie_mode())
         {
-            NotifyBox(2000, "Please switch to Movie mode.");
+            NotifyBox(2000, "请切换到视频模式。");
             msleep(500);
         }
         #endif
@@ -1524,7 +1524,7 @@ void ensure_photo_mode()
 {
     while (is_movie_mode())
     {
-        NotifyBox(2000, "Please switch to photo mode.");
+        NotifyBox(2000, "请切换到拍照模式。");
         msleep(500);
     }
     msleep(500); 
@@ -1544,7 +1544,7 @@ static MENU_UPDATE_FUNC(iso_display)
 {
     MENU_SET_VALUE(
         "%s", 
-        lens_info.iso ? "" : "Auto"
+        lens_info.iso ? "" : "自动"
     );
 
     if (lens_info.iso)
@@ -1750,7 +1750,7 @@ static MENU_UPDATE_FUNC(shutter_display)
         MENU_SET_ENABLED(1);
     }
     else 
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Shutter speed is automatic - cannot adjust manually.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "快门速度为自动 - 无法手动调整。");
 
     MENU_SET_SHORT_NAME(" "); // obvious from value
 }
@@ -1804,7 +1804,7 @@ static MENU_UPDATE_FUNC(aperture_display)
     }
     if (!lens_info.aperture)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, lens_info.lens_exists ? "Aperture is automatic - cannot adjust manually." : "Manual lens - cannot adjust aperture.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, lens_info.lens_exists ? "光圈为自动 - 无法手动调整。" : "手动镜头 - 无法调整光圈。");
         MENU_SET_ICON(MNI_PERCENT_OFF, 0);
     }
     else
@@ -1892,21 +1892,21 @@ static MENU_UPDATE_FUNC(kelvin_display)
         );
         MENU_SET_ICON(MNI_PERCENT, (lens_info.kelvin - KELVIN_MIN) * 100 / (KELVIN_MAX - KELVIN_MIN));
         if (lens_info.kelvin != wb_kelvin_ph)
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "Extended WB values are only applied to movies, not photos.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "扩展白平衡数值仅应用于视频，不影响照片。");
     }
     else
     {
         MENU_SET_VALUE(
-            uniwb_is_active()      ? "UniWB"   : 
-            lens_info.wb_mode == 0 ? "Auto"    : 
-            lens_info.wb_mode == 1 ? "Sunny"   :
-            lens_info.wb_mode == 2 ? "Cloudy"  : 
-            lens_info.wb_mode == 3 ? "Tungsten": 
-            lens_info.wb_mode == 4 ? "Fluor."  : 
-            lens_info.wb_mode == 5 ? "Flash"   : 
-            lens_info.wb_mode == 6 ? "Custom"  : 
-            lens_info.wb_mode == 8 ? "Shade"   :
-             "unknown"
+            uniwb_is_active()      ? "UniWB"   :
+            lens_info.wb_mode == 0 ? "自动"    :
+            lens_info.wb_mode == 1 ? "晴天"   :
+            lens_info.wb_mode == 2 ? "阴天"  :
+            lens_info.wb_mode == 3 ? "钨丝灯": 
+            lens_info.wb_mode == 4 ? "荧光灯"  : 
+            lens_info.wb_mode == 5 ? "闪光灯"   : 
+            lens_info.wb_mode == 6 ? "自定义"  : 
+            lens_info.wb_mode == 8 ? "阴影"   :
+             "未知"
         );
         MENU_SET_ICON(MNI_AUTO, 0);
     }
@@ -1966,7 +1966,7 @@ static MENU_UPDATE_FUNC(wb_custom_gain_display)
 
     int multiplier = 1000 * 1024 / raw_value;
     MENU_SET_NAME(
-        "%s multiplier",
+        "%s 通道倍数",
         p==1 ? "R" : p==2 ? "G" : "B"
     );
     MENU_SET_VALUE(
@@ -1975,7 +1975,7 @@ static MENU_UPDATE_FUNC(wb_custom_gain_display)
     );
     
     if (lens_info.wb_mode != WB_CUSTOM)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Custom white balance is not active => not used.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "自定义白平衡未启用 => 不生效。");
     
     int ll = log_length(125);
     int lh = log_length(8000);
@@ -2009,7 +2009,7 @@ static int crit_kelvin(int k)
     int R,G,B;
     yuv2rgb(Y,U,V,&R,&G,&B);
     
-    NotifyBox(5000, "Adjusting white balance...");
+    NotifyBox(5000, "正在调整白平衡…");
 
     return B - R;
 }
@@ -2028,7 +2028,7 @@ static int crit_wbs_gm(int k)
     int R,G,B;
     yuv2rgb(Y,U,V,&R,&G,&B);
 
-    NotifyBox(5000, "Adjusting white balance shift...");
+    NotifyBox(5000, "正在调整白平衡偏移…");
 
     //~ BMP_LOCK( draw_ml_bottombar(0,0); )
     return (R+B)/2 - G;
@@ -2036,7 +2036,7 @@ static int crit_wbs_gm(int k)
 
 static void kelvin_auto_run()
 {
-    if (EXT_MONITOR_RCA) { NotifyBox(2000, "Not working on SD monitors."); return; }
+    if (EXT_MONITOR_RCA) { NotifyBox(2000, "在 SD 监视器上无法使用。"); return; }
     
     gui_stop_menu();
     int c0 = crit_kelvin(-1); // test current kelvin
@@ -2050,7 +2050,7 @@ static void kelvin_auto_run()
 
 static void wbs_gm_auto_run()
 {
-    if (EXT_MONITOR_RCA) { NotifyBox(2000, "Not working on SD monitors."); return; }
+    if (EXT_MONITOR_RCA) { NotifyBox(2000, "在 SD 监视器上无法使用。"); return; }
 
     gui_stop_menu();
     int c0 = crit_wbs_gm(100); // test current value
@@ -2067,7 +2067,7 @@ static MENU_UPDATE_FUNC(wbs_gm_display)
     int gm = lens_info.wbs_gm;
     MENU_SET_VALUE(
         "%s%d", 
-        gm > 0 ? "Green " : (gm < 0 ? "Magenta " : ""), 
+        gm > 0 ? "绿 " : (gm < 0 ? "品红 " : ""),
         ABS(gm)
     );
     MENU_SET_ENABLED(gm);
@@ -2090,7 +2090,7 @@ static MENU_UPDATE_FUNC(wbs_ba_display)
     int ba = lens_info.wbs_ba;
     MENU_SET_VALUE(
         "%s%d", 
-        ba > 0 ? "Amber " : (ba < 0 ? "Blue " : ""), 
+        ba > 0 ? "琥珀 " : (ba < 0 ? "蓝 " : ""),
         ABS(ba)
     );
     MENU_SET_ENABLED(ba);
@@ -2421,7 +2421,7 @@ static void restore_expsim(int es)
         msleep(300);
         if (get_expsim() == es) return;
     }
-    NotifyBox(5000, "Could not restore ExpSim :(");
+    NotifyBox(5000, "无法恢复曝光模拟(ExpSim) :(");
     info_led_blink(5, 50, 50);
 }
 #endif
@@ -2495,7 +2495,7 @@ static MENU_UPDATE_FUNC(hdr_check_excessive_settings)
 
     if (hdr_steps > 7)
     {
-        snprintf(what, sizeof(what), "%d frames", hdr_steps);
+        snprintf(what, sizeof(what), "%d 张", hdr_steps);
     }
     else if (hdr_stepsize < 8 && hdr_steps > 5)
     {
@@ -2504,7 +2504,7 @@ static MENU_UPDATE_FUNC(hdr_check_excessive_settings)
     
     if (what[0])
     {
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "%s unnecessary and may cause excessive shutter wear.", what);
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "%s 既无必要，又可能过度磨损快门。", what);
     }
 }
 
@@ -2541,7 +2541,7 @@ static MENU_UPDATE_FUNC(hdr_display)
 
     if (aeb_setting)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Turn off Canon bracketing (AEB)!");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请关闭佳能包围曝光(AEB)！");
     }
     
     hdr_check_excessive_settings(entry, info);
@@ -2551,7 +2551,7 @@ static MENU_UPDATE_FUNC(hdr_steps_update)
 {
     if(hdr_steps <= 1)
     {
-        MENU_SET_VALUE("Autodetect");
+        MENU_SET_VALUE("自动检测");
     }
     else
     {
@@ -2815,14 +2815,14 @@ bulb_take_pic(int duration)
             if (DISPLAY_IS_ON)
             {
                 clrscr();
-                bmp_printf(FONT_LARGE,  50,  50, "Remaining: %d", r);
+                bmp_printf(FONT_LARGE,  50,  50, "剩余： %d", r);
                 #ifdef FEATURE_INTERVALOMETER
                 if(intervalometer_running)
                 {
                     static char msg[60];
                     snprintf(msg, sizeof(msg),
-                             " Intervalometer: %s  \n"
-                             " Pictures taken: %d  ",
+                             " 间隔拍摄： %s  \n"
+                             " 已拍照片： %d  ",
                              format_time_hours_minutes_seconds(intervalometer_next_shot_time - get_seconds_clock()),
                              intervalometer_pictures_taken);
                     if (interval_stop_after) { STR_APPEND(msg, "/ %d", interval_stop_after); }
@@ -2905,14 +2905,14 @@ static MENU_UPDATE_FUNC(bulb_display)
         MENU_SET_VALUE(
             "%s%s",
             format_time_hours_minutes_seconds(bulb_duration),
-            bulb_timer || interval_enabled ? "" : " (OFF)"
+            bulb_timer || interval_enabled ? "" : " (关)"
         );
-        MENU_SET_WARNING(MENU_WARN_INFO, "Long exposure tools may use bulb timer value, even if BT is disabled.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "即使已禁用 B门定时器，长曝光工具仍可能使用其时长。");
         MENU_SET_RINFO(SYM_WARNING);
     }
 #endif
     
-    if (!is_bulb_mode()) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Bulb timer only works in BULB mode");
+    if (!is_bulb_mode()) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "B门定时器仅在 B门模式下工作");
     if (entry->selected && intervalometer_running) timelapse_calc_display(entry, info);
 }
 #endif
@@ -2968,10 +2968,10 @@ mlu_toggle( void * priv, int delta )
 static MENU_UPDATE_FUNC(mlu_display)
 {
     MENU_SET_VALUE(
-        MLU_SELF_TIMER ? (get_mlu() ? "SelfTimer (ON)" : "SelfTimer (OFF)")
-        : MLU_HANDHELD ? (mlu_handheld_shutter ? "HandH,1/2-1/125" : "Handheld")
-        : MLU_ALWAYS_ON ? "Always ON"
-        : get_mlu() ? "ON" : "OFF"
+        MLU_SELF_TIMER ? (get_mlu() ? "自拍（开）" : "自拍（关）")
+        : MLU_HANDHELD ? (mlu_handheld_shutter ? "HandH,1/2-1/125" : "手持")
+        : MLU_ALWAYS_ON ? "始终开"
+        : get_mlu() ? "开" : "关"
     );
     if (mlu_mode == 2 && 
         (
@@ -2988,15 +2988,15 @@ static MENU_UPDATE_FUNC(mlu_display)
         )
     {
         static char msg[60];
-        snprintf(msg, sizeof(msg), "Handheld MLU does not work with %s.",
-            is_hdr_bracketing_enabled() ? "HDR bracketing" :
-            trap_focus ? "trap focus" :
-            is_bulb_mode() ? "bulb shots" :
-            intervalometer_running ? "intervalometer" :
-            motion_detect ? "motion detection" :
-            aeb_setting ? "Canon bracketing (AEB)" :
+        snprintf(msg, sizeof(msg), "手持反光板预升无法与%s同时使用。",
+            is_hdr_bracketing_enabled() ? "HDR包围" :
+            trap_focus ? "陷阱对焦" :
+            is_bulb_mode() ? "B门拍摄" :
+            intervalometer_running ? "间隔拍摄" :
+            motion_detect ? "运动检测" :
+            aeb_setting ? "佳能包围(AEB)" :
             #ifdef FEATURE_AUDIO_REMOTE_SHOT
-            audio_release_running ? "audio remote" :
+            audio_release_running ? "声控遥控" :
             #endif
             "?!"
         );
@@ -3017,8 +3017,8 @@ static MENU_UPDATE_FUNC(picq_display)
         rawsize == 1 ? "M" : rawsize == 2 ? "S" : "",
         raw ? "RAW" : "",
         jpegtype != 4 && raw ? "+" : "",
-        jpegtype == 4 ? "" : jpegsize == 0 ? "Large" : jpegsize == 1 ? "Med" : "Small",
-        jpegtype == 2 ? "Coarse" : jpegtype == 3 ? "Fine" : ""
+        jpegtype == 4 ? "" : jpegsize == 0 ? "大" : jpegsize == 1 ? "中" : "小",
+        jpegtype == 2 ? "粗糙" : jpegtype == 3 ? "精细" : ""
     );
     MENU_SET_ENABLED(1);
 }
@@ -3087,7 +3087,7 @@ static MENU_UPDATE_FUNC(expo_lock_display)
     }
 
     if (is_hdr_bracketing_enabled())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This feature does not work with HDR bracketing.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此功能与 HDR包围 无法同时使用。");
 }
 
 // Tv + Av - Sv, in APEX units
@@ -3329,7 +3329,7 @@ static MENU_UPDATE_FUNC(pics_at_once_update)
     }
     if (is_hdr_bracketing_enabled())
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "No burst bracketing series, please.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "连拍与包围曝光无法同时使用。");
     }
 }
 
@@ -3337,7 +3337,7 @@ static MENU_UPDATE_FUNC(use_af_update)
 {
     if (is_hdr_bracketing_enabled())
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Autofocus and bracketing don't mix.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "自动对焦与包围曝光无法同时使用。");
     }
 }
 
@@ -3349,37 +3349,37 @@ extern int voice_tags; // beep.c
 static struct menu_entry shoot_menus[] = {
     #ifdef FEATURE_HDR_BRACKETING
     {
-        .name = "Advanced Bracket",
+        .name = "高级包围",
         .priv = &hdr_enabled,
         .update  = hdr_display,
         .max  = 1,
-        .help = "Advanced bracketing (expo, flash, DOF). Press shutter once.",
+        .help = "高级包围（曝光、闪光、景深）。只需按一次快门。",
         .works_best_in = DEP_PHOTO_MODE | DEP_M_MODE | DEP_MANUAL_ISO,
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Bracket type",
+                .name = "包围类型",
                 .priv       = &hdr_type,
                 .max = 2,
                 .icon_type = IT_DICE,
-                .choices = CHOICES("Exposure (Tv,Ae)", "Exposure (Flash)", "DOF (Aperture)"),
-                .help  = "Choose the variables to bracket:",
-                .help2 = "Expo bracket. M: changes shutter. Others: changes AEcomp.\n"
-                         "Flash bracket: change flash exposure compensation.\n"
-                         "DOF bracket: keep exposure constant, change Av/Tv ratio.",
+                .choices = CHOICES("曝光 (Tv,Ae)", "曝光 (闪光)", "景深 (光圈)"),
+                .help  = "选择要包围的变量：",
+                .help2 = "曝光包围：M 模式改快门，其他模式改曝光补偿。\n"
+                         "闪光包围：改变闪光曝光补偿。\n"
+                         "景深包围：保持曝光不变，改变 Av/Tv 组合。",
             },
             {
-                .name = "Frames",
+                .name = "张数",
                 .priv = &hdr_steps,
                 .min = 1,
                 .max = 12,
                 .update = hdr_steps_update,
                 .icon_type = IT_PERCENT,
-                .choices = CHOICES("Autodetect", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
-                .help = "Number of bracketed shots. Can be computed automatically.",
+                .choices = CHOICES("自动检测", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
+                .help = "包围拍摄张数。可自动计算。",
             },
             {
-                .name = "EV increment",
+                .name = "EV 步长",
                 .priv       = &hdr_stepsize,
                 .select     = hdr_stepsize_toggle,
                 .update = hdr_check_excessive_settings,
@@ -3387,39 +3387,39 @@ static struct menu_entry shoot_menus[] = {
                 .max = HDR_STEPSIZE_MAX,
                 .unit = UNIT_1_8_EV,
                 .icon_type = IT_PERCENT,
-                .help = "Exposure difference between two frames.",
+                .help = "相邻两张照片之间的曝光差。",
             },
             {
-                .name = "Sequence",
+                .name = "顺序",
                 .priv       = &hdr_sequence,
                 .max = 2,
                 .icon_type = IT_DICE,
                 .choices = CHOICES("0 - --", "0 - + -- ++", "0 + ++"),
-                .help = "Bracketing sequence order / type. Zero is always first.",
+                .help = "包围的顺序/类型。0EV 总是最先拍摄。",
                 .help2 =
-                    "Take darker images.\n"
-                    "Take dark, bright, even darker, even brigther images, in that order\n"
-                    "Take brighter images.\n"
+                    "拍摄更暗的照片。\n"
+                    "按此顺序拍摄：暗、亮、更暗、更亮。\n"
+                    "拍摄更亮的照片。\n"
             },
             #ifndef CONFIG_5DC
             {
-                .name = "2-second delay",
+                .name = "2秒延时",
                 .priv       = &hdr_delay,
                 .max = 1,
-                .help  = "Delay before starting the exposure.",
-                .help2 = "Only used if you start bracketing by pressing the shutter.",
-                .choices = CHOICES("OFF", "Auto"),
+                .help  = "开始曝光前的延时。",
+                .help2 = "仅在使用快门键启动包围时生效。",
+                .choices = CHOICES("关", "自动"),
             },
             #endif
             {
-                .name = "ISO shifting",
+                .name = "ISO偏移",
                 .priv       = &hdr_iso,
                 .max = 2,
-                .help =  "Also use ISO as bracket variable. Range: 100 - max AutoISO.",
+                .help =  "同时使用 ISO 作为包围变量。范围：100 至自动 ISO 上限。",
                 .help2 = " \n"
-                         "Full: try ISO bracket first. If out of range, use main var.\n"
-                         "Half: Bracket with both ISO (50%) and main variable (50%).\n",
-                .choices = CHOICES("OFF", "Full", "Half"),
+                         "完全：优先 ISO 包围，超出范围则改用主变量。\n"
+                         "一半：同时用 ISO（50%）和主变量（50%）包围。\n",
+                .choices = CHOICES("关", "完全", "一半"),
                 .icon_type = IT_DICE_OFF,
             },
             MENU_EOL
@@ -3429,80 +3429,80 @@ static struct menu_entry shoot_menus[] = {
     
     #ifdef FEATURE_INTERVALOMETER
     {
-        .name = "Intervalometer",
+        .name = "间隔拍摄",
         .priv       = &interval_enabled,
         .max        = 1,
         .update     = intervalometer_display,
-        .help = "Take pictures at fixed intervals (for timelapse).",
+        .help = "按固定间隔拍摄照片（用于延时摄影）。",
         .submenu_width = 700,
         .works_best_in = DEP_PHOTO_MODE,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Take a pic every",
+                .name = "拍摄间隔",
                 .priv       = &interval_time,
                 .max        = TIME_MAX_VALUE,
                 .update     = interval_timer_display,
                 .icon_type  = IT_PERCENT,
                 .unit       = UNIT_TIME,
-                .help = "Duration between two shots.",
+                .help = "两次拍摄之间的间隔时长。",
             },
             {
-                .name = "Start trigger",
+                .name = "启动触发",
                 .priv = &interval_trigger,
                 .update = interval_trigger_update,
                 .max = 2,
-                .choices = CHOICES("Leave Menu", "Half Shutter", "Take a Pic"),
-                .help  = "How to trigger the intervalometer start:",
-                .help2 = "When you exit ML menu, or at camera startup.\n"
-                         "On half-shutter press.\n"
-                         "After you take the first picture.",
+                .choices = CHOICES("留在菜单", "半按快门", "拍摄一张"),
+                .help  = "如何启动间隔拍摄：",
+                .help2 = "退出 ML 菜单时，或相机启动时。\n"
+                         "半按快门时。\n"
+                         "拍下第一张照片后。",
 
             },
             {
-                .name = "Start after",
+                .name = "开始延迟",
                 .priv       = &interval_start_time,
                 .max        = TIME_MAX_VALUE,
                 .update     = interval_start_after_display,
                 .icon_type  = IT_PERCENT,
                 .unit       = UNIT_TIME,
-                .help = "Start the intervalometer after X seconds / minutes / hours.",
+                .help = "在 X 秒/分/小时后开始间隔拍摄。",
             },
             {
-                .name = "Stop after",
+                .name = "结束条件",
                 .priv       = &interval_stop_after,
                 .max        = 5000, // 5000 shots
                 .unit       = UNIT_DEC,
                 .update     = interval_stop_after_display,
                 .icon_type  = IT_PERCENT_LOG_OFF,
-                .help = "Stop the intervalometer after taking X shots.",
+                .help = "拍满 X 张后停止间隔拍摄。",
             },
             MENU_EOL
         },
     },
     #endif
 
-MENU_PLACEHOLDER("Post Deflicker"),
+MENU_PLACEHOLDER("后期去闪烁"),
 
     #ifdef FEATURE_BULB_TIMER
     {
-        .name = "Bulb Timer",
+        .name = "B门计时",
         .priv = &bulb_timer,
         .update = bulb_display, 
         .max  = 1,
-        .help  = "For very long exposures (several minutes).",
-        .help2 = "To trigger, hold shutter pressed halfway for 1 second.",
+        .help  = "用于超长曝光（数分钟）。",
+        .help2 = "触发方式：半按快门保持 1 秒。",
         .depends_on = DEP_PHOTO_MODE,
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Exposure duration",
+                .name = "曝光时长",
                 .priv = &bulb_duration,
                 .max = TIME_MAX_VALUE,
                 .icon_type = IT_PERCENT,
                 .unit = UNIT_TIME
             },
             {
-                .name = "Display during exposure",
+                .name = "曝光期间显示",
                 .priv = &bulb_display_mode,
                 #ifdef FEATURE_BULB_TIMER_SHOW_PREVIOUS_PIC
                 .max = 2,
@@ -3510,8 +3510,8 @@ MENU_PLACEHOLDER("Post Deflicker"),
                 .max = 1,   /* just option to turn it off */
                 #endif
                 .icon_type = IT_DICE_OFF,
-                .choices = CHOICES("Don't change", "Turn off", "Show previous pic"),
-                .help = "Turn the screen on/off while taking bulb exposure.",
+                .choices = CHOICES("不改变", "关闭屏幕", "显示上一张"),
+                .help = "B门曝光期间开启/关闭屏幕。",
                 
             },
             MENU_EOL
@@ -3520,29 +3520,29 @@ MENU_PLACEHOLDER("Post Deflicker"),
     #endif  
     #ifdef FEATURE_LCD_SENSOR_REMOTE
     {
-        .name = "LCDsensor Remote",
+        .name = "液晶传感器遥控",
         .priv       = &lcd_release_running,
         .max        = 3,
         .update     = lcd_release_display,
-        .choices    = CHOICES("OFF", "Near", "Away", "Wave"),
-        .help = "Use the LCD face sensor as a simple remote (avoids shake).",
+        .choices    = CHOICES("关", "靠近", "离开", "挥动"),
+        .help = "将液晶面部传感器用作简易遥控（避免机身震动）。",
     },
     #endif
     #ifdef FEATURE_AUDIO_REMOTE_SHOT
     {
-        .name = "Audio RemoteShot",
+        .name = "声控遥控拍摄",
         .priv       = &audio_release_running,
         .max        = 1,
         .update     = audio_release_display,
-        .help = "Clap your hands or pop a balloon to take a picture.",
+        .help = "拍手或弄破气球即可拍照。",
         //.essential = FOR_PHOTO,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Trigger level (dB)",
-                .priv = &audio_release_level, 
+                .name = "触发电平 (dB)",
+                .priv = &audio_release_level,
                 .min = 1,
                 .max = 20,
-                .help = "Picture taken when sound level becomes X dB above average.",
+                .help = "当声音电平超过平均值 X dB 时自动拍摄。",
             },
             MENU_EOL
         },
@@ -3550,54 +3550,54 @@ MENU_PLACEHOLDER("Post Deflicker"),
     #endif
     #ifdef FEATURE_MOTION_DETECT
     {
-        .name = "Motion Detect",
+        .name = "运动检测",
         .priv       = &motion_detect,
         .max        = 1,
         .update     = motion_detect_display,
-        .help = "Take a picture when subject is moving or exposure changes.",
+        .help = "当主体移动或曝光变化时自动拍摄。",
         .works_best_in = DEP_PHOTO_MODE,
         .submenu_width = 650,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Trigger by",
-                .priv = &motion_detect_trigger, 
+                .name = "触发方式",
+                .priv = &motion_detect_trigger,
                 .max = 2,
-                .choices = CHOICES("Expo. change", "Frame diff.", "Steady hands"),
+                .choices = CHOICES("曝光变化", "帧间差异", "稳定手持"),
                 .icon_type = IT_DICE,
-                .help  = "Choose when the picture should be taken:",
-                .help2 = "EXP: reacts to exposure changes (large movements).\n"
-                         "DIF: detects smaller movements that do not change exposure.\n"
-                         "STDY: take pic if there's little or no motion (cam steady).",
+                .help  = "选择何时拍摄：",
+                .help2 = "EXP：对曝光变化作出反应（大幅移动）。\n"
+                         "DIF：检测不改变曝光的微小移动。\n"
+                         "STDY：几乎无移动时拍摄（相机稳定）。",
             },
             {
-                .name = "Trigger level",
-                .priv = &motion_detect_level, 
-                .min = 1,   
+                .name = "触发电平",
+                .priv = &motion_detect_level,
+                .min = 1,
                 .max = 30,
-                .help = "Higher values = less sensitive to motion.",
+                .help = "数值越高 = 对移动越不敏感。",
             },
             {
-                .name = "Detect Size",
-                .priv = &motion_detect_size, 
+                .name = "检测区域",
+                .priv = &motion_detect_size,
                 .max = 2,
-                .choices = CHOICES("Small", "Medium", "Large"),
-                .help = "Size of the area on which motion shall be detected.",
+                .choices = CHOICES("小", "中", "大"),
+                .help = "运动检测的区域大小。",
             },
             {
-                .name = "Delay",
+                .name = "延时",
                 .priv = &motion_detect_delay,
                 .max  = 10,
                 .min  = 0,
                 .icon_type = IT_PERCENT_OFF,
-                .choices = CHOICES("OFF", "0.1s", "0.2s", "0.3s", "0.4s", "0.5s", "0.6s", "0.7s", "0.8s", "0.9s", "1s"),
-                .help = "Delay between the detected motion and the picture taken.",
+                .choices = CHOICES("关", "0.1s", "0.2s", "0.3s", "0.4s", "0.5s", "0.6s", "0.7s", "0.8s", "0.9s", "1s"),
+                .help = "从检测到移动到实际拍摄的延时。",
             },
             MENU_EOL
         }
 
     },
     #endif
-    MENU_PLACEHOLDER("Silent Picture"),
+    MENU_PLACEHOLDER("静音拍摄"),
     #ifdef FEATURE_MLU_HANDHELD
         #ifndef FEATURE_MLU
         #error This requires FEATURE_MLU.
@@ -3607,23 +3607,23 @@ MENU_PLACEHOLDER("Post Deflicker"),
     {
         // 5DC can't do handheld MLU
         // 5D3 can do, but doesn't need it (it has silent mode with little or no vibration)
-        .name = "Mirror Lockup",
+        .name = "反光板预升",
         .priv = &mlu_auto,
         .update = mlu_display, 
         .select = mlu_toggle,
         .max = 1,
         .depends_on = DEP_PHOTO_MODE | DEP_NOT_LIVEVIEW,
         #ifdef FEATURE_MLU_HANDHELD
-        .help = "MLU tricks: hand-held or self-timer modes.",
+        .help = "反光板预升技巧：手持或自拍模式。",
         #elif defined(CONFIG_5DC)
-        .help = "You can toggle MLU w. DirectPrint or link it to self-timer.",
+        .help = "可通过 DirectPrint 切换反光板预升，或与自拍定时器联动。",
         #else
-        .help = "You can link MLU with self-timer (handy).",
+        .help = "可将反光板预升与自拍定时器联动（很实用）。",
         #endif
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "MLU mode",
+                .name = "预升模式",
                 .priv = &mlu_mode,
                 .select = mlu_toggle_mode,
                 #ifdef FEATURE_MLU_HANDHELD
@@ -3631,29 +3631,29 @@ MENU_PLACEHOLDER("Post Deflicker"),
                 #else
                 .max = 1,
                 #endif
-                .choices = CHOICES("Always ON", "Self-Timer", "Handheld"),
-                .help = "Choose when mirror lock-up should be active:",
-                .help2 = "Always ON: just the Canon mode, press shutter twice.\n"
-                         "Self-Timer: MLU setting will be linked to Canon self-timer.\n"
-                         "Handheld: trick to reduce camera shake. Press shutter once.",
+                .choices = CHOICES("始终开", "自拍定时", "手持"),
+                .help = "选择反光板预升何时生效：",
+                .help2 = "始终开：即佳能原生方式，需按两次快门。\n"
+                         "自拍定时：预升与佳能自拍定时器联动。\n"
+                         "手持：减轻机身震动的小技巧。只需按一次快门。",
             },
             #ifdef FEATURE_MLU_HANDHELD
             {
-                .name = "Handheld Shutter",
-                .priv = &mlu_handheld_shutter, 
+                .name = "手持快门范围",
+                .priv = &mlu_handheld_shutter,
                 .max = 1,
                 .icon_type = IT_DICE,
-                .choices = CHOICES("All values", "1/2...1/125"),
-                .help = "At what shutter speeds you want to use handheld MLU."
+                .choices = CHOICES("全部快门", "1/2...1/125"),
+                .help = "在哪些快门速度下启用手持预升。"
             },
             {
-                .name = "Handheld Delay",
-                .priv = &mlu_handheld_delay, 
+                .name = "手持延时",
+                .priv = &mlu_handheld_delay,
                 .min = 1,
                 .max = 7,
                 .icon_type = IT_PERCENT,
                 .choices = CHOICES("0.1s", "0.2s", "0.3s", "0.4s", "0.5s", "0.75s", "1s"),
-                .help = "Delay between mirror and shutter movement."
+                .help = "反光板抬起与快门动作之间的延时。"
             },
             #endif
             #ifdef FEATURE_MLU_HANDHELD_DEBUG
@@ -3661,20 +3661,20 @@ MENU_PLACEHOLDER("Post Deflicker"),
                 #error This requires FEATURE_MLU_HANDHELD.
                 #endif
             {
-                .name = "Handheld Debug",
-                .priv = &mlu_handled_debug, 
+                .name = "手持调试",
+                .priv = &mlu_handled_debug,
                 .max = 1,
-                .help = "Check whether the 'mirror up' event is detected correctly."
+                .help = "检查“反光板抬起”事件是否被正确检测。"
             },
             #endif
             {
-                .name   = "Normal MLU Delay",
+                .name   = "常规预升延时",
                 .priv   = &lens_mlu_delay,
                 .min    = 5,
                 .max    = 11,
                 .icon_type = IT_PERCENT,
                 .choices = CHOICES("0.5s", "0.75s", "1s", "2s", "3s", "4s", "5s"),
-                .help = "MLU delay used with intervalometer, bracketing etc.",
+                .help = "间隔拍摄、包围曝光等功能使用的预升延时。",
             }, 
             MENU_EOL
         },
@@ -3685,17 +3685,17 @@ MENU_PLACEHOLDER("Post Deflicker"),
     {
         .update = picq_display, 
         .select = picq_toggle, 
-        .help = "Experimental SRAW/MRAW mode. You may get corrupted files."
+        .help = "实验性的 SRAW/MRAW 模式。文件可能损坏。"
     },
     #endif
 
     #ifdef FEATURE_VOICE_TAGS
     {
-        .name = "Voice Tags", 
-        .priv = &voice_tags, 
+        .name = "语音标记",
+        .priv = &voice_tags,
         .max = 1,
-        .help = "After you take a picture, press SET to add a voice tag.",
-        .help2 = "For playback, go to Audio -> Sound Recorder.",
+        .help = "拍照后按 SET 键添加语音标记。",
+        .help2 = "回放请进入 音频 -> 录音机。",
         .works_best_in = DEP_PHOTO_MODE,
     },
     #endif
@@ -3708,40 +3708,40 @@ MENU_PLACEHOLDER("Post Deflicker"),
 
     #ifdef FEATURE_FLASH_TWEAKS
     {
-        .name = "Flash Tweaks",
+        .name = "闪光灯调整",
         .select     = menu_open_submenu,
-        .help = "Flash exposure compensation, 3rd party flash in LiveView...",
+        .help = "闪光曝光补偿、实时取景中使用副厂闪光灯…",
         .depends_on = DEP_PHOTO_MODE,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Flash expo comp.",
+                .name = "闪光曝光补偿",
                 .priv = &lens_info.flash_ae,
                 .min = FLASH_MIN_EV * 8,
                 .max = FLASH_MAX_EV * 8,
                 .update    = flash_ae_display,
                 .select     = flash_ae_toggle,
-                .help = "Flash exposure compensation, from -10EV to +3EV.",
+                .help = "闪光曝光补偿，范围 -10EV 至 +3EV。",
                 .icon_type = IT_PERCENT_OFF,
                 .depends_on = DEP_PHOTO_MODE,
             },
             #ifdef FEATURE_FLASH_NOFLASH
             {
-                .name = "Flash / No flash",
+                .name = "闪光 / 不闪光",
                 .update    = flash_and_no_flash_display,
                 .priv = &flash_and_no_flash,
                 .max = 1,
                 .depends_on = DEP_PHOTO_MODE,
-                .help = "Take odd pictures with flash, even pictures without flash.",
+                .help = "奇数张开闪光灯，偶数张不开闪光灯。",
             },
             #endif
             #ifdef FEATURE_LV_3RD_PARTY_FLASH
             {
-                .name = "3rd p. flash LV",
+                .name = "副厂闪光灯LV",
                 .priv = &lv_3rd_party_flash,
                 .max = 1,
                 .depends_on = DEP_LIVEVIEW | DEP_PHOTO_MODE,
-                .help  = "A trick to allow 3rd party flashes to fire in LiveView.",
-                .help2 = "!!! DISABLE THIS OPTION WHEN YOU ARE NOT USING IT !!!  ",
+                .help  = "让副厂闪光灯在实时取景中也能引闪的技巧。",
+                .help2 = "！！！不使用时请务必禁用此选项！！！  ",
             },
             #endif
             MENU_EOL,
@@ -3752,30 +3752,30 @@ MENU_PLACEHOLDER("Post Deflicker"),
     // This entire menu is pointless until ML can trigger capture of images.
     #ifndef CONFIG_IMAGE_CAPTURE_NOT_WORKING
     {
-        .name = "Shoot Preferences",
+        .name = "拍摄偏好",
         .select     = menu_open_submenu,
-        .help = "Autofocus, number of pics to take at once...",
+        .help = "自动对焦、单次连拍张数…",
         .depends_on = DEP_PHOTO_MODE,
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Pics at once",
+                .name = "单次连拍张数",
                 .priv = &pics_to_take_at_once,
                 .max = 8,
-                .choices = CHOICES("1 (OFF)", "2", "3", "4", "5", "6", "7", "8", "9"),
+                .choices = CHOICES("1 (关)", "2", "3", "4", "5", "6", "7", "8", "9"),
                 .update = pics_at_once_update,
                 .icon_type = IT_PERCENT_OFF,
-                .help = "How many pictures to take at once (for each trigger event).",
-                .help2 = "For intervalometer, motion detect, trap focus, audio remote.",
+                .help = "每次触发时连拍几张照片。",
+                .help2 = "适用于间隔拍摄、运动检测、陷阱对焦、声控遥控。",
             },
             #ifdef CONFIG_PROP_REQUEST_CHANGE
             {
-                .name = "Use Autofocus", 
+                .name = "使用自动对焦",
                 .priv = &shoot_use_af,
                 .update = use_af_update,
                 .max = 1,
-                .help  = "For intervalometer, audio remote shot and motion detect.",
-                .help2 = "Be careful, won't take pics if it can't autofocus.",
+                .help  = "适用于间隔拍摄、声控遥控和运动检测。",
+                .help2 = "注意：无法对焦时将不会拍摄。",
                 .icon_type = IT_BOOL,
                 .depends_on = DEP_AUTOFOCUS,
                 .works_best_in = DEP_NOT_LIVEVIEW,
@@ -3783,37 +3783,37 @@ MENU_PLACEHOLDER("Post Deflicker"),
             #endif
             #if defined(FEATURE_HDR_BRACKETING) || defined(FEATURE_FOCUS_STACKING)
             {
-                .name = "Post scripts",
+                .name = "后期脚本",
                 .priv       = &hdr_scripts,
                 .max = 3,
-                .help = "Post-processing scripts for bracketing and focus stacking.",
-                .choices = CHOICES("OFF", "Enfuse", "Align+Enfuse", "File List"),
+                .help = "为包围曝光和焦点堆栈生成后期处理脚本。",
+                .choices = CHOICES("关", "Enfuse", "Align+Enfuse", "文件列表"),
             },
             #endif
             #ifdef FEATURE_INTERVALOMETER
             {
-                .name = "Intervalometer Script",
+                .name = "间隔拍摄脚本",
                 .priv       = &interval_scripts,
                 .max = 3,
-                .help = "Scripts for sorting intervalometer sequences.",
-                .choices = CHOICES("OFF", "Bash", "MS-DOS", "File List"),
+                .help = "生成整理间隔拍摄序列的脚本。",
+                .choices = CHOICES("关", "Bash", "MS-DOS", "文件列表"),
             },
             #endif
             #ifdef FEATURE_SNAP_SIM
             {
-                .name = "Snap Simulation",
+                .name = "快门模拟",
                 .priv = &snap_sim, 
                 .max = 1,
                 .icon_type = IT_BOOL,
                 .choices = CHOICES(
-                    "OFF", 
-                    
-                    "Blink"
+                    "关",
+
+                    "闪烁"
                     #ifdef CONFIG_BEEP
-                    " & Beep"
+                    "（含提示音）"
                     #endif
                 ),
-                .help = "You can take virtual (fake) pictures just for testing.",
+                .help = "可拍摄虚拟（模拟）照片，仅供测试。",
             },
             #endif
             MENU_EOL,
@@ -3829,41 +3829,41 @@ extern int zoom_trick;
 struct menu_entry tweak_menus_shoot[] = {
     #ifdef FEATURE_LV_ZOOM_SETTINGS
     {
-        .name = "LiveView zoom tweaks",
+        .name = "实时取景变焦微调",
         .select = menu_open_submenu,
         .submenu_width = 650,
         .icon_type = IT_SUBMENU,
-        .help = "Disable x5 or x10, boost contrast/sharpness...",
+        .help = "禁用 x5/x10 放大、提高对比度/锐度…",
         .depends_on = DEP_LIVEVIEW,
         .children =  (struct menu_entry[]) {
             #ifdef CONFIG_ZOOM_X1
             {
-                .name = "Zoom x1",
-                .priv = &zoom_disable_x1, 
+                .name = "变焦 x1",
+                .priv = &zoom_disable_x1,
                 .max = 1,
-                .choices = CHOICES("ON", "Disable"),
+                .choices = CHOICES("开", "禁用"),
                 .select = zoom_x5_x10_toggle,
-                .help = "Disable the screen that lets you move the focus box before zooming",
-                .help2 = "(displayed as 'Zoom x1' on Canon' user interface)",
+                .help = "禁用放大前移动对焦框的屏幕",
+                .help2 = "（佳能界面中显示为 Zoom x1）",
                 .icon_type = IT_DISABLE_SOME_FEATURE,
             },
             #endif
             {
-                .name = "Zoom x5",
-                .priv = &zoom_disable_x5, 
+                .name = "变焦 x5",
+                .priv = &zoom_disable_x5,
                 .max = 1,
-                .choices = CHOICES("ON", "Disable"),
+                .choices = CHOICES("开", "禁用"),
                 .select = zoom_x5_x10_toggle,
-                .help = "Disable x5 zoom in LiveView.",
+                .help = "禁用实时取景的 x5 放大。",
                 .icon_type = IT_DISABLE_SOME_FEATURE,
             },
             {
-                .name = "Zoom x10",
-                .priv = &zoom_disable_x10, 
+                .name = "变焦 x10",
+                .priv = &zoom_disable_x10,
                 .max = 1,
                 .select = zoom_x5_x10_toggle,
-                .choices = CHOICES("ON", "Disable"),
-                .help = "Disable x10 zoom in LiveView.",
+                .choices = CHOICES("开", "禁用"),
+                .help = "禁用实时取景的 x10 放大。",
                 .icon_type = IT_DISABLE_SOME_FEATURE,
             },
             #ifdef FEATURE_LV_ZOOM_AUTO_EXPOSURE
@@ -3871,10 +3871,10 @@ struct menu_entry tweak_menus_shoot[] = {
                 #error This requires CONFIG_EXPSIM.
                 #endif
             {
-                .name = "Auto exposure on Zoom",
+                .name = "放大时自动曝光",
                 .priv = &zoom_auto_exposure,
                 .max = 1,
-                .help = "Auto adjusts exposure, so you can focus manually wide open.",
+                .help = "自动调整曝光，便于全开光圈手动对焦。",
                 #ifndef CONFIG_5D2
                 .depends_on = DEP_PHOTO_MODE,
                 #endif
@@ -3882,42 +3882,42 @@ struct menu_entry tweak_menus_shoot[] = {
             #endif
             #ifdef FEATURE_LV_ZOOM_SHARP_CONTRAST
             {
-                .name = "Increase SharpContrast",
+                .name = "增强锐度对比度",
                 .priv = &zoom_sharpen,
                 .max = 1,
-                .help = "Increase sharpness and contrast when you zoom in LiveView."
+                .help = "实时取景放大时提高锐度和对比度。"
             },
             #endif
             {
-                .name = "Zoom on HalfShutter",
+                .name = "半按快门变焦",
                 .priv = &zoom_halfshutter,
                 .max = 1,
-                .help = "Enable zoom when you hold the shutter halfway pressed.",
-                .help2 = "This feature only works as long as you don't trigger autofocus.",
+                .help = "半按快门时自动放大。",
+                .help2 = "仅在不触发自动对焦时有效。",
             },
             {
-                .name = "Zoom with Focus Ring",
+                .name = "转动对焦环放大",
                 .priv = &zoom_focus_ring,
                 .max = 1,
-                .help = "Zoom when you turn the focus ring (only some Canon lenses).",
+                .help = "转动对焦环时放大（仅部分佳能镜头支持）。",
                 .depends_on = DEP_MANUAL_FOCUS,
             },
             #ifdef FEATURE_ZOOM_TRICK_5D3
             #ifdef CONFIG_6D
             {
-                .name = "Double Click",
+                .name = "双击",
                 .priv = &zoom_trick,
                 .max = 2,
-                .help = "Double-click top-right button in LV. Shortcuts or Zoom.",
-                .choices = CHOICES("OFF", "Zoom", "Shortcuts"),
+                .help = "实时取景中双击右上键：快捷键或放大。",
+                .choices = CHOICES("关", "放大", "快捷键"),
             },
             #else // 5D3
             {
-                .name = "Zoom with old button",
+                .name = "旧放大键",
                 .priv = &zoom_trick,
                 .max = 1,
-                .help = "Use the old Zoom In button, as in 5D2. Double-click in LV.",
-                .choices = CHOICES("OFF", "ON (!)"),
+                .help = "像 5D2 一样使用旧放大键。实时取景中双击。",
+                .choices = CHOICES("关", "开 (!)"),
             },
             #endif
             #endif
@@ -3942,66 +3942,66 @@ extern int digic_shadow_lift;
 static struct menu_entry expo_menus[] = {
     #ifdef FEATURE_WHITE_BALANCE
     {
-        .name = "White Balance",
+        .name = "白平衡",
         .update    = kelvin_wbs_display,
         .select     = kelvin_toggle,
-        .help  = "Adjust Kelvin white balance and GM/BA WBShift.",
-        .help2 = "Advanced: WBShift, RGB multipliers, Push-button WB...",
+        .help  = "调整开尔文白平衡及绿/品红、蓝/琥珀偏移。",
+        .help2 = "进阶：白平衡偏移、RGB 通道倍数、一键白平衡…",
         .edit_mode = EM_SHOW_LIVEVIEW,
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "White Balance",
+                .name = "白平衡",
                 .update    = kelvin_display,
                 .select     = kelvin_toggle,
-                .help = "Adjust Kelvin white balance.",
+                .help = "调整开尔文白平衡。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "WBShift G/M",
-                .update = wbs_gm_display, 
+                .name = "白平衡偏移 G/M",
+                .update = wbs_gm_display,
                 .select = wbs_gm_toggle,
                 .min = -9,
                 .max = 9,
                 .icon_type = IT_PERCENT_OFF,
-                .help = "Green-Magenta white balance shift, for fluorescent lights.",
+                .help = "绿-品红白平衡偏移，适用于荧光灯。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "WBShift B/A",
-                .update = wbs_ba_display, 
-                .select = wbs_ba_toggle, 
+                .name = "白平衡偏移 B/A",
+                .update = wbs_ba_display,
+                .select = wbs_ba_toggle,
                 .min = -9,
                 .max = 9,
                 .icon_type = IT_PERCENT_OFF,
-                .help = "Blue-Amber WBShift; 1 unit = 5 mireks on Kelvin axis.",
+                .help = "蓝-琥珀白平衡偏移；1 单位 = 开尔文轴上 5 mirek。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "R multiplier",
+                .name = "R 通道倍数",
                 .priv = (void *)(1),
                 .update = wb_custom_gain_display,
                 .select = wb_custom_gain_toggle,
                 .icon_type = IT_PERCENT,
-                .help = "RED channel multiplier, for custom white balance.",
+                .help = "红色通道倍数，用于自定义白平衡。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "G multiplier",
+                .name = "G 通道倍数",
                 .priv = (void *)(2),
                 .update = wb_custom_gain_display,
                 .select = wb_custom_gain_toggle,
                 .icon_type = IT_PERCENT,
-                .help = "GREEN channel multiplier, for custom white balance.",
+                .help = "绿色通道倍数，用于自定义白平衡。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "B multiplier",
+                .name = "B 通道倍数",
                 .priv = (void *)(3),
                 .update = wb_custom_gain_display,
                 .select = wb_custom_gain_toggle,
                 .icon_type = IT_PERCENT,
-                .help = "BLUE channel multiplier, for custom white balance.",
+                .help = "蓝色通道倍数，用于自定义白平衡。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             /*{
@@ -4015,9 +4015,9 @@ static struct menu_entry expo_menus[] = {
                 .help = "LiveView: adjust Green-Magenta once for the current scene."
             },*/
             {
-                .name = "Auto adjust Kelvin + G/M",
+                .name = "自动调整色温 + 绿/品红",
                 .select = kelvin_n_gm_auto,
-                .help = "LiveView: adjust Kelvin and G-M once (Push-button WB).",
+                .help = "实时取景：一次性调整色温和绿/品红（一键白平衡）。",
                 .depends_on = DEP_LIVEVIEW,
             },
             MENU_EOL
@@ -4030,16 +4030,16 @@ static struct menu_entry expo_menus[] = {
         .name = "ISO",
         .update    = iso_display,
         .select     = iso_toggle,
-        .help  = "Adjust and fine-tune ISO. Also displays APEX Sv value.",
-        .help2 = "Advanced: digital ISO tweaks, HTP, ISO 50, ISO 800.000...",
+        .help  = "调整并微调 ISO。同时显示 APEX Sv 值。",
+        .help2 = "进阶：数码 ISO 调整、HTP、ISO 50、ISO 800.000…",
         .edit_mode = EM_SHOW_LIVEVIEW,
         
         .submenu_width = 650,
 
         .children =  (struct menu_entry[]) {
             {
-                .name = "Equivalent ISO",
-                .help = "ISO equivalent (analog + digital components).",
+                .name = "等效 ISO",
+                .help = "等效 ISO（模拟 + 数码成分）。",
                 .priv = &lens_info.iso_equiv_raw,
                 .unit = UNIT_ISO,
                 .select     = iso_toggle,
@@ -4047,8 +4047,8 @@ static struct menu_entry expo_menus[] = {
                 .update = iso_icon_update,
             },
             {
-                .name = "Canon analog ISO",
-                .help = "Analog ISO component (ISO at which the sensor is driven).",
+                .name = "佳能模拟 ISO",
+                .help = "模拟 ISO 成分（传感器实际驱动的 ISO）。",
                 .priv = &lens_info.iso_analog_raw,
                 .unit = UNIT_ISO,
                 .select     = analog_iso_toggle,
@@ -4057,8 +4057,8 @@ static struct menu_entry expo_menus[] = {
                 .update = iso_icon_update,
             },
             {
-                .name = "Canon digital ISO",
-                .help = "Canon's digital ISO component. Strongly recommended: 0.",
+                .name = "佳能数码 ISO",
+                .help = "佳能数码 ISO 成分。强烈建议设为 0。",
                 .priv = &lens_info.iso_digital_ev,
                 .unit = UNIT_1_8_EV,
                 .select     = digital_iso_toggle,
@@ -4068,10 +4068,10 @@ static struct menu_entry expo_menus[] = {
             },
             #ifdef FEATURE_EXPO_ISO_DIGIC
             {
-                .name = "ML digital ISO",
+                .name = "ML 数码 ISO",
                 .update = digic_iso_print_movie,
                 .select = digic_iso_toggle_movie,
-                .help = "ISO tweaks. Negative gain has better highlight roll-off.",
+                .help = "ISO 微调。负增益的高光过渡更自然。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
                 .depends_on = DEP_MOVIE_MODE | DEP_MANUAL_ISO,
                 .icon_type = IT_DICE_OFF,
@@ -4091,29 +4091,29 @@ static struct menu_entry expo_menus[] = {
             */
             #if 0 // unstable
             {
-                .name = "Min Movie AutoISO",
+                .name = "视频自动ISO下限",
                 .priv = &lvae_iso_min,
                 .min = 72,
                 .max = 120,
                 .unit = UNIT_ISO,
-                .help = "Minimum value for Auto ISO in movie mode.",
+                .help = "视频模式下自动 ISO 的下限。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "Max Movie AutoISO",
+                .name = "视频自动ISO上限",
                 .priv = &lvae_iso_max,
                 .min = 72,
                 .max = 120,
                 .unit = UNIT_ISO,
-                .help = "Maximum value for Auto ISO in movie mode.",
+                .help = "视频模式下自动 ISO 的上限。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             {
-                .name = "A-ISO smoothness",
+                .name = "自动ISO平滑度",
                 .priv = &lvae_iso_speed,
                 .min = 3,
                 .max = 30,
-                .help = "Speed for movie Auto ISO. Low values = smooth transitions.",
+                .help = "视频自动 ISO 的变化速度。数值越低 = 过渡越平滑。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
             },
             #endif
@@ -4123,61 +4123,61 @@ static struct menu_entry expo_menus[] = {
     #endif
     #ifdef FEATURE_EXPO_SHUTTER
     {
-        .name = "Shutter",
+        .name = "快门",
         .update     = shutter_display,
         .select     = shutter_toggle,
         .icon_type  = IT_PERCENT,
-        .help = "Fine-tune shutter value. Displays APEX Tv or degrees equiv.",
+        .help = "微调快门值。显示 APEX Tv 或对应角度。",
         .edit_mode = EM_SHOW_LIVEVIEW,
     },
     #endif
     #ifdef FEATURE_EXPO_APERTURE
     {
-        .name = "Aperture",
+        .name = "光圈",
         .update     = aperture_display,
         .select     = aperture_toggle,
         .icon_type  = IT_PERCENT,
-        .help = "Adjust aperture. Also displays APEX aperture (Av) in stops.",
+        .help = "调整光圈。同时显示 APEX 光圈值 (Av)。",
         .depends_on = DEP_CHIPPED_LENS,
         .edit_mode = EM_SHOW_LIVEVIEW,
     },
     #endif
-    MENU_PLACEHOLDER("Picture Style"),
+    MENU_PLACEHOLDER("照片风格"),
     MENU_PLACEHOLDER("REC-PicStyle"),
-    MENU_PLACEHOLDER("Auto ETTR"),
+    MENU_PLACEHOLDER("自动向右曝光"),
     #ifdef FEATURE_EXPO_LOCK
     {
-        .name       = "Expo. Lock",
+        .name       = "曝光锁定",
         .priv       = &expo_lock,
         .max        = 1,
         .update     = expo_lock_display,
-        .help       = "In M mode, adjust Tv/Av/ISO without changing exposure.",
-        .help2      = "It may change the way you use M mode. Maybe I'm just crazy.",
+        .help       = "M 模式下调整 Tv/Av/ISO 而不改变总曝光。",
+        .help2      = "它可能改变你使用 M 模式的方式。也许我只是太疯狂。",
         .depends_on = DEP_M_MODE | DEP_MANUAL_ISO,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Tv  -> ",
+                .name = "Tv 改变时",
                 .priv    = &expo_lock_tv,
                 .max = 2,
                 .icon_type = IT_DICE_OFF,
-                .choices = CHOICES("OFF", "Av,ISO", "ISO,Av"),
-                .help = "When you change Tv, ML adjusts Av and ISO to keep exposure.",
+                .choices = CHOICES("关", "Av,ISO", "ISO,Av"),
+                .help = "改变 Tv 时，ML 调整 Av 和 ISO 以保持曝光。",
             },
             {
-                .name = "Av  -> ",
+                .name = "Av 改变时",
                 .priv    = &expo_lock_av,
                 .max = 2,
                 .icon_type = IT_DICE_OFF,
-                .choices = CHOICES("OFF", "Tv,ISO", "ISO,Tv"),
-                .help = "When you change Av, ML adjusts Tv and ISO to keep exposure.",
+                .choices = CHOICES("关", "Tv,ISO", "ISO,Tv"),
+                .help = "改变 Av 时，ML 调整 Tv 和 ISO 以保持曝光。",
             },
             {
-                .name = "ISO -> ",
+                .name = "ISO 改变时",
                 .priv    = &expo_lock_iso,
                 .max = 2,
                 .icon_type = IT_DICE_OFF,
-                .choices = CHOICES("OFF", "Tv,Av", "Av,Tv"),
-                .help = "When you change ISO, ML adjusts Tv and Av to keep exposure.",
+                .choices = CHOICES("关", "Tv,Av", "Av,Tv"),
+                .help = "改变 ISO 时，ML 调整 Tv 和 Av 以保持曝光。",
             },
             MENU_EOL
         },
@@ -4185,16 +4185,16 @@ static struct menu_entry expo_menus[] = {
     #endif
     #ifdef FEATURE_EXPO_PRESET
     {
-        .name = "Expo. Presets",
+        .name = "曝光预设",
         .priv = &expo_preset,
         .max = 2,
-        .choices = CHOICES("OFF", "Press SET", "Press " INFO_BTN_NAME),
-        .help = "Quickly toggle between two expo presets (ISO,Tv,Av,Kelvin).",
+        .choices = CHOICES("关", "按 SET", "按 " INFO_BTN_NAME),
+        .help = "在两组曝光预设（ISO,Tv,Av,色温）间快速切换。",
         .works_best_in = DEP_M_MODE,
     },
     #endif
 
-    MENU_PLACEHOLDER("Dual ISO"),
+    MENU_PLACEHOLDER("双ISO"),
 };
 
 
@@ -4232,7 +4232,7 @@ void hdr_create_script(int f0, int focus_stack)
     FILE * f = FIO_CreateFile(name);
     if (!f)
     {
-        bmp_printf( FONT_LARGE, 30, 30, "FIO_CreateFile: error for %s", name );
+        bmp_printf( FONT_LARGE, 30, 30, "FIO_CreateFile: 出错 %s", name );
         return;
     }
     
@@ -4269,7 +4269,7 @@ void hdr_create_script(int f0, int focus_stack)
     }
     
     FIO_CloseFile(f);
-    NotifyBox(5000, "Saved %s\n%s%04d.JPG ... %s%04d.JPG", name + 17, get_file_prefix(), f0, get_file_prefix(), DCIM_WRAP(f0 + steps - 1));
+    NotifyBox(5000, "已保存 %s\n%s%04d.JPG ... %s%04d.JPG", name + 17, get_file_prefix(), f0, get_file_prefix(), DCIM_WRAP(f0 + steps - 1));
 }
 #endif // HDR/FST
 
@@ -4307,7 +4307,7 @@ void interval_create_script(int f0)
     
     if (!f)
     {
-        bmp_printf( FONT_LARGE, 30, 30, "FIO_CreateFileOrAppend: error for %s", name );
+        bmp_printf( FONT_LARGE, 30, 30, "FIO_CreateFileOrAppend: 出错 %s", name );
         return;
     }
     
@@ -4341,7 +4341,7 @@ void interval_create_script(int f0)
     }
     
     FIO_CloseFile(f);
-    NotifyBox(5000, "Saved %s", name);
+    NotifyBox(5000, "已保存 %s", name);
 }
 #endif // FEATURE_INTERVALOMETER
 
@@ -4591,7 +4591,7 @@ static int hdr_check_cancel(int init)
     { 
         beep(); 
         lens_wait_readytotakepic(64);
-        NotifyBox(5000, "Bracketing stopped.");
+        NotifyBox(5000, "包围曝光已停止。");
         return 1; 
     }
     return 0;
@@ -4658,9 +4658,9 @@ static void hdr_check_for_under_or_over_exposure(int* under, int* over)
     );
 
     bmp_printf(
-        FONT_LARGE, 50, 50, 
-        "Over :%3d.%02d%%\n"
-        "Under:%3d.%02d%%",
+        FONT_LARGE, 50, 50,
+        "过曝:%3d.%02d%%\n"
+        "欠曝:%3d.%02d%%",
         po/1000, (po/10)%100, 0,
         pu/1000, (pu/10)%100, 0 
     ); 
@@ -4872,7 +4872,7 @@ void movie_start()
     
     if (RECORDING)
     {
-        NotifyBox(2000, "Already recording ");
+        NotifyBox(2000, "已在录制中 ");
         return;
     }
     
@@ -4903,12 +4903,12 @@ void movie_end()
 #ifdef CONFIG_MOVIE
     if (shooting_type != 3 && !is_movie_mode())
     {
-        NotifyBox(2000, "movie_end: not movie mode (%d,%d) ", shooting_type, shooting_mode);
+        NotifyBox(2000, "movie_end: 非视频模式 (%d,%d) ", shooting_type, shooting_mode);
         return;
     }
     if (NOT_RECORDING)
     {
-        NotifyBox(2000, "movie_end: not recording ");
+        NotifyBox(2000, "movie_end: 未在录制 ");
         return;
     }
 
@@ -5014,7 +5014,7 @@ static void display_expsim_status()
     int y = os.y_max - os.off_169 - font_med.height - 5;
     if (!get_expsim())
     {
-        bmp_printf( FONT(FONT_MED, COLOR_WHITE, 0), x, y, " ExpSim " );
+        bmp_printf( FONT(FONT_MED, COLOR_WHITE, 0), x, y, " 曝光模拟 " );
         draw_line(x-5 + font_med.width, y + font_med.height * 3/4, x + font_med.width * 7, y + font_med.height * 1/4, COLOR_WHITE);
     }
     else
@@ -5054,13 +5054,13 @@ static void display_trap_focus_msg()
     switch(trap_focus_msg)
     {
         case TRAP_ERR_CFN:
-            msg = "Trap Focus:     \nCFn Fail. Set AF\n to shutter btn ";
+            msg = "陷阱对焦：     \n自定义功能失败，\n请将AF设为快门键 ";
             break;
         case TRAP_IDLE:
-            msg = "Trap Focus:     \nIDLE, press half\nshutter shortly ";
+            msg = "陷阱对焦：     \n待机中，请短暂半按\n快门键启动 ";
             break;
         case TRAP_ACTIVE:
-            msg = "Trap Focus:     \nACTIVE, keys are\ncurrently locked";
+            msg = "陷阱对焦：     \n已激活，按键当前\n已锁定";
             break;
     }
     
@@ -5096,7 +5096,7 @@ void display_trap_focus_info()
         x = 8; y = 160;
         if (show || show_prev)
         {
-            bmp_printf(FONT(FONT_MED, fg, bg), x, y, show ? "TRAP \nFOCUS" : "     \n     ");
+            bmp_printf(FONT(FONT_MED, fg, bg), x, y, show ? "陷阱\n对焦" : "     \n     ");
         }
     }
     else
@@ -5119,7 +5119,7 @@ void intervalometer_stop()
     if (intervalometer_running)
     {
         intervalometer_running = 0;
-        NotifyBox(2000, "Intervalometer stopped.");
+        NotifyBox(2000, "间隔拍摄已停止。");
         interval_create_script(DCIM_WRAP(get_shooting_card()->file_number - intervalometer_pictures_taken + 1));
         //~ display_on();
     }
@@ -5143,9 +5143,9 @@ static void intervalometer_check_trigger()
                 /* intervalometer expecting some kind of trigger? say so */
                 if (interval_trigger != INTERVAL_TRIGGER_LEAVE_MENU)
                 {
-                    bmp_printf(FONT_LARGE, 50, 310, 
-                        " Intervalometer: waiting for %s...\n",
-                            interval_trigger == INTERVAL_TRIGGER_HALF_SHUTTER ? "half-shutter" : "first picture"
+                    bmp_printf(FONT_LARGE, 50, 310,
+                        " 间隔拍摄：等待%s…\n",
+                            interval_trigger == INTERVAL_TRIGGER_HALF_SHUTTER ? "半按快门" : "第一张照片"
                     );
                 }
                 
@@ -5322,7 +5322,7 @@ static void md_take_pics() // for motion detection
 {
     if (motion_detect_delay > 1) {
         for (int t=0; t<(int)motion_detect_delay; t++) {
-            bmp_printf(FONT_MED, 0, 80, " Taking picture in %d.%ds   ", (int)(motion_detect_delay-t)/10, (int)(motion_detect_delay-t)%10);
+            bmp_printf(FONT_MED, 0, 80, " 将在 %d.%d 秒后拍摄   ", (int)(motion_detect_delay-t)/10, (int)(motion_detect_delay-t)%10);
             msleep(100);
             int mdx = motion_detect && (liveview_display_idle() || (lv && !DISPLAY_IS_ON)) && NOT_RECORDING && !gui_menu_shown();
             if (!mdx) return;
@@ -5389,9 +5389,9 @@ static void misc_shooting_info()
                 if (!ae_warned && !gui_menu_shown())
                 {
                     msleep(2000);
-                    bmp_printf(SHADOW_FONT(FONT_MED), 50, 50, 
-                        "!!! Auto exposure !!!\n"
-                        "Use M mode and set 'LV display: Movie' from Expo menu");
+                    bmp_printf(SHADOW_FONT(FONT_MED), 50, 50,
+                        "！！！自动曝光！！！\n"
+                        "请使用 M 模式，并在曝光(Expo)菜单设置“LV显示：视频”");
                     msleep(4000);
                     redraw();
                     ae_warned = 1;
@@ -5404,9 +5404,9 @@ static void misc_shooting_info()
                 static int ae_warned = 0;
                 if (!ae_warned && !gui_menu_shown())
                 {
-                    bmp_printf(SHADOW_FONT(FONT_MED), 50, 50, 
-                        "!!! Auto exposure !!!\n"
-                        "Set 'Movie Exposure -> Manual' from Canon menu");
+                    bmp_printf(SHADOW_FONT(FONT_MED), 50, 50,
+                        "！！！自动曝光！！！\n"
+                        "请在佳能菜单设置“视频曝光 -> 手动”");
                     msleep(2000);
                     redraw();
                     ae_warned = 1;
@@ -5423,9 +5423,9 @@ static void misc_shooting_info()
                     msleep(2000);
                     if (EXT_MONITOR_RCA) // check again
                     {
-                        bmp_printf(SHADOW_FONT(FONT_LARGE), 50, 50, 
-                            "SD monitors NOT fully supported!\n"
-                            "RGB tools and MZoom won't work. ");
+                        bmp_printf(SHADOW_FONT(FONT_LARGE), 50, 50,
+                            "SD 监视器不受完整支持！\n"
+                            "RGB 工具与 MZoom 无法使用。 ");
                         msleep(4000);
                         redraw();
                         rca_warned = 1;
@@ -5623,28 +5623,28 @@ shoot_task( void* unused )
                 info_led_on();
                 
                 int d = bulb_duration;
-                NotifyBox(10000, "[HalfShutter] Bulb timer: %s", format_time_hours_minutes_seconds(d));
+                NotifyBox(10000, "[半按快门] B门定时器： %s", format_time_hours_minutes_seconds(d));
                 while (get_halfshutter_pressed())
                 {
                     msleep(100);
                 }
                 int m0 = shooting_mode;
                 wait_till_next_second();
-                NotifyBox(2000, "[2s] Bulb timer: %s", format_time_hours_minutes_seconds(d));
+                NotifyBox(2000, "[2s] B门定时器： %s", format_time_hours_minutes_seconds(d));
                 info_led_on();
                 wait_till_next_second();
                 if (get_halfshutter_pressed() || !display_idle() || m0 != shooting_mode || !job_state_ready_to_take_pic()) 
                 {
-                    NotifyBox(2000, "Bulb timer canceled.");
+                    NotifyBox(2000, "B门定时器已取消。");
                     info_led_off();
                     continue;
                 }
-                NotifyBox(2000, "[1s] Bulb timer: %s", format_time_hours_minutes_seconds(d));
+                NotifyBox(2000, "[1s] B门定时器： %s", format_time_hours_minutes_seconds(d));
                 info_led_on();
                 wait_till_next_second();
                 if (get_halfshutter_pressed() || !display_idle() || m0 != shooting_mode || !job_state_ready_to_take_pic()) 
                 {
-                    NotifyBox(2000, "Bulb timer canceled.");
+                    NotifyBox(2000, "B门定时器已取消。");
                     info_led_off();
                     continue;
                 }
@@ -5726,7 +5726,7 @@ shoot_task( void* unused )
                 /* re-press half-shutter */
                 SW1(1,200);
                 
-                bmp_printf(FONT_MED, 0, 0, "(take pic or release half-shutter)");
+                bmp_printf(FONT_MED, 0, 0, "（拍照或松开半按快门）");
                 
                 /* timeout after 2 minutes */
                 loops = 1200;
@@ -5900,7 +5900,7 @@ shoot_task( void* unused )
                 //TODO: maybe get the spot yuv of the target box
                 get_spot_yuv_ex(detect_size, xcb-os.x_max/2, ycb-os.y_max/2, &y, &u, &v, 1, 1);
                 aev = y / 2;
-                if (K > 40) bmp_printf(FONT_MED, 0, 20, "Average exposure: %3d    New exposure: %3d   ", old_ae_avg/100, aev);
+                if (K > 40) bmp_printf(FONT_MED, 0, 20, "平均曝光： %3d    新曝光： %3d   ", old_ae_avg/100, aev);
                 if (K > 40 && ABS(old_ae_avg/100 - aev) >= (int)motion_detect_level)
                 {
                     md_take_pics();
@@ -5912,7 +5912,7 @@ shoot_task( void* unused )
             else if (motion_detect_trigger == 1) 
             {
                 int d = get_spot_motion(detect_size, xcb, ycb, get_global_draw());
-                if (K > 20) bmp_printf(FONT_MED, 0, 20, "Motion level: %d   ", d);
+                if (K > 20) bmp_printf(FONT_MED, 0, 20, "运动量： %d   ", d);
                 if (K > 20 && d >= (int)motion_detect_level)
                 {
                     md_take_pics();
@@ -5947,7 +5947,7 @@ shoot_task( void* unused )
                         bmp_draw_rect(steady ? COLOR_GREEN1 : COLOR_BLACK, 60 - i*2, 100 - 30, 1, 30 - d);
                     }
 
-                    bmp_printf(FONT_MED, 0, 20, "Motion level: %d   ", dmax);
+                    bmp_printf(FONT_MED, 0, 20, "运动量： %d   ", dmax);
                     if (steady)
                     {
                         md_take_pics();
@@ -6044,8 +6044,8 @@ shoot_task( void* unused )
                 
                 static char msg[60];
                 snprintf(msg, sizeof(msg),
-                                " Intervalometer: %s  \n"
-                                " Pictures taken: %d  ", 
+                                " 间隔拍摄： %s  \n"
+                                " 已拍照片： %d  ",
                                 format_time_hours_minutes_seconds(SECONDS_REMAINING),
                                 intervalometer_pictures_taken);
                 if (interval_stop_after) { STR_APPEND(msg, "/ %d", interval_stop_after); }
@@ -6113,7 +6113,7 @@ shoot_task( void* unused )
             int overrun = seconds_clock - intervalometer_next_shot_time;
             if (overrun > 0)
             {
-                NotifyBox(5000, "Interval time too short (%ds)", overrun);
+                NotifyBox(5000, "间隔时间过短（%d 秒）", overrun);
             }
             intervalometer_pictures_taken++;
             
@@ -6174,7 +6174,7 @@ shoot_task( void* unused )
                 if (countdown == 0)
                 {
 
-                    bmp_printf(FONT(FONT_MED, COLOR_FG_NONLV, (lv ? COLOR_BG : bmp_getpixel(AUDIO_REM_SHOT_POS_X-2, AUDIO_REM_SHOT_POS_Y))), (lv ? 2 : AUDIO_REM_SHOT_POS_X),  (lv ? 30 : AUDIO_REM_SHOT_POS_Y), "Audio release ON (%2d / %2d)", current_pulse_level, audio_release_level);
+                    bmp_printf(FONT(FONT_MED, COLOR_FG_NONLV, (lv ? COLOR_BG : bmp_getpixel(AUDIO_REM_SHOT_POS_X-2, AUDIO_REM_SHOT_POS_Y))), (lv ? 2 : AUDIO_REM_SHOT_POS_X),  (lv ? 30 : AUDIO_REM_SHOT_POS_Y), "声控遥控开启 (%2d / %2d)", current_pulse_level, audio_release_level);
 
                     if (current_pulse_level > (int)audio_release_level)
                     {

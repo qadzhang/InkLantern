@@ -77,7 +77,7 @@ static void ettr_beep_times(int n)
 
 static int ettr_get_current_long_exposure_time()
 {
-    int seconds = menu_get_value_from_script("Bulb Timer", "Exposure duration");
+    int seconds = menu_get_value_from_script("B门计时", "曝光时长");
     return seconds;
 }
 
@@ -279,10 +279,10 @@ static int auto_ettr_get_correction()
     if (show_metered_areas)
     {
         /* show where exactly are those percentiles */
-        bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_BLUE),   0, 20, "Shadows    5%%   ");
-        bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_ORANGE), 0, 32, "Midtones   50%%  ");
+        bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_BLUE),   0, 20, "暗部     5%%   ");
+        bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_ORANGE), 0, 32, "中间调  50%%  ");
         int hp = (1000 - auto_ettr_ignore);
-        bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_RED),    0, 44, "Highlights%3d.%d%%", hp/10, hp%10);
+        bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_RED),    0, 44, "高光   %3d.%d%%", hp/10, hp%10);
         zebra_highlight_raw_advanced(
             (struct raw_highlight_info [])
             {
@@ -560,14 +560,14 @@ static int auto_ettr_work(int corr)
             auto_ettr_max_shutter = tv;
             if (lv)
             {
-                NotifyBox(2000, "ETTR: Tv <= %s ", lens_format_shutter(tv));
+                NotifyBox(2000, "ETTR：快门 <= %s ", lens_format_shutter(tv));
                 prev_tv = tv;
                 return 0; /* wait for next iteration */
             }
             else
             {
                 msleep(1000);
-                bmp_printf(FONT_MED, 0, os.y0, "ETTR: Tv <= %s ", lens_format_shutter(tv));
+                bmp_printf(FONT_MED, 0, os.y0, "ETTR：快门 <= %s ", lens_format_shutter(tv));
             }
         }
     }
@@ -677,7 +677,7 @@ static int auto_ettr_work(int corr)
         }
         
         /* configure bulb timer with the new exposure */
-        menu_set_value_from_script("Bulb Timer", "Exposure duration", seconds);
+        menu_set_value_from_script("B门计时", "曝光时长", seconds);
         oks = 1;
 
         /* set ISO */
@@ -776,7 +776,7 @@ static void auto_ettr_step_task(int corr)
         ettr_pics_took = 0;
         
         msleep(1000);
-        bmp_printf(FONT_MED, 0, os.y0, "ETTR: settled at %s", get_current_exposure_settings());
+        bmp_printf(FONT_MED, 0, os.y0, "ETTR：已稳定于 %s", get_current_exposure_settings());
 
         //~ int blown_highlights = (highlight_headroom_needed - highlight_headroom_recovered) / 10;
         //~ if (blown_highlights > 2)
@@ -791,21 +791,21 @@ static void auto_ettr_step_task(int corr)
         ettr_beep_times(3);
         ettr_pics_took = 0;
         msleep(1000);
-        bmp_printf(FONT_MED, 0, os.y0, "ETTR: giving up\n%s", get_current_exposure_settings());
+        bmp_printf(FONT_MED, 0, os.y0, "ETTR：放弃\n%s", get_current_exposure_settings());
     }
     else if (status == ETTR_EXPO_LIMITS_REACHED)
     {
         ettr_beep_times(3);
         ettr_pics_took = 0;
         msleep(1000);
-        bmp_printf(FONT_MED, 0, os.y0, "ETTR: expo limits reached\n%s", get_current_exposure_settings());
+        bmp_printf(FONT_MED, 0, os.y0, "ETTR：达到曝光限制\n%s", get_current_exposure_settings());
     }
     else if (status == ETTR_EXPO_PRECOND_TIMEOUT)
     {
         ettr_beep_times(3);
         ettr_pics_took = 0;
         msleep(1000);
-        bmp_printf(FONT_MED, 0, os.y0, "ETTR: timeout while waiting for preconditions\n");
+        bmp_printf(FONT_MED, 0, os.y0, "ETTR：等待前提条件超时\n");
     }
     else if (AUTO_ETTR_TRIGGER_AUTO_SNAP)
     {
@@ -818,7 +818,7 @@ static void auto_ettr_step_task(int corr)
     {
         ettr_beep_times(2);
         msleep(1000);
-        bmp_printf(FONT_MED, 0, os.y0, "ETTR: next %s (was %s)", get_current_exposure_settings(), prev_exposure_settings);
+        bmp_printf(FONT_MED, 0, os.y0, "ETTR：下一张 %s（原为 %s）", get_current_exposure_settings(), prev_exposure_settings);
 
         //~ int blown_highlights = (highlight_headroom_needed - highlight_headroom_recovered) / 10;
         //~ if (blown_highlights > 2)
@@ -840,7 +840,7 @@ static void auto_ettr_step()
 
     if (!raw_update_params())
     {
-        NotifyBox(5000, "Raw error");
+        NotifyBox(5000, "RAW 错误");
         return;
     }
 
@@ -1124,12 +1124,12 @@ static void auto_ettr_on_request_task_fast()
     ettr_beep();
     int raw_requested = 0;
     
-    char* err_msg = "ETTR failed";
-    
+    char* err_msg = "ETTR 失败";
+
     /* requires LiveView and ExpSim */
     if (!auto_ettr_prepare_lv(0, 1)) goto err;
     if (!auto_ettr_check_lv()) goto err;
-    
+
     if (get_halfshutter_pressed())
     {
         msleep(500);
@@ -1162,18 +1162,18 @@ static void auto_ettr_on_request_task_fast()
 #endif
 
 
-    NotifyBox(100000, "ETTR...");
+    NotifyBox(100000, "ETTR…");
     raw_lv_request(); raw_requested = 1;
 
     if (!raw_update_params())
     {
-        err_msg = "Raw error";
+        err_msg = "RAW 错误";
         goto err;
     }
 
     for (int i = 0; i < 5; i++)
     {
-        NotifyBox(100000, "ETTR (%d)...", i+1);
+        NotifyBox(100000, "ETTR (%d)…", i+1);
 
         /* make sure the LiveView exposure is settled before reading */
         if (!auto_ettr_wait_lv_expo_settle(30)) break;
@@ -1230,7 +1230,7 @@ static void auto_ettr_on_request_task_fast()
             else
             {
                 /* or... not? */
-                err_msg = status == ETTR_EXPO_LIMITS_REACHED ? "Expo limits reached" : "Whoops";
+                err_msg = status == ETTR_EXPO_LIMITS_REACHED ? "达到曝光限制" : "出错";
                 goto err;
             }
         }
@@ -1277,7 +1277,7 @@ static void auto_ettr_step_lv_fast()
 
     if (!raw_update_params())
     {
-        NotifyBox(5000, "Raw error");
+        NotifyBox(5000, "RAW 错误");
         goto skip;
     }
 
@@ -1337,8 +1337,8 @@ end:
 static void auto_ettr_on_request_task_slow()
 {
     ettr_beep();
-    char* err_msg = "ETTR failed";
-    
+    char* err_msg = "ETTR 失败";
+
     /* requires LiveView and ExpSim */
     if (!auto_ettr_prepare_lv(0, 1)) goto err;
     if (!auto_ettr_check_lv()) goto err;
@@ -1349,16 +1349,16 @@ static void auto_ettr_on_request_task_slow()
         if (get_halfshutter_pressed()) goto err;
     }
 
-    NotifyBox(100000, "ETTR...");
+    NotifyBox(100000, "ETTR…");
     for (int k = 0; k < 5; k++)
     {
         msleep(500);
-        
+
         raw_lv_request();
 
         if (!raw_update_params())
         {
-            err_msg = "Raw error";
+            err_msg = "RAW 错误";
             goto err;
         }
 
@@ -1376,7 +1376,7 @@ static void auto_ettr_on_request_task_slow()
         
         if (k == 4 || status == ETTR_EXPO_LIMITS_REACHED)
         {
-            err_msg = status == ETTR_EXPO_LIMITS_REACHED ? "Expo limits reached" : "Whoops";
+            err_msg = status == ETTR_EXPO_LIMITS_REACHED ? "达到曝光限制" : "出错";
             goto err;
         }
     }
@@ -1480,53 +1480,53 @@ static unsigned int auto_ettr_keypress_cbr(unsigned int key)
 static MENU_UPDATE_FUNC(auto_ettr_update)
 {
     if (lv && ((void*)&raw_lv_request == (void*)&ret_0))
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Auto ETTR Does not work in LV on this camera.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此相机在实时取景下无法使用自动ETTR。");
 
     if (shooting_mode != SHOOTMODE_M && !is_movie_mode() && !is_bulb_mode())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Auto ETTR only works in M, BULB and RAW MOVIE modes.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "自动ETTR 仅在 M、B门和 RAW 视频模式下可用。");
 
     if (lens_info.raw_iso == 0)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Auto ETTR requires manual ISO.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "自动ETTR 需要手动 ISO。");
 
     if (!lv && !can_use_raw_overlays_photo() && AUTO_ETTR_TRIGGER_PHOTO)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Photo RAW data not available, try in LiveView.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "照片 RAW 数据不可用，请在实时取景下尝试。");
 
     menu_checkdep_raw(entry, info);
 
     if (image_review_time == 0 && AUTO_ETTR_TRIGGER_PHOTO)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Enable image review from Canon menu.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请在 Canon 菜单中启用图像确认。");
 
     if (is_hdr_bracketing_enabled() && !AUTO_ETTR_TRIGGER_BY_SET)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Not compatible with HDR bracketing. Use trigger mode SET.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "与 HDR 包围不兼容。请使用按 SET 触发模式。");
 
     if (lv && AUTO_ETTR_TRIGGER_ALWAYS_ON && !get_expsim())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "In LiveView, this requires ExpSim enabled.");
-    
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "实时取景下需启用 ExpSim。");
+
     if (is_continuous_drive() && AUTO_ETTR_TRIGGER_PHOTO)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Not fully compatible with continuous drive.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "与连拍模式不完全兼容。");
 
     if (auto_ettr)
     {
         MENU_SET_VALUE(
-            AUTO_ETTR_TRIGGER_ALWAYS_ON ? "Always ON" : 
-            AUTO_ETTR_TRIGGER_AUTO_SNAP ? "Auto Snap" : 
-            AUTO_ETTR_TRIGGER_BY_SET ? "Press SET" : 
-            AUTO_ETTR_TRIGGER_BY_HALFSHUTTER_DBLCLICK ? "HalfS DBC" : "err"
+            AUTO_ETTR_TRIGGER_ALWAYS_ON ? "始终开启" :
+            AUTO_ETTR_TRIGGER_AUTO_SNAP ? "自动拍摄" :
+            AUTO_ETTR_TRIGGER_BY_SET ? "按 SET" :
+            AUTO_ETTR_TRIGGER_BY_HALFSHUTTER_DBLCLICK ? "半按双击" : "err"
         );
     }
 
     if (!AUTO_ETTR_TRIGGER_PHOTO)
     {
-        MENU_SET_HELP("Press the shortcut key to optimize the exposure (ETTR).");
+        MENU_SET_HELP("按快捷键优化曝光（向右曝光，ETTR）。");
     }
     else if (AUTO_ETTR_TRIGGER_ALWAYS_ON)
     {
-        if (lv) MENU_SET_HELP("In LiveView, just wait for exposure to settle, then shoot.");
-        else MENU_SET_HELP("Take a test picture (underexposed). Next pic will be ETTR.");
+        if (lv) MENU_SET_HELP("实时取景下等曝光稳定后即可拍摄。");
+        else MENU_SET_HELP("先拍测试照（欠曝），下一张即为 ETTR。");
     }
     else if (AUTO_ETTR_TRIGGER_AUTO_SNAP)
     {
-        MENU_SET_HELP("Press shutter once. ML will take a pic and retry if needed.");
+        MENU_SET_HELP("按一次快门，ML 会自动拍摄并按需重试。");
     }
     
     /* recommended: move AF to back button */
@@ -1543,17 +1543,17 @@ static MENU_UPDATE_FUNC(auto_ettr_max_shutter_update)
     if (auto_ettr_max_shutter < SHUTTER_30s)
     {
         MENU_SET_RINFO("BULB");
-        MENU_SET_WARNING(MENU_WARN_INFO, "For long exposures, enable bulb timer (maybe also intervalometer).");
+        MENU_SET_WARNING(MENU_WARN_INFO, "长曝光请启用 B门定时器（必要时也启用间隔拍摄）。");
     }
-    
+
     if (is_intervalometer_running())
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Slowest shutter will be limited by interval time minus 2 seconds.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "最慢快门将受限于间隔时间减 2 秒。");
     }
-    
+
     if (auto_ettr_adjust_mode == 1)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Adjust shutter speed from top scrollwheel, outside menu.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请在菜单外用主拨盘调整快门速度。");
     }
 }
 
@@ -1580,7 +1580,7 @@ PROP_HANDLER(PROP_GUI_STATE)
 MENU_UPDATE_FUNC(auto_ettr_intervalometer_warning)
 {
     if (auto_ettr && image_review_time == 0 && AUTO_ETTR_TRIGGER_PHOTO)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Auto ETTR: enable image review from Canon menu.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "自动ETTR：请在 Canon 菜单中启用图像确认。");
 }
 
 void auto_ettr_intervalometer_wait()
@@ -1616,116 +1616,116 @@ static MENU_SELECT_FUNC(debug_info_toggle)
 static struct menu_entry ettr_menu[] =
 {
     {
-        .name = "Auto ETTR", 
-        .priv = &auto_ettr, 
+        .name = "自动向右曝光",
+        .priv = &auto_ettr,
         .update = auto_ettr_update,
         .max = 1,
-        .help  = "Auto expose to the right when you shoot RAW.",
+        .help  = "拍摄 RAW 时自动向右曝光(ETTR)。",
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Trigger mode",
+                .name = "触发模式",
                 .priv = &auto_ettr_trigger,
                 .max = 3, // NOTE: Modifed by the module init task to disable ETTR in LV if not supported
-                .choices = CHOICES("Always ON", "Auto Snap", "Press SET", "HalfS DblClick"),
-                .help  = "When should the exposure be adjusted for ETTR:",
-                .help2 = "Always ON: when you take a pic, or continuously in LiveView\n"
-                         "Auto Snap: after u take a pic,trigger another pic if needed\n"
-                         "Press SET: meter for ETTR when you press SET (LiveView)\n"
-                         "HalfS DblClick: meter for ETTR when pressing halfshutter 2x\n"
+                .choices = CHOICES("始终开启", "自动拍摄", "按 SET", "半按双击"),
+                .help  = "何时进行 ETTR 曝光调整：",
+                .help2 = "始终开启：拍照时或在实时取景中持续调整\n"
+                         "自动拍摄：拍完一张后按需自动补拍一张\n"
+                         "按 SET：按下 SET 键时测光调整（实时取景）\n"
+                         "半按双击：半按快门两次时测光调整\n"
             },
             {
-                .name = "Slowest shutter",
+                .name = "最慢快门",
                 .priv = &auto_ettr_max_shutter,
                 .select = auto_ettr_max_shutter_toggle,
                 .update = auto_ettr_max_shutter_update,
                 .min = 16,
                 .max = 152,
                 .icon_type = IT_PERCENT,
-                .help = "Slowest shutter speed for ETTR (longest exposure time)."
+                .help = "ETTR 允许的最慢快门速度（最长曝光时间）。"
             },
             {
-                .name = "Exposure target",
+                .name = "曝光目标",
                 .priv = &auto_ettr_target_level,
                 .min = -4,
                 .max = 0,
                 .choices = CHOICES("-4 EV", "-3 EV", "-2 EV", "-1 EV", "-0.5 EV"),
-                .help = "Exposure target for ETTR. Recommended: -0.5 or -1 EV.",
+                .help = "ETTR 的曝光目标。推荐 -0.5 或 -1 EV。",
                 .advanced = 1,
             },
             {
-                .name = "Highlight ignore",
+                .name = "高光忽略",
                 .priv = &auto_ettr_ignore,
                 .min = 0,
                 .max = 500,
                 .unit = UNIT_PERCENT_x10,
                 .icon_type = IT_PERCENT,
-                .help  = "How many bright pixels are allowed above the target level.",
-                .help2 = "Use this to allow spec(ta)cular highlights to be clipped.",
+                .help  = "允许多少高光像素超出目标电平。",
+                .help2 = "用于允许点状高光被裁切。",
             },
             {
-                .name = "Allow clipping",
+                .name = "允许裁切",
                 .priv = &auto_ettr_clip,
                 .max = 2,
-                .choices = CHOICES("OFF", "Green channel", "Any channel"),
-                .help = "Choose what color channels are allowed to be clipped.",
+                .choices = CHOICES("关", "绿色通道", "任意通道"),
+                .help = "选择允许裁切的颜色通道。",
                 .advanced = 1,
             },
             {
-                .name = "Midtone SNR limit",
+                .name = "中间调 SNR 限制",
                 .priv = &auto_ettr_midtone_snr_limit,
                 .min = 0,
                 .max = 8,
-                .choices = CHOICES("OFF", "1 EV", "2 EV", "3 EV", "4 EV", "5 EV", "6 EV", "7 EV", "8 EV"),
-                .help  = "Stop underexposing when at least half of the image gets",
-                .help2 = "noisier than selected SNR => will clip more highlights.",
+                .choices = CHOICES("关", "1 EV", "2 EV", "3 EV", "4 EV", "5 EV", "6 EV", "7 EV", "8 EV"),
+                .help  = "当图像至少一半的噪点超过所选 SNR 时停止欠曝，",
+                .help2 = "=> 会裁切更多高光。",
                 .depends_on = DEP_MANUAL_ISO,
             },
             {
-                .name = "Shadow SNR limit",
+                .name = "暗部 SNR 限制",
                 .priv = &auto_ettr_shadow_snr_limit,
                 .min = 0,
                 .max = 6,
-                .choices = CHOICES("OFF", "1 EV", "2 EV", "3 EV", "4 EV", "5 EV", "6 EV"),
-                .help  = "Stop underexposing when at least 5% of the image gets",
-                .help2 = "noisier than selected SNR => will clip more highlights.",
+                .choices = CHOICES("关", "1 EV", "2 EV", "3 EV", "4 EV", "5 EV", "6 EV"),
+                .help  = "当图像至少 5% 的噪点超过所选 SNR 时停止欠曝，",
+                .help2 = "=> 会裁切更多高光。",
                 .depends_on = DEP_MANUAL_ISO,
             },
             {
-                .name = "Link to Canon shutter",
+                .name = "联动 Canon 快门",
                 .priv = &auto_ettr_adjust_mode,
                 .max = 1,
-                .help = "Hack to adjust slowest shutter from main dial.",
+                .help = "可用主拨盘调整最慢快门的变通方案。",
                 .advanced = 1,
             },
             {
-                .name = "Link to Dual ISO",
+                .name = "联动双ISO",
                 .priv = &auto_ettr_dual_iso_link,
                 .max = 1,
-                .help  = "Let ETTR change DualISO settings so you get the SNR values",
-                .help2 = "in mids & shadows. It will disable dual ISO if not needed.",
+                .help  = "允许 ETTR 调整双ISO设置，使中间调与暗部",
+                .help2 = "达到所需 SNR。不需要时会自动关闭双ISO。",
             },
             {
-                .name = "Show metered areas",
+                .name = "显示测光区域",
                 .priv = &show_metered_areas,
                 .max = 1,
-                .help =  "Show where the white point and the SNR levels are metered",
-                .help2 = "(what exactly is considered highlight, midtone and shadow).",
+                .help =  "显示白点和 SNR 电平的测光位置",
+                .help2 = "（即高光、中间调与暗部的具体判定范围）。",
                 .advanced = 1,
             },
             {
-                .name = "Allow beeps",
+                .name = "允许提示音",
                 .priv = &auto_ettr_allow_beeps,
                 .max = 1,
-                .help =  "Make status beeps (1 = OK, 2 = need more pictures, 3 = error).",
+                .help =  "发出状态提示音（1=成功，2=需再拍，3=出错）。",
                 .advanced = 1,
             },
             {
-                .name = "Show debug info",
+                .name = "显示调试信息",
                 .priv = &debug_info,
                 .select = debug_info_toggle,
                 .max = 1,
-                .help = "For camera nerds.",
+                .help = "给折腾相机的人看的。",
                 .advanced = 1,
             },
             MENU_ADVANCED_TOGGLE,

@@ -100,53 +100,53 @@ info_elem_t info_config_liveview[] =
 #if i_want_to_test_flexinfo_bars
 
     /* entry 1, top bar */
-    { .fill = { { INFO_TYPE_FILL, { 5, 2, 1, .w=710, .h=35, .name = "Top bar" }}, .color = COLOR_BG } },
+    { .fill = { { INFO_TYPE_FILL, { 5, 2, 1, .w=710, .h=35, .name = "顶栏" }}, .color = COLOR_BG } },
     /* entry 2, bottom bar */
-    { .fill = { { INFO_TYPE_FILL, { 5, 441, 1, .w=710, .h=35, .name = "Bottom bar" }}, .color = COLOR_BG } },
+    { .fill = { { INFO_TYPE_FILL, { 5, 441, 1, .w=710, .h=35, .name = "底栏" }}, .color = COLOR_BG } },
     
     /* fill top bar */
     
     /* time (leftmost) */
-    { .string = { { INFO_TYPE_STRING, { 15, 2, 2, .name = "time hrs", .anchor_name = "Top bar", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP,  .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_TIME_HH24, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .text   = { { INFO_TYPE_TEXT,   {  0, 0, 2, .name = "time :",   .anchor_name = "time hrs", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, ":", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .string = { { INFO_TYPE_STRING, {  0, 0, 2, .name = "time min", .anchor_name = "time :", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_TIME_MM, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 15, 2, 2, .name = "小时", .anchor_name = "顶栏", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP,  .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_TIME_HH24, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .text   = { { INFO_TYPE_TEXT,   {  0, 0, 2, .name = "冒号",   .anchor_name = "小时", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, ":", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, {  0, 0, 2, .name = "分钟", .anchor_name = "冒号", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_TIME_MM, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* free space  (rightmost)*/
-    { .text   = { { INFO_TYPE_TEXT,   { -15, 2, 2, .name = "GB",       .anchor_name = "Top bar", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, "GB", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .string = { { INFO_TYPE_STRING, {  -2, 0, 2, .name = "Space GB", .anchor_name = "GB", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP,  .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, INFO_STRING_FREE_GB_FLOAT, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .text   = { { INFO_TYPE_TEXT,   { -15, 2, 2, .name = "GB",       .anchor_name = "顶栏", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, "GB", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, {  -2, 0, 2, .name = "剩余GB", .anchor_name = "GB", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP,  .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, INFO_STRING_FREE_GB_FLOAT, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* pictures */
-    { .string = { { INFO_TYPE_STRING, { -15, 0, 2, .name = "Pics",     .anchor_name = "Space GB", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, INFO_STRING_PICTURES_AVAIL_AUTO, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { -15, 0, 2, .name = "可拍张数",     .anchor_name = "剩余GB", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, INFO_STRING_PICTURES_AVAIL_AUTO, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
 
     /* temperature */
-    { .text   = { { INFO_TYPE_TEXT,   { -15, 0, 2, .name = "°C",       .anchor_name = "Pics", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, SYM_DEGREE"C", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, {  -1, 0, 2, .name = "Temp",     .anchor_name = "°C", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, INFO_STRING_TEMPERATURE, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .fill   = { { INFO_TYPE_FILL,   {   0, -2, 1, .name = "TempBG",  .anchor_name = "Temp", .w=75, .h=35, .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, .color = INFO_COL_PEEK } },
+    { .text   = { { INFO_TYPE_TEXT,   { -15, 0, 2, .name = "°C",       .anchor_name = "可拍张数", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, SYM_DEGREE"C", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, {  -1, 0, 2, .name = "温度",     .anchor_name = "°C", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP }}, INFO_STRING_TEMPERATURE, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .fill   = { { INFO_TYPE_FILL,   {   0, -2, 1, .name = "温度底衬",  .anchor_name = "温度", .w=75, .h=35, .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, .color = INFO_COL_PEEK } },
 
     /* fill bottom bar */
     
     /* shooting mode */
-    { .string = { { INFO_TYPE_STRING, { 15, 2, 2, .name = "mode",      .anchor_name = "Bottom bar", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_SHOOTMODE_SHORT, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 15, 2, 2, .name = "拍摄模式",      .anchor_name = "底栏", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_SHOOTMODE_SHORT, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* focal length */
-    { .string = { { INFO_TYPE_STRING, {  50, 0, 2, .name = "focal",    .anchor_name = "mode", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_FOCAL_LEN, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .text   = { { INFO_TYPE_TEXT,   {   1, 0, 2, .name = "focal mm", .anchor_name = "focal", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM }}, "mm", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, {  50, 0, 2, .name = "焦距",    .anchor_name = "拍摄模式", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_FOCAL_LEN, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .text   = { { INFO_TYPE_TEXT,   {   1, 0, 2, .name = "焦距mm", .anchor_name = "焦距", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM }}, "mm", COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
 
     /* aperture */
-    { .string = { { INFO_TYPE_STRING, { 110, 0, 2, .name = "aperture", .anchor_name = "focal", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_APERTURE, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 110, 0, 2, .name = "光圈", .anchor_name = "焦距", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_APERTURE, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* shutter */
-    { .string = { { INFO_TYPE_STRING, {  90, 0, 2, .name = "shutter",  .anchor_name = "aperture", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_SHUTTER, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, {  90, 0, 2, .name = "快门",  .anchor_name = "光圈", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_SHUTTER, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* ISO */
-    { .text   = { { INFO_TYPE_TEXT,   {  80, 0, 2, .name = "ISO icon", .anchor_name = "shutter", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, SYM_ISO, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .string = { { INFO_TYPE_STRING, {   1, 0, 2, .name = "ISO val",  .anchor_name = "ISO icon", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_ISO, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .text   = { { INFO_TYPE_TEXT,   {  80, 0, 2, .name = "ISO图标", .anchor_name = "快门", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, SYM_ISO, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, {   1, 0, 2, .name = "ISO数值",  .anchor_name = "ISO图标", .anchor_flags = INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_ISO, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
 
     /* WB */
-    { .string = { { INFO_TYPE_STRING, { 120, 0, 2, .name = "wbmode",   .anchor_name = "ISO icon", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_WBMODE, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 120, 0, 2, .name = "白平衡",   .anchor_name = "ISO图标", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_WBMODE, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
 
     /* focal dist */
-    { .string = { { INFO_TYPE_STRING, { 140, 0, 2, .name = "dist",     .anchor_name = "wbmode", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_FOCAL_DIST, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 140, 0, 2, .name = "对焦距离",     .anchor_name = "白平衡", .anchor_flags = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .anchor_flags_self = INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP }}, INFO_STRING_FOCAL_DIST, COLOR_WHITE, INFO_COL_PEEK, INFO_FONT_LARGE } },
 
 #endif
 
@@ -159,241 +159,241 @@ info_elem_t info_config_photo[] =
 
 #if defined(CONFIG_7D)
     /* print ISO range */
-    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO Range" }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO范围" }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 2 and 3, WB strings */
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X - 10, WBS_POS_Y, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 60, WBS_POS_Y, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X - 10, WBS_POS_Y, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 60, WBS_POS_Y, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 4, battery_icon referenced as anchor */
-    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "Battery Icon" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
+    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "电池图标" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
     { .battery_perf = { { INFO_TYPE_BATTERY_PERF, { 100, 2, 3, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, 4 }}, /* 0=vert,1=horizontal */ 0, /* x size */ 8, /* y size */ 8 } },
     { .string = { { INFO_TYPE_STRING, { 8, 3, 2, INFO_ANCHOR_HCENTER | INFO_ANCHOR_BOTTOM, 4, INFO_ANCHOR_HCENTER | INFO_ANCHOR_TOP }}, INFO_STRING_BATTERY_PCT, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
     { .string = { { INFO_TYPE_STRING, { -20, 2, 2, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, 4 }}, INFO_STRING_BATTERY_ID, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_LARGE } },
 
     /* entry 8, MLU string */
-    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 9, kelvin */
-    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 10, pictures */
-    { .fill = { { INFO_TYPE_FILL, { 540, 390, 1, 0, 0, 0, 150, 60, .name = "Pics (clear)" }}, .color = INFO_COL_FIELD } },
-    { .string = { { INFO_TYPE_STRING, { 0, 0, 2, .name = "Pics", .anchor = 10, .anchor_flags = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
+    { .fill = { { INFO_TYPE_FILL, { 540, 390, 1, 0, 0, 0, 150, 60, .name = "可拍清除区" }}, .color = INFO_COL_FIELD } },
+    { .string = { { INFO_TYPE_STRING, { 0, 0, 2, .name = "可拍张数", .anchor = 10, .anchor_flags = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
 
     /* entry 12, header (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 3, 2, .name = "Date", .user_disable = 1 }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 710, 3, 2, .name = "Build", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 3, 2, .name = "日期", .user_disable = 1 }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 710, 3, 2, .name = "构建版本", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
     /* entry 14, footer (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "Card label", .user_disable = 1 }}, INFO_STRING_CARD_LABEL_A, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "Copyright", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "存储卡标签", .user_disable = 1 }}, INFO_STRING_CARD_LABEL_A, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "版权信息", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 16, free space */
     { .text = { { INFO_TYPE_TEXT, { 144, 162, 2, .anchor_flags_self = (INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM), .name = "GB" }}, "GB", COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 0, 2, 2, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, 16, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, .name = "Space" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
+    { .string = { { INFO_TYPE_STRING, { 0, 2, 2, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, 16, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, .name = "剩余空间" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
 
     /* entry 18, clock */
-    { .string = { { INFO_TYPE_STRING, { 35, 250, 2, .name = "Hrs" }}, INFO_STRING_TIME_HH24, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
+    { .string = { { INFO_TYPE_STRING, { 35, 250, 2, .name = "时" }}, INFO_STRING_TIME_HH24, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
     { .text = { { INFO_TYPE_TEXT, { 0, 0, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 18, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .name = ":" }}, ":", COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
-    { .string = { { INFO_TYPE_STRING, { 0, 0, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 19, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .name = "Min" }}, INFO_STRING_TIME_MM, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
-    { .string = { { INFO_TYPE_STRING, { 0, -2, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, 20, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, .name = "Sec" }}, INFO_STRING_TIME_SS, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 0, 0, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 19, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .name = "分" }}, INFO_STRING_TIME_MM, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
+    { .string = { { INFO_TYPE_STRING, { 0, -2, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, 20, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, .name = "秒" }}, INFO_STRING_TIME_SS, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
 #endif
 
 #if defined(CONFIG_5D2)
     /* entry 1, print ISO range, not printed correctly, 5D2 has larger ISO range => disable */
-    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO Range", .user_disable = 1 }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO范围", .user_disable = 1 }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 2 and 3, WB strings */
-    { .string = { { INFO_TYPE_STRING, { 320, 384, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 398, 384, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 320, 384, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 398, 384, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 4, battery_icon referenced as anchor */
-    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "Battery Icon" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
+    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "电池图标" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
     { .battery_perf = { { INFO_TYPE_BATTERY_PERF, { 4, 0, 3, INFO_ANCHOR_VCENTER | INFO_ANCHOR_RIGHT, 4, INFO_ANCHOR_VCENTER | INFO_ANCHOR_LEFT }}, /* 0=vert,1=horizontal */ 0, /* x size */ 8, /* y size */ 8 } },
     { .string = { { INFO_TYPE_STRING, { 8, 2, 2, INFO_ANCHOR_HCENTER | INFO_ANCHOR_BOTTOM, 4, INFO_ANCHOR_HCENTER | INFO_ANCHOR_TOP }}, INFO_STRING_BATTERY_PCT, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
     { .string = { { INFO_TYPE_STRING, { 0, 1, 2, INFO_ANCHOR_VCENTER | INFO_ANCHOR_LEFT, 4, INFO_ANCHOR_VCENTER | INFO_ANCHOR_RIGHT }}, INFO_STRING_BATTERY_ID, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_LARGE } },
 
     /* entry 8, MLU string */
-    { .string = { { INFO_TYPE_STRING, { 260, 310, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 260, 310, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 9, kelvin */
-    { .string = { { INFO_TYPE_STRING, { 505, 275, 2, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 505, 275, 2, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 10, pictures */
-    { .fill = { { INFO_TYPE_FILL, { 540, 390, 1, 0, 0, 0, 150, 60, .name = "Pics (clear)" }}, .color = INFO_COL_FIELD } },
-    { .string = { { INFO_TYPE_STRING, { 0, 0, 2, .name = "Pics", .anchor = 10, .anchor_flags = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
+    { .fill = { { INFO_TYPE_FILL, { 540, 390, 1, 0, 0, 0, 150, 60, .name = "可拍清除区" }}, .color = INFO_COL_FIELD } },
+    { .string = { { INFO_TYPE_STRING, { 0, 0, 2, .name = "可拍张数", .anchor = 10, .anchor_flags = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
 
     /* entry 12, header (optional) */
-    { .string = { { INFO_TYPE_STRING, { 693, 3, 2, .name = "Date", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "Build", .user_disable = 1 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 693, 3, 2, .name = "日期", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "构建版本", .user_disable = 1 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
     /* entry 14, footer (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 3, 2, .name = "Lens", .user_disable = 1 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "Copyright", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 3, 2, .name = "镜头", .user_disable = 1 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "版权信息", .user_disable = 1, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 16, free space */
     { .text = { { INFO_TYPE_TEXT, { 144, 162, 2, .anchor_flags_self = (INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM), .name = "GB" }}, "GB", COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 0, 2, 2, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, 16, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, .name = "Space" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
+    { .string = { { INFO_TYPE_STRING, { 0, 2, 2, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, 16, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, .name = "剩余空间" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_CANON } },
 
     /* entry 18, clock */
-    { .string = { { INFO_TYPE_STRING, { 38, 250, 2, .name = "Hrs" }}, INFO_STRING_TIME_HH24, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 38, 250, 2, .name = "时" }}, INFO_STRING_TIME_HH24, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_LARGE } },
     { .text = { { INFO_TYPE_TEXT, { -4, 0, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 18, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .name = ":" }}, ":", COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .string = { { INFO_TYPE_STRING, { -4, 0, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 19, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .name = "Min" }}, INFO_STRING_TIME_MM, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .string = { { INFO_TYPE_STRING, { 0, -2, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, 20, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, .name = "Sec" }}, INFO_STRING_TIME_SS, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { -4, 0, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 19, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, .name = "分" }}, INFO_STRING_TIME_MM, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 0, -2, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_BOTTOM, 20, INFO_ANCHOR_LEFT | INFO_ANCHOR_BOTTOM, .name = "秒" }}, INFO_STRING_TIME_SS, COLOR_CYAN, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
 #endif
 
 #if defined(CONFIG_5D3) || defined(CONFIG_6D)
     /* print ISO range */
-    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO Range" }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO范围" }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 2 and 3, WB strings */
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 24, WBS_POS_Y, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 24, WBS_POS_Y, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 4, battery_icon referenced as anchor */
-    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "Battery Icon" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
+    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "电池图标" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
     { .battery_perf = { { INFO_TYPE_BATTERY_PERF, { 86, 2, 3, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, 4 }}, /* 0=vert,1=horizontal */ 0, /* x size */ 8, /* y size */ 8 } },
     { .string = { { INFO_TYPE_STRING, { 8, 0, 2, INFO_ANCHOR_HCENTER | INFO_ANCHOR_BOTTOM, 4, INFO_ANCHOR_HCENTER | INFO_ANCHOR_TOP }}, INFO_STRING_BATTERY_PCT, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
     { .string = { { INFO_TYPE_STRING, { 4, 2, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 4 }}, INFO_STRING_BATTERY_ID, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_LARGE } },
 
     /* entry 8, MLU string */
-    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 9, kelvin */
-    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 10, HDR bracketing status */
     { .string = { { INFO_TYPE_STRING, { HDR_STATUS_POS_X, HDR_STATUS_POS_Y, 2, .name = "HDR" }}, INFO_STRING_HDR, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 11: Time */
-    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "Time" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "时间" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
 #endif
 
 #if defined(CONFIG_60D)
     /* print ISO range */
-    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO Range" }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO范围" }}, INFO_STRING_ISO_MINMAX, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 2 and 3, WB strings */
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 24, WBS_POS_Y, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 24, WBS_POS_Y, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 4, battery_icon referenced as anchor */
-    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "Battery Icon" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
+    { .battery_icon = { { INFO_TYPE_BATTERY_ICON, { DISPLAY_BATTERY_POS_X, DISPLAY_BATTERY_POS_Y, 2, .name = "电池图标" }}, DISPLAY_BATTERY_LEVEL_2, DISPLAY_BATTERY_LEVEL_1 } },
     { .battery_perf = { { INFO_TYPE_BATTERY_PERF, { 86, 2, 3, INFO_ANCHOR_LEFT | INFO_ANCHOR_TOP, 4 }}, /* 0=vert,1=horizontal */ 0, /* x size */ 8, /* y size */ 8 } },
     { .string = { { INFO_TYPE_STRING, { 8, 0, 2, INFO_ANCHOR_HCENTER | INFO_ANCHOR_BOTTOM, 4, INFO_ANCHOR_HCENTER | INFO_ANCHOR_TOP }}, INFO_STRING_BATTERY_PCT, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
     { .string = { { INFO_TYPE_STRING, { 4, 2, 2, INFO_ANCHOR_RIGHT | INFO_ANCHOR_TOP, 4 }}, INFO_STRING_BATTERY_ID, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_LARGE } },
 
     /* entry 8, MLU string */
-    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 9, kelvin */
-    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_YELLOW, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 10, HDR bracketing status */
     { .string = { { INFO_TYPE_STRING, { HDR_STATUS_POS_X, HDR_STATUS_POS_Y, 2, .name = "HDR" }}, INFO_STRING_HDR, COLOR_YELLOW, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 11: Time */
-    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "Time" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "时间" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
 #endif
 
 #if defined(CONFIG_500D)
     /* entry 1 and 2, WB strings */
-    { .string = { { INFO_TYPE_STRING, { 420, 245, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
-    { .string = { { INFO_TYPE_STRING, { 420, 270, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 420, 245, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 420, 270, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 3, MLU string */
-    { .string = { { INFO_TYPE_STRING, { 78, 260, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 78, 260, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
     
     /* entry 4, Kelvin */
-    { .string = { { INFO_TYPE_STRING, { 307+(94/2), 237+(62/2), 2, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
-    { .fill =   { { INFO_TYPE_FILL,   { 307, 237, 1, INFO_ANCHOR_ABSOLUTE, 4, INFO_ANCHOR_ABSOLUTE, 94, 62, .name = "Kelvin (clear)" }}, .color = INFO_COL_PEEK } },
+    { .string = { { INFO_TYPE_STRING, { 307+(94/2), 237+(62/2), 2, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
+    { .fill =   { { INFO_TYPE_FILL,   { 307, 237, 1, INFO_ANCHOR_ABSOLUTE, 4, INFO_ANCHOR_ABSOLUTE, 94, 62, .name = "色温清除区" }}, .color = INFO_COL_PEEK } },
 
     /* entry 6, clock */
-    { .string = { { INFO_TYPE_STRING, { 200, 410, 2, .name = "Time" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 200, 410, 2, .name = "时间" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* entry 7, HDR bracketing status */
     { .string = { { INFO_TYPE_STRING, { 316, 200, 2, .anchor_flags_self = INFO_ANCHOR_HCENTER, .name = "HDR" }}, INFO_STRING_HDR, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
 
     /* entry 8-11, free space & photos left*/
-    { .fill =   { { INFO_TYPE_FILL,   { 519, 396, 1, INFO_ANCHOR_ABSOLUTE, 0, INFO_ANCHOR_ABSOLUTE, 138, 55, .name = "Space (clear)" }}, .color = INFO_COL_PEEK } },
-    { .string = { { INFO_TYPE_STRING, { 519+(138/2), 412, 2, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "Space Pics" }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_CANON } },
-    { .string = { { INFO_TYPE_STRING, { 573, 442, 3, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "Space GB" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .fill =   { { INFO_TYPE_FILL,   { 519, 396, 1, INFO_ANCHOR_ABSOLUTE, 0, INFO_ANCHOR_ABSOLUTE, 138, 55, .name = "空间清除区" }}, .color = INFO_COL_PEEK } },
+    { .string = { { INFO_TYPE_STRING, { 519+(138/2), 412, 2, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "剩余可拍" }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_CANON } },
+    { .string = { { INFO_TYPE_STRING, { 573, 442, 3, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "剩余GB" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
     { .text =   { { INFO_TYPE_TEXT,   { 2, 0, 3, (INFO_ANCHOR_VCENTER|INFO_ANCHOR_RIGHT), 10, (INFO_ANCHOR_VCENTER|INFO_ANCHOR_LEFT), .name = "GB" }}, "GB", COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
 
     /* entry 12, header (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 2, 2, .name = "Lens", .user_disable = 0 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 710, 2, 2, .name = "Date", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 2, 2, .name = "镜头", .user_disable = 0 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 710, 2, 2, .name = "日期", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 13, footer (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "Build", .user_disable = 0 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
-    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "Copyright", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "构建版本", .user_disable = 0 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "版权信息", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM_SHADOW } },
 #endif
 
 #if defined(CONFIG_550D)
     /* entry 1 and 2, WB strings */
-    { .string = { { INFO_TYPE_STRING, { 485, 245, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
-    { .string = { { INFO_TYPE_STRING, { 485, 270, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 485, 245, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 485, 270, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 3, MLU string */
-    { .string = { { INFO_TYPE_STRING, { 69, 260, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 69, 260, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
     
     /* entry 4, Kelvin */
-    { .string = { { INFO_TYPE_STRING, { 307+(94/2), 237+(62/2), 2, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
-    { .fill =   { { INFO_TYPE_FILL,   { 307, 237, 1, INFO_ANCHOR_ABSOLUTE, 4, INFO_ANCHOR_ABSOLUTE, 94, 62, .name = "Kelvin (clear)" }}, .color = INFO_COL_FIELD } },
+    { .string = { { INFO_TYPE_STRING, { 307+(94/2), 237+(62/2), 2, .anchor_flags_self = INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
+    { .fill =   { { INFO_TYPE_FILL,   { 307, 237, 1, INFO_ANCHOR_ABSOLUTE, 4, INFO_ANCHOR_ABSOLUTE, 94, 62, .name = "色温清除区" }}, .color = INFO_COL_FIELD } },
 
     /* entry 6, clock */
-    { .string = { { INFO_TYPE_STRING, { 200, 410, 2, .name = "Time" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 200, 410, 2, .name = "时间" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* entry 7, HDR bracketing status */
     { .string = { { INFO_TYPE_STRING, { 316, 200, 2, .anchor_flags_self = INFO_ANCHOR_HCENTER, .name = "HDR" }}, INFO_STRING_HDR, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_MEDIUM } },
 
     /* entry 8-11, free space & photos left*/
-    { .fill =   { { INFO_TYPE_FILL,   { 519, 396, 1, INFO_ANCHOR_ABSOLUTE, 0, INFO_ANCHOR_ABSOLUTE, 138, 55, .name = "Space (clear)" }}, .color = INFO_COL_PEEK } },
-    { .string = { { INFO_TYPE_STRING, { 519+(138/2), 412, 2, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "Space Pics" }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_CANON } },
-    { .string = { { INFO_TYPE_STRING, { 568, 442, 3, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "Space GB" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .fill =   { { INFO_TYPE_FILL,   { 519, 396, 1, INFO_ANCHOR_ABSOLUTE, 0, INFO_ANCHOR_ABSOLUTE, 138, 55, .name = "空间清除区" }}, .color = INFO_COL_PEEK } },
+    { .string = { { INFO_TYPE_STRING, { 519+(138/2), 412, 2, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "剩余可拍" }}, INFO_STRING_PICTURES_AVAIL, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_CANON } },
+    { .string = { { INFO_TYPE_STRING, { 568, 442, 3, .anchor_flags_self = (INFO_ANCHOR_VCENTER|INFO_ANCHOR_HCENTER), .name = "剩余GB" }}, INFO_STRING_FREE_GB_FLOAT, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
     { .text =   { { INFO_TYPE_TEXT,   { 2, 0, 3, (INFO_ANCHOR_VCENTER|INFO_ANCHOR_RIGHT), 10, (INFO_ANCHOR_VCENTER|INFO_ANCHOR_LEFT), .name = "GB" }}, "GB", COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
 #endif
 
 #if defined(CONFIG_100D)
     /* print ISO range */
-    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO Range" }}, INFO_STRING_ISO_MINMAX, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { ISO_RANGE_POS_X, ISO_RANGE_POS_Y, 2, .name = "ISO范围" }}, INFO_STRING_ISO_MINMAX, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 2 and 3, WB strings */
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 24, WBS_POS_Y, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X + 24, WBS_POS_Y, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
     
     /* entry 8, MLU string */
-    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM } },
 
     /* entry 9, kelvin */
-    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "Kelvin" }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X, WB_KELVIN_POS_Y, 2, .name = "色温" }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 10, HDR bracketing status */
     { .string = { { INFO_TYPE_STRING, { HDR_STATUS_POS_X, HDR_STATUS_POS_Y, 2, .name = "HDR" }}, INFO_STRING_HDR, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
 
     /* entry 11: Time */
-    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "Time" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "时间" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
     
     /* header (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 2, 2, .name = "Lens", .user_disable = 0 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 710, 2, 2, .name = "Date", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 2, 2, .name = "镜头", .user_disable = 0 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 710, 2, 2, .name = "日期", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
     /* footer (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "Build", .user_disable = 0 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "构建版本", .user_disable = 0 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
     /* free space */
-    { .string = { { INFO_TYPE_STRING, { 678, 459, 2, .name = "Space GB", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_FREE_GB_FLOAT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 678, 459, 2, .name = "剩余GB", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_FREE_GB_FLOAT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
     { .text =   { { INFO_TYPE_TEXT,   { 685, 459, 2, .name = "GB",  .user_disable = 0, }}, "GB",  COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
 #endif
 
 #if defined(CONFIG_600D) || defined(CONFIG_650D) || defined(CONFIG_700D) || defined(CONFIG_1100D)
     /* entry 1, max AUTO ISO */
-    { .string = { { INFO_TYPE_STRING, { MAX_ISO_POS_X, MAX_ISO_POS_Y, 2, .name = "Max ISO Range"  }}, INFO_STRING_ISO_MAX, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { MAX_ISO_POS_X, MAX_ISO_POS_Y, 2, .name = "ISO上限"  }}, INFO_STRING_ISO_MAX, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 2 and 3, WB strings */
-    { .string = { { INFO_TYPE_STRING, { WBS_GM_POS_X, WBS_GM_POS_Y, 2, .name = "WB GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
-    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "WB BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WBS_GM_POS_X, WBS_GM_POS_Y, 2, .name = "白平衡GM" }}, INFO_STRING_WBS_GM, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WBS_POS_X, WBS_POS_Y, 2, .name = "白平衡BA" }}, INFO_STRING_WBS_BA, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
 
     /* entry 4, MLU string */
-    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "MLU" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_SMALL } },
+    { .string = { { INFO_TYPE_STRING, { MLU_STATUS_POS_X, MLU_STATUS_POS_Y, 2, .name = "反光板预升" }}, INFO_STRING_MLU, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_SMALL } },
 
     /* entry 5, HDR bracketing status */
     { .string = { { INFO_TYPE_STRING, { HDR_STATUS_POS_X, HDR_STATUS_POS_Y, 2, .name = "HDR" }}, INFO_STRING_HDR, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
@@ -401,15 +401,15 @@ info_elem_t info_config_photo[] =
     /* Kelvin (bold icon + value) */
     { .string = { { INFO_TYPE_STRING, { WB_K_ICON_POS_X+10+1, WB_K_ICON_POS_Y, 2, .name = "K ICON1" }}, INFO_STRING_KELVIN_ICO, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
     { .string = { { INFO_TYPE_STRING, { WB_K_ICON_POS_X+10-1, WB_K_ICON_POS_Y, 2, .name = "K ICON2" }}, INFO_STRING_KELVIN_ICO, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_CANON } },
-    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X,    2+WB_KELVIN_POS_Y, 2, .name = "Kelvin"  }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { WB_KELVIN_POS_X,    2+WB_KELVIN_POS_Y, 2, .name = "色温"  }}, INFO_STRING_KELVIN, COLOR_FG_NONLV, INFO_COL_FIELD, INFO_FONT_MEDIUM_SHADOW } },
 
     /* header (optional) */
-    { .string = { { INFO_TYPE_STRING, { 28, 2, 2, .name = "Lens", .user_disable = 0 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
-    { .string = { { INFO_TYPE_STRING, { 710, 2, 2, .name = "Date", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 28, 2, 2, .name = "镜头", .user_disable = 0 }}, INFO_STRING_LENS, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
+    { .string = { { INFO_TYPE_STRING, { 710, 2, 2, .name = "日期", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_CAM_DATE, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM } },
     /* footer (optional) */
-    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "Time" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
-    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "Build", .user_disable = 0 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
-    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "Copyright", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { DISPLAY_CLOCK_POS_X, DISPLAY_CLOCK_POS_Y, 2, .name = "时间" }}, INFO_STRING_TIME, COLOR_FG_NONLV, INFO_COL_PEEK, INFO_FONT_LARGE } },
+    { .string = { { INFO_TYPE_STRING, { 28, 459, 2, .name = "构建版本", .user_disable = 0 }}, INFO_STRING_BUILD, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
+    { .string = { { INFO_TYPE_STRING, { 693, 459, 2, .name = "版权信息", .user_disable = 0, .anchor_flags_self = INFO_ANCHOR_RIGHT }}, INFO_STRING_COPYRIGHT, COLOR_FG_NONLV, INFO_COL_BG, INFO_FONT_MEDIUM_SHADOW } },
 #endif
 
     { .type = INFO_TYPE_END },
@@ -1310,7 +1310,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
             {
                 return 1;
             }
-            snprintf(buffer, maxsize, "MIN:%d",raw2iso(auto_iso_range >> 8));
+            snprintf(buffer, maxsize, "最低：%d",raw2iso(auto_iso_range >> 8));
             break;
         }
         case INFO_STRING_ISO_MAX:
@@ -1319,7 +1319,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
             {
                 return 1;
             }
-            snprintf(buffer, maxsize, "MAX:%d",raw2iso(auto_iso_range & 0xFF));
+            snprintf(buffer, maxsize, "最高：%d",raw2iso(auto_iso_range & 0xFF));
             break;
         }
         case INFO_STRING_ISO_MINMAX:
@@ -1462,7 +1462,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
         {
             struct tm now;
             LoadCalendarFromRTC(&now);
-            snprintf(buffer, maxsize, "%s", (now.tm_hour > 12) ? "PM" : "AM");
+            snprintf(buffer, maxsize, "%s", (now.tm_hour > 12) ? "下午" : "上午");
             break;
         }
         case INFO_STRING_ARTIST:
@@ -1548,7 +1548,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
         case INFO_STRING_CARD_SPACE_B:
         case INFO_STRING_CARD_FILES_A:
         case INFO_STRING_CARD_FILES_B:
-            snprintf(buffer, maxsize, "(n/a)");
+            snprintf(buffer, maxsize, "（不可用）");
             break;
 
         case INFO_STRING_PICTURES_AVAIL_AUTO:
@@ -1579,7 +1579,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
             {
                 return 1;
             }
-            snprintf(buffer, maxsize, "MLU");
+            snprintf(buffer, maxsize, "反光板预升");
             break;
         }
         case INFO_STRING_HDR:
@@ -1648,15 +1648,15 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
             {
                 snprintf(buffer, maxsize, "%s ",
                     (uniwb_is_active()      ? " UniWB" :
-                    (lens_info.wb_mode == 0 ? "AutoWB" : 
-                    (lens_info.wb_mode == 1 ? " Sunny" :
-                    (lens_info.wb_mode == 2 ? "Cloudy" : 
-                    (lens_info.wb_mode == 3 ? "Tungst" : 
-                    (lens_info.wb_mode == 4 ? "Fluor." : 
-                    (lens_info.wb_mode == 5 ? " Flash" : 
-                    (lens_info.wb_mode == 6 ? "Custom" : 
-                    (lens_info.wb_mode == 8 ? " Shade" :
-                     "unk")))))))))
+                    (lens_info.wb_mode == 0 ? "自动" :
+                    (lens_info.wb_mode == 1 ? "日光" :
+                    (lens_info.wb_mode == 2 ? "阴天" :
+                    (lens_info.wb_mode == 3 ? "钨丝灯" :
+                    (lens_info.wb_mode == 4 ? "荧光灯" :
+                    (lens_info.wb_mode == 5 ? "闪光灯" :
+                    (lens_info.wb_mode == 6 ? "自定义" :
+                    (lens_info.wb_mode == 8 ? "阴影" :
+                     "未知")))))))))
                 );
             }
             break;
@@ -1704,7 +1704,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
                 
                 if(dist >= 65535)
                 {
-                    snprintf(buffer, maxsize, "inf.");
+                    snprintf(buffer, maxsize, "无穷远");
                 }
                 else if(dist >= 1000)
                 {
@@ -1741,7 +1741,7 @@ uint32_t info_get_string(char *buffer, uint32_t maxsize, uint32_t string_type)
             if (shutter_reciprocal > 100) shutter_reciprocal = 10 * ((shutter_reciprocal+5) / 10);
             if (shutter_reciprocal > 1000) shutter_reciprocal = 100 * ((shutter_reciprocal+50) / 100);
             
-            if (is_bulb_mode()) snprintf(buffer, maxsize, "BULB");
+            if (is_bulb_mode()) snprintf(buffer, maxsize, "B门");
             else if (lens_info.raw_shutter == 0) snprintf(buffer, maxsize, "");
             else if (shutter_reciprocal >= 10000) snprintf(buffer, maxsize, SYM_1_SLASH "%dK", shutter_reciprocal/1000);
             else if (shutter_x10 <= 3) snprintf(buffer, maxsize, SYM_1_SLASH "%d", shutter_reciprocal);
@@ -2476,7 +2476,7 @@ uint32_t info_print_config(info_elem_t *config)
                     if(config[0].config.show_boundaries)
                     {
                         char buf[32];
-                        snprintf(buf, sizeof(buf), "%d draws ", config[pos].hdr.pos.redraws);
+                        snprintf(buf, sizeof(buf), "%d 次重绘 ", config[pos].hdr.pos.redraws);
                         strcpy(&label[strlen(label)], buf);
                     }
 
@@ -2597,11 +2597,11 @@ void info_menu_draw_editscreen(info_elem_t *config)
         int fnt = FONT(FONT_SMALL, COLOR_BLACK, COLOR_WHITE);
         if(config[0].config.selected_item)
         {
-            bmp_printf(fnt, menu_x, menu_y - fontspec_font(FONT_SMALL)->height - 2, "Editing: '%s'", selected_item->hdr.pos.name);
+            bmp_printf(fnt, menu_x, menu_y - fontspec_font(FONT_SMALL)->height - 2, "正在编辑：“%s”", selected_item->hdr.pos.name);
         }
         else
         {
-            bmp_printf(fnt, menu_x, menu_y - fontspec_font(FONT_SMALL)->height - 2, "Editing: use WHEEL to select item");
+            bmp_printf(fnt, menu_x, menu_y - fontspec_font(FONT_SMALL)->height - 2, "编辑：用拨轮选择项目");
         }
 
         fnt = FONT(font_type, COLOR_WHITE, COLOR_GREEN1);
@@ -2625,8 +2625,8 @@ void info_edit_move(uint32_t action, uint32_t parameter)
     info_elem_t *item = &info_config[info_config[0].config.selected_item];
     uint32_t keydelay = 0;
 
-    snprintf(info_current_menu, sizeof(info_current_menu), "Move object");
-    snprintf(info_current_desc, sizeof(info_current_desc), "CURSOR: move, WHEEL: select item");
+    snprintf(info_current_menu, sizeof(info_current_menu), "移动项目");
+    snprintf(info_current_desc, sizeof(info_current_desc), "方向键：移动，拨轮：选择项目");
     
     switch(action)
     {
@@ -2685,8 +2685,8 @@ void info_edit_hide(uint32_t action, uint32_t parameter)
 {
     info_elem_t *item = &info_config[info_config[0].config.selected_item];
     
-    snprintf(info_current_menu, sizeof(info_current_menu), "Visibility: %s", (item->hdr.pos.user_disable)?"Hidden":"Shown");
-    snprintf(info_current_desc, sizeof(info_current_desc), "SET: toggle, WHEEL: select item");
+    snprintf(info_current_menu, sizeof(info_current_menu), "可见性：%s", (item->hdr.pos.user_disable)?"隐藏":"显示");
+    snprintf(info_current_desc, sizeof(info_current_desc), "SET：切换，拨轮：选择项目");
     
     switch(action)
     {
@@ -2725,41 +2725,41 @@ void info_edit_anchoring(uint32_t action, uint32_t parameter)
     info_elem_t *item = &info_config[info_config[0].config.selected_item];
     uint32_t *flags = NULL;
     const char *anchor_text[] = {
-        "Absolute",
-        "Left", "H-Center", "Right",
-        "Top",
-        "Top-Left", "Top-Center", "Top-Right",
-        "V-Center",
-        "Left-Center", "Center", "Right-Center",
-        "Bottom",
-        "Bottom-Left", "Bottom-Center", "Bottom-Right"};
+        "绝对",
+        "左", "水平居中", "右",
+        "上",
+        "左上", "上中", "右上",
+        "垂直居中",
+        "左中", "居中", "右中",
+        "下",
+        "左下", "下中", "右下"};
     
     if(item->hdr.pos.anchor)
     {
-        snprintf(anchor_name, sizeof(anchor_name), "#%d's", item->hdr.pos.anchor);
+        snprintf(anchor_name, sizeof(anchor_name), "#%d 号", item->hdr.pos.anchor);
     }
     else
     {
-        snprintf(anchor_name, sizeof(anchor_name), "(none)");
+        snprintf(anchor_name, sizeof(anchor_name), "（无）");
     }
     
     switch(anchor_mode)
     {
         case 0:
             flags = &item->hdr.pos.anchor_flags_self;
-            snprintf(info_current_menu, sizeof(info_current_menu), "own <%s> on item  %s   %s  ", anchor_text[item->hdr.pos.anchor_flags_self & 0x0f], anchor_name, anchor_text[item->hdr.pos.anchor_flags & 0x0f]);
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select, CURSOR: item anchor point, SET: own anchor");
+            snprintf(info_current_menu, sizeof(info_current_menu), "自身 <%s> 在元素  %s   %s  ", anchor_text[item->hdr.pos.anchor_flags_self & 0x0f], anchor_name, anchor_text[item->hdr.pos.anchor_flags & 0x0f]);
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择，方向键：元素锚点，SET：自身锚点");
             break;
             
         case 1:
-            snprintf(info_current_menu, sizeof(info_current_menu), "own  %s  on item <%s>  %s  ", anchor_text[item->hdr.pos.anchor_flags_self & 0x0f], anchor_name, anchor_text[item->hdr.pos.anchor_flags & 0x0f]);
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select, CURSOR: select anchor item, SET: item anchor");
+            snprintf(info_current_menu, sizeof(info_current_menu), "自身  %s  在元素 <%s>  %s  ", anchor_text[item->hdr.pos.anchor_flags_self & 0x0f], anchor_name, anchor_text[item->hdr.pos.anchor_flags & 0x0f]);
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择，方向键：选择锚点元素，SET：元素锚点");
             break;
             
         case 2:
             flags = &item->hdr.pos.anchor_flags;
-            snprintf(info_current_menu, sizeof(info_current_menu), "own  %s  on item  %s  <%s> ", anchor_text[item->hdr.pos.anchor_flags_self & 0x0f], anchor_name, anchor_text[item->hdr.pos.anchor_flags & 0x0f]);
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select, CURSOR: own anchor point, SET: item selection");
+            snprintf(info_current_menu, sizeof(info_current_menu), "自身  %s  在元素  %s  <%s> ", anchor_text[item->hdr.pos.anchor_flags_self & 0x0f], anchor_name, anchor_text[item->hdr.pos.anchor_flags & 0x0f]);
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择，方向键：自身锚点，SET：选择元素");
             break;
     }
     
@@ -2985,8 +2985,8 @@ void info_edit_parameters(uint32_t action, uint32_t parameter)
                 string_index++;
             }
             
-            snprintf(info_current_menu, sizeof(info_current_menu), "String: %d (%s)", item->string.string_type, info_string_map[string_index].name);
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select item, CURSOR: select string");
+            snprintf(info_current_menu, sizeof(info_current_menu), "字符串：%d（%s）", item->string.string_type, info_string_map[string_index].name);
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择项目，方向键：选择字符串");
             switch(action)
             {
                 case FLEXINFO_EDIT_KEYPRESS:
@@ -3014,25 +3014,25 @@ void info_edit_parameters(uint32_t action, uint32_t parameter)
         }
             
         case INFO_TYPE_TEXT:
-            snprintf(info_current_menu, sizeof(info_current_menu), "Text: <%s>", item->text.text);
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select item, (not editable)");
+            snprintf(info_current_menu, sizeof(info_current_menu), "文本：<%s>", item->text.text);
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择项目，（不可编辑）");
             break;
-            
+
         case INFO_TYPE_BATTERY_ICON:
-            snprintf(info_current_menu, sizeof(info_current_menu), "Battery Icon");
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select item, (not editable)");
+            snprintf(info_current_menu, sizeof(info_current_menu), "电池图标");
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择项目，（不可编辑）");
             break;
         case INFO_TYPE_BATTERY_PERF:
-            snprintf(info_current_menu, sizeof(info_current_menu), "Battery Perf");
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select item, (not editable)");
+            snprintf(info_current_menu, sizeof(info_current_menu), "电池性能");
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择项目，（不可编辑）");
             break;
         case INFO_TYPE_FILL:
-            snprintf(info_current_menu, sizeof(info_current_menu), "Fill");
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select item, (not editable)");
+            snprintf(info_current_menu, sizeof(info_current_menu), "填充");
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择项目，（不可编辑）");
             break;
         case INFO_TYPE_ICON:
-            snprintf(info_current_menu, sizeof(info_current_menu), "Icon");
-            snprintf(info_current_desc, sizeof(info_current_desc), "WHEEL: select item, (not editable)");
+            snprintf(info_current_menu, sizeof(info_current_menu), "图标");
+            snprintf(info_current_desc, sizeof(info_current_desc), "拨轮：选择项目，（不可编辑）");
             break;
     }
 }
@@ -3161,41 +3161,41 @@ MENU_SELECT_FUNC(info_menu_reset_select)
 
 static struct menu_entry info_menus[] = {
     {
-        .name = "FlexInfo Settings",
+        .name = "FlexInfo 设置",
         .select = menu_open_submenu,
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Show boundaries",
+                .name = "显示边界",
                 .priv = &(info_config[0].config.show_boundaries),
                 .max = 1,
-                .help = "Enable boundary display for all elements.",
+                .help = "为所有元素显示边界框。",
             },
             {
-                .name = "Use canon screen for edit",
+                .name = "编辑用佳能画面",
                 .priv = &info_screen_required,
                 .min = 0,
                 .max = 1,
-                .help = "Screen will be captured when you leave this menu.",
+                .help = "离开此菜单时将抓取屏幕画面。",
             },
             {
-                .name = "Edit mode",
+                .name = "编辑模式",
                 .priv = &info_edit_mode,
                 .min = 0,
                 .max = 1,
-                .help = "Enter editing screen.",
+                .help = "进入编辑画面。",
             },
 #ifdef FLEXINFO_XML_CONFIG
             {
-                .name = "Save config",
+                .name = "保存配置",
                 .select = info_menu_save_select,
-                .help = "Save menu settings",
+                .help = "保存菜单设置",
             },
 #endif
             {
-                .name = "Delete config",
+                .name = "删除配置",
                 .select = info_menu_delete_select,
-                .help = "Delete menu settings. Reboot to take effect.",
+                .help = "删除菜单设置。重启后生效。",
             },
             /* doesn't work
             {

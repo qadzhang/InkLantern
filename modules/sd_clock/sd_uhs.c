@@ -227,7 +227,7 @@ static void sd_overclock_task()
     {
         overclock_task_in_progress = 1; // Enable SD Overclocking task flag
 
-        NotifyBox(10000, "SD Overclocking..."); // The camera would be a little unresponsive due to pausing SD reads/writes, add a warning to inform the user
+        NotifyBox(10000, "SD 超频中..."); // The camera would be a little unresponsive due to pausing SD reads/writes, add a warning to inform the user
 
         /* Patch sdReadBlk and sdWriteBlk Now! for pausing SD reads/writes operations  */
         /* Also, will use hybrid clock speed when 192 MHz or 240 MHz are selected      */
@@ -475,7 +475,7 @@ static MENU_UPDATE_FUNC(sd_uhs_update)
         {
             if (*(uint32_t *)0xC0400614 == 0x1d000601)
             {
-                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Safe mode was triggered, try lower frequency or different access mode.");
+                MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "已触发安全模式，请尝试更低的频率或更换访问模式。");
             }
         }
     }
@@ -488,67 +488,67 @@ static MENU_UPDATE_FUNC(MID_display)
     /* https://www.cameramemoryspeed.com/sd-memory-card-faq/reading-sd-card-cid-serial-psn-internal-numbers/ */
     if (MID == 0x01)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Panasonic.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Panasonic。");
     }
 
     if (MID == 0x02)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Toshiba.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Toshiba。");
     }
 
     if (MID == 0x03)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by SanDisk.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：SanDisk。");
     }
 
     if (MID == 0x1b)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Samsung.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Samsung。");
     }
 
     if (MID == 0x1d)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by AData.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：AData。");
     }
 
     if (MID == 0x27)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Phison.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Phison。");
     }
 
     if (MID == 0x28)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Lexar.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Lexar。");
     }
 
     if (MID == 0x31)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Silicon Power.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Silicon Power。");
     }
 
     if (MID == 0x41)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Kingston.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Kingston。");
     }
 
     if (MID == 0x74)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Transcend.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Transcend。");
     }
 
     if (MID == 0x76)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Patriot.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Patriot。");
     }
 
     if (MID == 0x82)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Sony.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Sony。");
     }
 
     if (MID == 0x9C)
     {
-        MENU_SET_WARNING(MENU_WARN_INFO, "Manufactured by Angelbird.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "制造商：Angelbird。");
     }
 }
 
@@ -585,72 +585,72 @@ static MENU_UPDATE_FUNC(CRC_display)
 static struct menu_entry sd_uhs_menu[] =
 {
     {
-        .name = "SD Overclock",
+        .name = "SD 超频",
         .select = menu_open_submenu,
         .children = (struct menu_entry[]){
             {
                 .priv = &sd_overclock,
                 .update = sd_uhs_update,
                 .max = 3,
-                .help = "Choose an option, restart the camera to apply.",
-                .name = "SD Frequency",
-                .choices = CHOICES("OFF", "160MHz", "192MHz", "240MHz"),
+                .help = "选择一项后，重启相机即可生效。",
+                .name = "SD 频率",
+                .choices = CHOICES("关", "160MHz", "192MHz", "240MHz"),
             },
             {
-                .name = "Access Mode",
+                .name = "访问模式",
                 .priv = &access_mode,
                 .max = 1,
                 .choices = CHOICES("SDR50", "SDR104"),
-                .help = "SDR104 mode may be required for >100 MHz. It's ON by default.",
-                .help2 = "However some SD cards prefer SDR50 for high frequencies.",
+                .help = "超过 100 MHz 时可能需要 SDR104 模式，默认开启。",
+                .help2 = "不过部分 SD 卡在高频率下更适合 SDR50。",
             },
             {
-                .name = "Show CID info",
+                .name = "显示 CID 信息",
                 .select = menu_open_submenu,
-                .help = "Read the contents of CID register.",
-                .help2 = "CID register contains some information about an SD card.",
+                .help = "读取 CID 寄存器的内容。",
+                .help2 = "CID 寄存器包含 SD 卡的相关信息。",
                 .icon_type = IT_ACTION,
                 .children = (struct menu_entry[]){
                     {
                         .name = "MID:",
                         .update = MID_display,
-                        .help = "Manufacturer ID.",
+                        .help = "制造商 ID。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     {
                         .name = "OID:",
                         .update = OID_display,
-                        .help = "OEM/Application ID.",
+                        .help = "OEM/应用 ID。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     {
                         .name = "PNM:",
                         .update = PNM_display,
-                        .help = "Product Name.",
+                        .help = "产品名称。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     {
                         .name = "PRV:",
                         .update = PRV_display,
-                        .help = "Product Revision.",
+                        .help = "产品版本。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     {
                         .name = "PSN:",
                         .update = PSN_display,
-                        .help = "Serial Number.",
+                        .help = "序列号。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     {
                         .name = "MDT:",
                         .update = MDT_display,
-                        .help = "Manufacture Date Code.",
+                        .help = "生产日期代码。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     {
                         .name = "CRC:",
                         .update = CRC_display,
-                        .help = "CRC7 checksum.",
+                        .help = "CRC7 校验和。",
                         .icon_type = IT_ALWAYS_ON,
                     },
                     MENU_EOL,
@@ -676,22 +676,22 @@ static unsigned int sd_uhs_init()
 
     if (is_camera("5D3", "*"))
     {
-        static const char *sd_choices_5d3[] = {"OFF", "160MHz", "192MHz (H)", "240MHz (H)"};
+        static const char *sd_choices_5d3[] = {"关", "160MHz", "192MHz (H)", "240MHz (H)"};
         static const char sd_choices_help2_5d3[] = "\n"
                                                    " \n"
-                                                   "(H): Hybrid clock speed. Will use 192MHz for Write, 160MHz for Read.\n"
-                                                   "(H): Hybrid clock speed. Will use 240MHz for Write, 160MHz for Read.\n";
+                                                   "(H)：混合时钟速度。写入用 192MHz，读取用 160MHz。\n"
+                                                   "(H)：混合时钟速度。写入用 240MHz，读取用 160MHz。\n";
         sd_uhs_menu[0].choices = sd_choices_5d3;
         sd_uhs_menu[0].help2 = sd_choices_help2_5d3;
     }
 
     if (is_camera("EOSM", "*") || is_camera("EOSM2", "*") || is_camera("100D", "*"))
     {
-        static const char *sd_choices_others[] = {"OFF", "160MHz", "192MHz", "240MHz (H)"};
+        static const char *sd_choices_others[] = {"关", "160MHz", "192MHz", "240MHz (H)"};
         static const char sd_choices_help2_others[] = "\n"
                                                       " \n"
                                                       " \n"
-                                                      "(H): Hybrid clock speed. Will use 240MHz for Write, 192MHz for Read.\n";
+                                                      "(H)：混合时钟速度。写入用 240MHz，读取用 192MHz。\n";
         sd_uhs_menu[0].choices = sd_choices_others;
         sd_uhs_menu[0].help2 = sd_choices_help2_others;
     }

@@ -1,0 +1,11 @@
+#!/bin/sh
+# 本地 docutils 的 rst2html 包装（模块帮助文档构建需要）。
+# 依赖安装（不入 git）：pip3 install --target <仓库>/toolchain/pylibs docutils
+ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+PYLIBS="${ML_DOCUTILS:-$ROOT/toolchain/pylibs/docutils}"
+exec python3 -c "
+import sys
+sys.path.insert(0, '$PYLIBS')
+from docutils.core import publish_cmdline
+publish_cmdline(writer_name='html', description='rst2html (local docutils)')
+" "$@"

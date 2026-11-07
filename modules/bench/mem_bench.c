@@ -23,11 +23,11 @@ static void mem_benchmark_check(void *dst, void *src, int size, int x, int y)
     sync_caches();
     
     int color_fg = COLOR_WHITE;
-    char *msg = "OK";
+    char *msg = "正常";
 
     if (memcmp(src, dst, size) != 0)
     {
-        msg = "ERR!";
+        msg = "错误";
         color_fg = COLOR_RED;
 
         /* save the source and destination buffers, for debugging */
@@ -132,7 +132,7 @@ static void mem_benchmark_run(char *msg, int *y, int bufsize,
         }
         else
         {
-            bmp_printf(FONT_LARGE, 0, 0, "%s (display off)", msg);
+            bmp_printf(FONT_LARGE, 0, 0, "%s（关闭显示）", msg);
             msleep(250);
             display_off();
         }
@@ -177,13 +177,13 @@ static void mem_benchmark_run(char *msg, int *y, int bufsize,
 
     if (speeds[0])
     {
-        bmp_printf(FONT_MONO_20, 0, 100, "Test function:          Display on:    Display off:         ");
+        bmp_printf(FONT_MONO_20, 0, 100, "测试项目：          显示开：    显示关：         ");
         bmp_printf(FONT_MONO_20, 0, *y += 20, "%s   %d.%02d MB/s   %d.%02d MB/s          ",
                    msg, speeds[1]/100, speeds[1]%100, speeds[0]/100, speeds[0]%100);
     }
     else
     {
-        bmp_printf(FONT_MONO_20, 0, *y += 20, "%s   %d.%02d MB/s     (test skipped)       ",
+        bmp_printf(FONT_MONO_20, 0, *y += 20, "%s   %d.%02d MB/s     （跳过测试）       ",
                    msg, speeds[1]/100, speeds[1]%100);
     }
     DryosDebugMsg(0, 15, "%s %d.%02d MB/s %d.%02d MB/s",
@@ -196,7 +196,7 @@ static void mem_benchmark_run(char *msg, int *y, int bufsize,
         /* perform an extra call, just for checking whether the copying is done correctly */
         /* assume memcpy-like syntax: (dst, src, size) */
         info_led_on();
-        bmp_printf(FONT_LARGE, 0, 0, "%s (verifying)      ", msg);
+        bmp_printf(FONT_LARGE, 0, 0, "%s（正在校验）      ", msg);
         bmp_printf(FONT_MONO_20 | FONT_ALIGN_RIGHT, 720, *y, SYM_DOTS);
         mem_benchmark_fill((void*)arg0, (void*)arg1, arg2);
         bench_fun(arg0, arg1, arg2, arg3);
@@ -267,7 +267,7 @@ static void mem_benchmark_simple_task()
 
     if (!buf1 || !buf2)
     {
-        bmp_printf(FONT_LARGE, 0, 0, "malloc error :(");
+        bmp_printf(FONT_LARGE, 0, 0, "内存分配错误 :(");
         goto cleanup;
     }
     DryosDebugMsg(0, 15, "r_buf1, r_buf2: 0x%x, 0x%x", raw_buf1, raw_buf2);
@@ -301,7 +301,7 @@ static void mem_benchmark_simple_task()
     }
 
     bmp_fill(COLOR_BLACK, 0, 0, 720, font_large.height);
-    bmp_printf(FONT_LARGE, 0, 0, "Benchmark complete.");
+    bmp_printf(FONT_LARGE, 0, 0, "基准测试完成。");
 
     take_screenshot("bench%d.bmp", SCREENSHOT_BMP);
     msleep(1500);
@@ -337,7 +337,7 @@ static void mem_benchmark_task()
     buf2 = fio_malloc(bufsize);
     if (!buf1 || !buf2)
     {
-        bmp_printf(FONT_LARGE, 0, 0, "malloc error :(");
+        bmp_printf(FONT_LARGE, 0, 0, "内存分配错误 :(");
         goto cleanup;
     }
 
@@ -401,7 +401,7 @@ static void mem_benchmark_task()
     }
 
     bmp_fill(COLOR_BLACK, 0, 0, 720, font_large.height);
-    bmp_printf(FONT_LARGE, 0, 0, "Benchmark complete.");
+    bmp_printf(FONT_LARGE, 0, 0, "基准测试完成。");
 
     take_screenshot("bench%d.bmp", SCREENSHOT_BMP);
     msleep(3000);

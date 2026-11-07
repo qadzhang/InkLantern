@@ -768,7 +768,7 @@ static char* guess_aspect_ratio(int res_x, int res_y)
     {
         int h = calc_res_y(res_x, max_res_y, best_num, best_den, squeeze_factor);
         /* if the difference is 1 pixel, consider it exact */
-        char* qualifier = ABS(h - res_y) > 1 ? "almost " : "";
+        char* qualifier = ABS(h - res_y) > 1 ? "约 " : "";
         snprintf(msg, sizeof(msg), "%s%d:%d", qualifier, best_num, best_den);
     }
     else if (ratio > 1)
@@ -776,14 +776,14 @@ static char* guess_aspect_ratio(int res_x, int res_y)
         int r = (int)roundf(ratio * 100);
         /* is it 2.35:1 or 2.353:1? */
         int h = calc_res_y(res_x, max_res_y, r, 100, squeeze_factor);
-        char* qualifier = ABS(h - res_y) > 1 ? "almost " : "";
+        char* qualifier = ABS(h - res_y) > 1 ? "约 " : "";
         if (r%100) snprintf(msg, sizeof(msg), "%s%d.%02d:1", qualifier, r/100, r%100);
     }
     else
     {
         int r = (int)roundf((1/ratio) * 100);
         int h = calc_res_y(res_x, max_res_y, 100, r, squeeze_factor);
-        char* qualifier = ABS(h - res_y) > 1 ? "almost " : "";
+        char* qualifier = ABS(h - res_y) > 1 ? "约 " : "";
         if (r%100) snprintf(msg, sizeof(msg), "%s1:%d.%02d", qualifier, r/100, r%100);
     }
     return msg;
@@ -869,13 +869,13 @@ static char* guess_how_many_frames()
         f_hi = MIN(f_hi, 10000);
         write_speed = (write_speed * 10 + 512 * 1024) / (1024 * 1024);
         if (f_lo != f_hi)
-            snprintf(msg, sizeof(msg), "Expect %d-%d frames at %d.%dMB/s.", f_lo, f_hi, write_speed / 10, write_speed % 10);
+            snprintf(msg, sizeof(msg), "预计可录 %d-%d 帧（%d.%dMB/s）。", f_lo, f_hi, write_speed / 10, write_speed % 10);
         else
-            snprintf(msg, sizeof(msg), "Expect around %d frames at %d.%dMB/s.", f_lo, write_speed / 10, write_speed % 10);
+            snprintf(msg, sizeof(msg), "预计可录约 %d 帧（%d.%dMB/s）。", f_lo, write_speed / 10, write_speed % 10);
     }
     else
     {
-        snprintf(msg, sizeof(msg), "Continuous recording OK.");
+        snprintf(msg, sizeof(msg), "可持续录制。");
     }
     
     return msg;
@@ -892,7 +892,7 @@ static MENU_UPDATE_FUNC(write_speed_update)
 
     if (max_frame_size % 512)
     {
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Frame size not multiple of 512 bytes!");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "帧大小不是 512 字节的整数倍！");
     }
     else
     {
@@ -1051,12 +1051,12 @@ static MENU_UPDATE_FUNC(raw_main_update)
 
     if (!RAW_IS_IDLE)
     {
-        MENU_SET_VALUE(RAW_IS_RECORDING ? "Recording..." : RAW_IS_PREPARING ? "Starting..." : RAW_IS_FINISHING ? "Stopping..." : "err");
+        MENU_SET_VALUE(RAW_IS_RECORDING ? "录制中..." : RAW_IS_PREPARING ? "正在启动..." : RAW_IS_FINISHING ? "正在停止..." : "错误");
         MENU_SET_ICON(MNI_RECORD, 0);
     }
     else
     {
-        MENU_SET_VALUE("ON, %dx%d", res_x, res_y);
+        MENU_SET_VALUE("开，%dx%d", res_x, res_y);
         int crop_factor = calc_crop_factor();
         if (crop_factor) MENU_SET_RINFO("%s%d.%02dx", FMT_FIXEDPOINT2( crop_factor ));
     }
@@ -1083,7 +1083,7 @@ static MENU_UPDATE_FUNC(aspect_ratio_update_info)
         int den = aspect_ratio_presets_den[aspect_ratio_index];
         int sq100 = (int)roundf(squeeze_factor*100);
         int res_y_corrected = calc_res_y(res_x, max_res_y*squeeze_factor, num, den, 1.0f);
-        MENU_SET_HELP("%dx%d. Stretch by %s%d.%02dx to get %dx%d (%s) in post.", res_x, res_y, FMT_FIXEDPOINT2(sq100), res_x, res_y_corrected, aspect_ratio_choices[aspect_ratio_index]);
+        MENU_SET_HELP("%dx%d。后期需按 %s%d.%02dx 拉伸至 %dx%d（%s）。", res_x, res_y, FMT_FIXEDPOINT2(sq100), res_x, res_y_corrected, aspect_ratio_choices[aspect_ratio_index]);
     }
 }
 
@@ -1091,8 +1091,8 @@ static MENU_UPDATE_FUNC(resolution_update)
 {
     if (!raw_video_enabled || !lv)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Enable RAW video first.");
-        MENU_SET_VALUE("N/A");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请先启用 RAW 视频。");
+        MENU_SET_VALUE("不可用");
         return;
     }
     
@@ -1112,7 +1112,7 @@ static MENU_UPDATE_FUNC(resolution_update)
     
     if (selected_x > max_res_x)
     {
-        MENU_SET_HELP("%d is not possible in current video mode (max %d).", selected_x, max_res_x);
+        MENU_SET_HELP("当前视频模式下无法使用 %d（最大 %d）。", selected_x, max_res_x);
     }
     else
     {
@@ -1127,7 +1127,7 @@ static MENU_UPDATE_FUNC(resolution_update)
         if (len < 20)
         {
             snprintf(info->help + len, MENU_MAX_HELP_LEN - len,
-                " Fine-tune with LEFT/RIGHT or top scrollwheel."
+                " 可用左右键或顶部滚轮微调。"
             );
         }
     }
@@ -1170,8 +1170,8 @@ static MENU_UPDATE_FUNC(aspect_ratio_update)
 {
     if (!raw_video_enabled || !lv)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Enable RAW video first.");
-        MENU_SET_VALUE("N/A");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请先启用 RAW 视频。");
+        MENU_SET_VALUE("不可用");
         return;
     }
 
@@ -1185,7 +1185,7 @@ static MENU_UPDATE_FUNC(aspect_ratio_update)
     {
         char* ratio = guess_aspect_ratio(res_x, res_y * squeeze_factor);
         MENU_SET_VALUE(ratio);
-        MENU_SET_HELP("Could not get %s. Max vertical resolution: %d.", aspect_ratio_choices[aspect_ratio_index], res_y);
+        MENU_SET_HELP("无法达到 %s。最大垂直分辨率：%d。", aspect_ratio_choices[aspect_ratio_index], res_y);
     }
     else
     {
@@ -1215,11 +1215,11 @@ static MENU_UPDATE_FUNC(output_format_update)
 
     if (output_format > OUTPUT_14BIT_LOSSLESS)
     {
-        MENU_SET_VALUE("%d-bit lossless", BPP_D);
+        MENU_SET_VALUE("%d 位无损", BPP_D);
 
         if (!raw_digital_gain_ok())
         {
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Lossless 8...12-bit not working in video modes with increased resolution.");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "8…12 位无损在高分辨率视频模式下不可用。");
         }
     }
 }
@@ -1263,15 +1263,15 @@ static int pre_record_calc_num_frames(int slot_count, int max_frames)
 static MENU_UPDATE_FUNC(pre_recording_update)
 {
     MENU_SET_VALUE(
-        pre_record ? "%d second%s" : "OFF",
+        pre_record ? "%d 秒" : "关",
         pre_record, pre_record == 1 ? "" : "s"
     );
 
     if (rec_trigger == REC_TRIGGER_HALFSHUTTER_PRE_ONLY && !pre_record)
     {
-        MENU_SET_VALUE("1 frame");
+        MENU_SET_VALUE("1 帧");
         MENU_SET_ENABLED(1);
-        MENU_SET_WARNING(MENU_WARN_INFO, "Half-shutter trigger uses pre-recording internally.");
+        MENU_SET_WARNING(MENU_WARN_INFO, "半按快门触发内部使用预录制功能。");
     }
 
     int slot_count = valid_slot_count;
@@ -1286,10 +1286,10 @@ static MENU_UPDATE_FUNC(pre_recording_update)
             {
                 int total_sec = (slot_count * 1000 * 10 + fps/2) / fps;
                 int pre_sec   = (pre_frames * 1000 * 10 + fps/2) / fps;
-                MENU_SET_RINFO("max %d.%d", pre_sec/10, pre_sec%10);
+                MENU_SET_RINFO("上限 %d.%d", pre_sec/10, pre_sec%10);
                 MENU_SET_WARNING(
                     MENU_WARN_INFO,
-                    "Using %d.%ds (%d frames) out of %d.%ds (%d frames) for pre-recording.",
+                    "预录制占用 %d.%d 秒（%d 帧），缓冲共 %d.%d 秒（%d 帧）。",
                     pre_sec/10, pre_sec%10, pre_frames,
                     total_sec/10, total_sec%10, slot_count
                 );
@@ -1305,7 +1305,7 @@ static MENU_UPDATE_FUNC(h264_proxy_update)
     {
         if (lv_dispsize == 5)
         {
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Not compatible with x5 zoom.");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "与 5 倍变焦不兼容。");
         }
 
         /* fixme: duplicate code */
@@ -1314,17 +1314,17 @@ static MENU_UPDATE_FUNC(h264_proxy_update)
 
         if (raw_info.width > default_width)
         {
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Not working in video modes with broken preview.");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "预览异常的视频模式下不可用。");
         }
 
         if (raw_info.height > default_height)
         {
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "Framing in H.264 is not accurate in modes with higher vertical resolution.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "垂直分辨率较高的模式下，H.264 取景不够准确。");
         }
 
         if (get_shooting_card()->drive_letter[0] == 'A')
         {
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "For best performance, record H.264 on SD. RAW is always saved on CF.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "为获得最佳性能，请将 H.264 录到 SD 卡。RAW 始终保存在 CF 卡。");
         }
     }
 }
@@ -1887,7 +1887,7 @@ static int update_status(char * buffer, int buffer_size)
     else 
     {
         /* recording stopped - show number of frames */ 
-        len = snprintf(buffer, buffer_size, "%d frames", frame_count - 1);
+        len = snprintf(buffer, buffer_size, "%d 帧", frame_count - 1);
         return COLOR_DARK_RED;
     }
 }
@@ -1998,11 +1998,11 @@ void show_recording_status()
                         {
                             if (idle_percent[i])
                             {
-                                STR_APPEND(msg, ", %d%% idle", idle_percent[i]);
+                                STR_APPEND(msg, "，空闲 %d%%", idle_percent[i]);
                             }
                             else
                             {
-                                STR_APPEND(msg,", %dms idle", idle_time[i]);
+                                STR_APPEND(msg,"，空闲 %dms", idle_time[i]);
                             }
                         }
                         bmp_printf(FONT(FONT_SMALL, COLOR_WHITE, COLOR_BG_DARK),
@@ -2213,7 +2213,7 @@ void hack_liveview(int unhack)
                 
                 if (err)
                 {
-                    NotifyBox(1000, "Hack error at %x:\nexpected %x, got %x", dialog_refresh_timer_addr, dialog_refresh_timer_orig_instr, *(volatile uint32_t*)dialog_refresh_timer_addr);
+                    NotifyBox(1000, "补丁出错于 %x：\n预期 %x，实际 %x", dialog_refresh_timer_addr, dialog_refresh_timer_orig_instr, *(volatile uint32_t*)dialog_refresh_timer_addr);
                     beep_custom(1000, 2000, 1);
                 }
             }
@@ -2860,7 +2860,7 @@ void process_frame(int next_fullsize_buffer_pos)
     if (edmac_active)
     {
         /* EDMAC too slow */
-        NotifyBox(2000, "EDMAC timeout.");
+        NotifyBox(2000, "EDMAC 超时。");
         buffer_full = 1;
         return;
     }
@@ -2880,7 +2880,7 @@ void process_frame(int next_fullsize_buffer_pos)
             skipped_frames++;
         }
         while (capture_slot < 0);
-        bmp_printf(FONT_MED, 50, 50, "Skipped %d frames", skipped_frames);
+        bmp_printf(FONT_MED, 50, 50, "已跳过 %d 帧", skipped_frames);
     }
 
     if (capture_slot >= 0)
@@ -3420,7 +3420,7 @@ void raw_video_rec_task(uint32_t card_index)
         raw_set_dirty();
         if (!raw_update_params())
         {
-            NotifyBox(5000, "Raw detect error");
+            NotifyBox(5000, "RAW 检测错误");
             goto cleanup;
         }
 
@@ -3440,7 +3440,7 @@ void raw_video_rec_task(uint32_t card_index)
         f = FIO_CreateFile(raw_movie_filename);
         if (!f)
         {
-            NotifyBox(5000, "File create error");
+            NotifyBox(5000, "文件创建错误");
             goto cleanup;
         }
 
@@ -3451,7 +3451,7 @@ void raw_video_rec_task(uint32_t card_index)
         written_total[card_index] = written_chunk[card_index] = write_mlv_chunk_headers(f, mlv_chunk, card_index);
         if (!written_chunk[card_index])
         {
-            NotifyBox(5000, "Card Full");
+            NotifyBox(5000, "存储卡已满");
             goto cleanup;
         }
         hack_liveview(0);
@@ -3489,7 +3489,7 @@ void raw_video_rec_task(uint32_t card_index)
         f = FIO_CreateFile(chunk_filename[card_index]);
         if (!f)
         {
-            NotifyBox(5000, "File create error");
+            NotifyBox(5000, "文件创建错误");
             goto cleanup;
         }
         written_total[card_index] = written_chunk[card_index] = write_mlv_chunk_headers(f, mlv_chunk, card_index);
@@ -3520,7 +3520,7 @@ void raw_video_rec_task(uint32_t card_index)
             {
                 /* emergency stop - free all resources ASAP to prevent crash */
                 /* the video will be incomplete */
-                NotifyBox(5000, "Emergency Stop");
+                NotifyBox(5000, "紧急停止");
                 raw_recording_state = RAW_FINISHING;
                 wait_lv_frames(2);
 
@@ -3674,7 +3674,7 @@ void raw_video_rec_task(uint32_t card_index)
 
             if (slots[slot_index].status != SLOT_FULL)
             {
-                bmp_printf(FONT_LARGE, 30, 70, "Slot check error");
+                bmp_printf(FONT_LARGE, 30, 70, "缓冲槽检查错误");
                 beep();
             }
 
@@ -3704,7 +3704,7 @@ void raw_video_rec_task(uint32_t card_index)
             if (i == writing_queue_tail)
             {
                 bmp_printf( FONT_MED, 30, 110,
-                    "Queue overflow"
+                    "队列溢出"
                 );
                 beep();
             }
@@ -3719,7 +3719,7 @@ void raw_video_rec_task(uint32_t card_index)
                 if (frame_status == -1)
                 { // next frame shows signs of overflow writing this frame
                     bmp_printf( FONT_MED, 30, 110,
-                        "Data corruption at slot %d, frame %d, err %d ",
+                        "缓冲槽 %d、帧 %d 数据损坏，错误码 %d ",
                         slot_index, slots[slot_index].frame_number, frame_status
                     );
                     beep();
@@ -3727,7 +3727,7 @@ void raw_video_rec_task(uint32_t card_index)
                 else if (frame_status == 0)
                 { // frame not yet saved
                     bmp_printf( FONT_MED, 30, 110,
-                        "Frame incomplete at slot %d, frame %d ", slot_index, slots[slot_index].frame_number
+                        "缓冲槽 %d、帧 %d 未保存完成 ", slot_index, slots[slot_index].frame_number
                     );
                 }
                 
@@ -3737,7 +3737,7 @@ void raw_video_rec_task(uint32_t card_index)
                     if (!card_spanning)
                     {
                         bmp_printf(FONT_MED, 30, 110,
-                                   "Frame order error: slot %d, frame %d, expected %d ",
+                                   "帧顺序错误：缓冲槽 %d、帧 %d，应为 %d ",
                                    slot_index,
                                    slots[slot_index].frame_number,
                                    last_processed_frame + 1);
@@ -3774,14 +3774,14 @@ abort_and_check_early_stop:
             if (last_block_size > 3)
             {
                 bmp_printf( FONT_MED, 30, 90, 
-                    "Early stop (%d). Should have recorded a few more frames.", last_block_size
+                    "提前停止（%d）。本应再多录几帧。", last_block_size
                 );
                 beep_times(last_block_size);
             }
             else
             {
                 bmp_printf( FONT_MED, 30, 90, 
-                    "Movie recording stopped automagically         "
+                    "视频录制已自动停止         "
                 );
                 /* this is error beep, not audio sync beep */
                 beep_times(2);
@@ -3843,7 +3843,7 @@ abort_and_check_early_stop:
         for (; writing_queue_head != writing_queue_tail; INC_MOD(writing_queue_head, COUNT(writing_queue)))
         {
             bmp_printf( FONT_MED, 30, 110, 
-                "Flushing buffers... %d frames left  ", MOD(writing_queue_tail - writing_queue_head, COUNT(writing_queue))
+                "正在写出缓冲…剩余 %d 帧  ", MOD(writing_queue_tail - writing_queue_head, COUNT(writing_queue))
             );
 
             int slot_index = writing_queue[writing_queue_head];
@@ -3853,7 +3853,7 @@ abort_and_check_early_stop:
             if (slots[slot_index].status != SLOT_FULL)
             {
                 bmp_printf( FONT_MED, 30, 110, 
-                    "Slot %d: frame %d not saved ", slot_index, slots[slot_index].frame_number
+                    "缓冲槽 %d：帧 %d 未保存 ", slot_index, slots[slot_index].frame_number
                 );
                 beep();
             }
@@ -3865,7 +3865,7 @@ abort_and_check_early_stop:
                 if (frame_status == -1)
                 { // next frame shows signs of overflow writing this frame
                     bmp_printf( FONT_MED, 30, 110, 
-                        "Data corruption at slot %d, frame %d, err %d ",
+                        "缓冲槽 %d、帧 %d 数据损坏，错误码 %d ",
                         slot_index, slots[slot_index].frame_number, frame_status
                     );
                     beep();
@@ -3873,7 +3873,7 @@ abort_and_check_early_stop:
                 else if (frame_status == 0)
                 { // frame not yet saved
                     bmp_printf( FONT_MED, 30, 110,
-                        "Frame incomplete at slot %d, frame %d ", slot_index, slots[slot_index].frame_number
+                        "缓冲槽 %d、帧 %d 未保存完成 ", slot_index, slots[slot_index].frame_number
                     );
                 }
 
@@ -3881,7 +3881,7 @@ abort_and_check_early_stop:
                     && !card_spanning)
                 {
                     bmp_printf( FONT_MED, 30, 110, 
-                        "Frame order error: slot %d, frame %d, expected %d ", slot_index, slots[slot_index].frame_number, last_processed_frame + 1
+                        "帧顺序错误：缓冲槽 %d、帧 %d，应为 %d ", slot_index, slots[slot_index].frame_number, last_processed_frame + 1
                     );
                     beep();
                 }
@@ -3900,7 +3900,7 @@ abort_and_check_early_stop:
             if (!write_frames(&f, slots[slot_index].ptr, slots[slot_index].size,
                               slots[slot_index].is_meta ? 0 : 1, card_index))
             {
-                NotifyBox(5000, (card_index == 0) ? "Card Full" : "SD Card Full");
+                NotifyBox(5000, (card_index == 0) ? "存储卡已满" : "SD 卡已满");
                 beep();
                 break;
             }
@@ -3911,7 +3911,7 @@ abort_and_check_early_stop:
     if (!written_total[card_index] || !f)
     {
         bmp_printf( FONT_MED, 30, 110, 
-            "Nothing saved, card full maybe."
+            "未保存任何内容，可能存储卡已满。"
         );
         beep_times(3);
         msleep(2000);
@@ -3992,7 +3992,7 @@ static MENU_SELECT_FUNC(raw_playback_start)
         if (raw_movie_filename == NULL
             || raw_movie_filename[0] == '\0')
         {
-            bmp_printf(FONT_MED, 20, 50, "Please record a movie first.");
+            bmp_printf(FONT_MED, 20, 50, "请先录制视频。");
             return;
         }
         mlv_play_file(raw_movie_filename);
@@ -4002,13 +4002,13 @@ static MENU_SELECT_FUNC(raw_playback_start)
 static MENU_UPDATE_FUNC(raw_playback_update)
 {
     if ((thunk)mlv_play_file == (thunk)ret_0)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "You need to load the mlv_play module.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "需要加载 mlv_play 模块。");
     
     if (raw_movie_filename != NULL
         && raw_movie_filename[0])
         MENU_SET_VALUE(raw_movie_filename + 17);
     else
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Record a video clip first.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请先录制视频片段。");
 }
 
 static struct menu_entry raw_video_menu[] =
@@ -4020,11 +4020,11 @@ static struct menu_entry raw_video_menu[] =
         .update = raw_main_update,
         .submenu_width = 710,
         .depends_on = DEP_LIVEVIEW | DEP_MOVIE_MODE,
-        .help = "Record RAW video (MLV format, no sound, basic metadata).",
-        .help2 = "Press LiveView to start recording.",
+        .help = "录制 RAW 视频（MLV 格式，无声音，含基本元数据）。",
+        .help2 = "按实时取景键开始录制。",
         .children =  (struct menu_entry[]) {
             {
-                .name = "Resolution",
+                .name = "分辨率",
                 .priv = &resolution_index_x,
                 .max = COUNT(resolution_presets_x) - 1,
                 .select = resolution_change_fine_value,
@@ -4032,141 +4032,141 @@ static struct menu_entry raw_video_menu[] =
                 .choices = RESOLUTION_CHOICES_X,
             },
             {
-                .name = "Aspect ratio",
+                .name = "宽高比",
                 .priv = &aspect_ratio_index,
                 .max = COUNT(aspect_ratio_presets_num) - 1,
                 .update = aspect_ratio_update,
                 .choices = aspect_ratio_choices,
             },
             {
-                .name       = "Data format",
+                .name       = "数据格式",
                 .priv       = &output_format,
                 .max        = 5,
                 .update     = output_format_update,
                 .choices    = CHOICES(
-                                "14-bit",
-                                "12-bit",
-                                "10-bit",
-                                "14-bit lossless",
-                                "12-bit lossless",
-                                "11...8-bit lossless",
+                                "14位",
+                                "12位",
+                                "10位",
+                                "14位无损",
+                                "12位无损",
+                                "11…8位无损",
                               ),
-                .help       = "Choose the output format (bit depth, compression) for the raw stream:",
-                .help2      = "14-bit: native uncompressed format used in Canon firmware.\n"
-                              "12-bit: uncompressed, 2 LSB trimmed (nearly lossless on current sensor).\n"
-                              "10-bit: uncompressed, 4 LSB trimmed (small loss of detail in shadows).\n"
-                              "14-bit compressed with Canon's Lossless JPEG. Recommended ISO < 100.\n"
-                              "Signal divided by 4 before compression. Recommended ISO 100-1600.\n"
-                              "Signal divided by 8/16/32/64 before compression, depending on ISO.\n"
+                .help       = "选择 RAW 数据流的输出格式（位深、压缩方式）：",
+                .help2      = "14位：Canon 固件原生无压缩格式。\n"
+                              "12位：无压缩，截去 2 个低位（现有传感器上几乎无损）。\n"
+                              "10位：无压缩，截去 4 个低位（暗部略有细节损失）。\n"
+                              "14位，使用 Canon 无损 JPEG 压缩。建议 ISO < 100。\n"
+                              "压缩前信号除以 4。建议 ISO 100-1600。\n"
+                              "压缩前信号按 ISO 除以 8/16/32/64。\n"
             },
             {
-                .name = "Preview",
+                .name = "预览",
                 .priv = &preview_mode,
                 .max = 3,
-                .choices = CHOICES("Auto", "Real-time", "Framing", "Frozen LV"),
-                .help  = "Raw video preview (long half-shutter press to override):",
-                .help2 = "Auto: ML chooses what's best for each video mode\n"
-                         "Plain old LiveView (color and real-time). Framing is not always correct.\n"
-                         "Slow (not real-time) and low-resolution, but has correct framing.\n"
-                         "Freeze LiveView for more speed; uses 'Framing' preview if Global Draw ON.\n",
+                .choices = CHOICES("自动", "实时", "取景", "冻结取景"),
+                .help  = "RAW 视频预览（长按半按快门可临时切换）：",
+                .help2 = "自动：由 ML 为每种视频模式选择最佳方案\n"
+                         "普通实时取景（彩色、实时），取景范围不一定准确。\n"
+                         "较慢（非实时）、分辨率较低，但取景范围准确。\n"
+                         "冻结实时取景以换取速度；全局绘制开启时使用“取景”预览。\n",
                 .depends_on = DEP_GLOBAL_DRAW,
             },
             {
-                .name    = "Pre-record",
+                .name    = "预录制",
                 .priv    = &pre_record,
                 .max     = 10,
                 .update  = pre_recording_update,
-                .help    = "Pre-records a few seconds of video into memory, discarding old frames.",
-                .help2   = "Press REC twice: 1 - to start pre-recording, 2 - for normal recording.",
+                .help    = "先把数秒视频预录到内存中，并丢弃旧帧。",
+                .help2   = "按两次 REC：第一次开始预录制，第二次开始正常录制。",
             },
             {
-                .name    = "Rec trigger",
+                .name    = "录制触发",
                 .priv    = &rec_trigger,
                 .max     = 3,
-                .choices = CHOICES("OFF", "Half-shutter: start/pause", "Half-shutter: hold", "Half-shutter: pre only"),
-                .help    = "Use external trigger to start/pause recording within a video clip.",
-                .help2   = "Disabled (press REC as usual).\n"
-                           "Press half-shutter to start/pause recording within the current clip.\n"
-                           "Press and hold the shutter halfway to record (e.g. for short events).\n"
-                           "Half-shutter to save only the pre-recorded frames (at least 1 frame).\n",
+                .choices = CHOICES("关", "半按快门：开始/暂停", "半按快门：按住录制", "半按快门：仅预录"),
+                .help    = "使用外部触发在视频片段内开始/暂停录制。",
+                .help2   = "禁用（照常按 REC）。\n"
+                           "半按快门在当前片段内开始/暂停录制。\n"
+                           "按住半快门进行录制（适合抓拍短暂画面）。\n"
+                           "半按快门仅保存预录制的帧（至少 1 帧）。\n",
             },
             {
-                .name = "Card Spanning",
+                .name = "跨卡存储",
                 .priv = &card_spanning,
                 .max = 1,
-                .help  = "Span video file over SD + CF cards.",
-                .help2 = "Can increase write speed.",
+                .help  = "将视频文件分散保存到 SD + CF 两张卡。",
+                .help2 = "可提高写入速度。",
             },
             {
-                .name = "Digital dolly",
+                .name = "数码滑轨",
                 .priv = &dolly_mode,
                 .max = 1,
-                .help = "Smooth panning of the recording window (software dolly).",
-                .help2 = "Use arrow keys (joystick) to move the window.",
+                .help = "平滑移动录制窗口（软件滑轨）。",
+                .help2 = "使用方向键（摇杆）移动窗口。",
                 .advanced = 1,
             },
             {
-                .name   = "H.264 proxy",
+                .name   = "H.264 代理",
                 .priv   = &h264_proxy_menu,
                 .max    = 1,
                 .update = h264_proxy_update,
-                .help   = "Record a H.264 video at the same time.",
-                .help2  = "For best performance, record H.264 on SD and RAW on CF.",
+                .help   = "同时录制一段 H.264 视频。",
+                .help2  = "为获得最佳性能，H.264 录到 SD 卡、RAW 录到 CF 卡。",
                 .advanced = 1,
             },
             {
-                .name = "Card warm-up",
+                .name = "存储卡预热",
                 .priv = &warm_up,
                 .max = 7,
-                .choices = CHOICES("OFF", "16 MB", "32 MB", "64 MB", "128 MB", "256 MB", "512 MB", "1 GB"),
-                .help  = "Write a large file on the card at camera startup.",
-                .help2 = "Some cards seem to get a bit faster after this.",
+                .choices = CHOICES("关", "16 MB", "32 MB", "64 MB", "128 MB", "256 MB", "512 MB", "1 GB"),
+                .help  = "开机时在存储卡上写入一个大文件。",
+                .help2 = "部分卡在此之后写入速度会略有提升。",
                 .advanced = 1,
             },
             {
-                .name = "Use SRM memory",
+                .name = "使用 SRM 内存",
                 .priv = &use_srm_memory,
                 .max = 1,
-                .help = "Allocate memory from SRM job buffers (normally used for still capture).",
-                .help2 = "Side effect: will show BUSY on the screen and might affect other functions.",
+                .help = "从 SRM 任务缓冲区分配内存（通常用于拍摄照片）。",
+                .help2 = "副作用：屏幕会显示 BUSY，并可能影响其他功能。",
                 .advanced = 1,
             },
             {
-                .name = "Small hacks",
+                .name = "小型调优",
                 .priv = &small_hacks,
                 .max = 1,
-                .help  = "Slow down Canon GUI, disable auto exposure, white balance...",
+                .help  = "降低 Canon 界面刷新率，禁用自动曝光、自动白平衡…",
                 .advanced = 1,
             },
             {
-                .name = "Show graph",
+                .name = "显示图表",
                 .priv = &show_graph,
-                .choices = CHOICES("OFF", "Buffers", "Buffer usage"),
+                .choices = CHOICES("关", "缓冲区", "缓冲区占用"),
                 .max = 2,
-                .help = "Displays a graph of the current buffer usage and expected frames.",
+                .help = "显示当前缓冲区占用与预计可录帧数的图表。",
                 .advanced = 1,
             },
             {
-                .name = "Sync beep",
+                .name = "同步提示音",
                 .priv = &sync_beep,
                 .max    = 1,
-                .help = "Beeps on recording start for better sync.",
+                .help = "录制开始时发出提示音，便于音画同步。",
                 .advanced = 1,
             },
             {
-                .name   = "Show EDMAC",
+                .name   = "显示 EDMAC",
                 .priv   = &show_edmac,
                 .max    = 1,
-                .help   = "Plots the EDMAC read/write pointers within the source raw buffer.",
-                .help2  = "If green (RD) is always above red (WR), it's safe to use single-buffering.",
+                .help   = "绘制源 RAW 缓冲区内 EDMAC 读/写指针曲线。",
+                .help2  = "若绿色（读）始终高于红色（写），可放心使用单缓冲。",
                 .advanced = 1,
             },
             {
-                .name = "Playback",
+                .name = "回放",
                 .select = raw_playback_start,
                 .update = raw_playback_update,
                 .icon_type = IT_ACTION,
-                .help = "Play back the last raw video clip.",
+                .help = "回放最近一段 RAW 视频。",
             },
             MENU_ADVANCED_TOGGLE,
             MENU_EOL,
@@ -4485,7 +4485,7 @@ unsigned int raw_rec_update_preview(unsigned int ctx)
 static struct lvinfo_item info_items[] = {
     /* Top bar */
     {
-        .name = "Rec. Status",
+        .name = "录制状态",
         .which_bar = LV_TOP_BAR_ONLY,
         .update = recording_status,
         .preferred_position = 50,
@@ -4529,13 +4529,13 @@ static unsigned int raw_rec_init()
 
     if (cam_5d2 || cam_50d)
     {
-       raw_video_menu[0].help = "Record RAW video. Press SET to start.";
+       raw_video_menu[0].help = "录制 RAW 视频。按 SET 键开始。";
     }
 
     // Hide card spanning on unsupported cams
     for (struct menu_entry *e = raw_video_menu[0].children; !MENU_IS_EOL(e); e++)
     {
-        if (!is_card_spanning_possible && streq(e->name, "Card Spanning"))
+        if (!is_card_spanning_possible && streq(e->name, "跨卡存储"))
         {
             e->shidden = 1;
             card_spanning = 0; /* Just to make sure */
@@ -4567,7 +4567,7 @@ static unsigned int raw_rec_init()
     /* some cards may like this */
     if (warm_up)
     {
-        NotifyBox(100000, "Card warming up...");
+        NotifyBox(100000, "存储卡预热中…");
         char warmup_filename[100];
         snprintf(warmup_filename, sizeof(warmup_filename), "%s/warmup.raw", get_dcim_dir());
         FILE* f = FIO_CreateFile(warmup_filename);

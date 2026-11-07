@@ -97,22 +97,22 @@ static MENU_UPDATE_FUNC(SD_PLL_update)
 {
     if (!SD_initialised)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "SD clock not init");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "SD 时钟未初始化");
         return;
     }
 
     if (SD_PLL_clock_choice != 0)
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Restart cam to apply change");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "请重启相机使更改生效");
 }
 
 static struct menu_entry SD_PLL_menu[] = {
     {
-        .name    = "SD frequency",
+        .name    = "SD 频率",
         .priv    = &SD_PLL_clock_choice,
         .max     = COUNT(SD_PLL_values) - 1,
-        .choices = CHOICES("48 MHz (stock)", "72 MHz", "96 MHz"),
+        .choices = CHOICES("48 MHz (原生)", "72 MHz", "96 MHz"),
         .update  = SD_PLL_update,
-        .help    = "SD bus clock. Applied at module load; restart to take effect"
+        .help    = "SD 总线时钟。模块加载时应用，重启后生效"
     },
 };
 

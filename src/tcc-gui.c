@@ -66,7 +66,7 @@ static void script_parse_header(int script_index)
     int r = read_file(fn, buf, 1024);
     if (r < 0)
     {
-        snprintf(script_titles[script_index], SCRIPT_TITLE_SIZE, "Error");
+        snprintf(script_titles[script_index], SCRIPT_TITLE_SIZE, "错误");
         return;
     }
     buf[r+1] = 0;
@@ -96,7 +96,7 @@ static void find_scripts(void)
     struct fio_dirent * dirent = FIO_FindFirstEx( "ML/SCRIPTS/", &file );
     if( IS_ERROR(dirent) )
     {
-        NotifyBox(2000, "Scripts dir missing" );
+        NotifyBox(2000, "未找到脚本目录" );
         return;
     }
     script_cnt = 0;
@@ -108,7 +108,7 @@ static void find_scripts(void)
 
             if (script_cnt >= MAX_SCRIPT_NUM)
             {
-                NotifyBox(2000, "Too many scripts" );
+                NotifyBox(2000, "脚本数量过多" );
                 break;
             }
         }
@@ -122,9 +122,9 @@ static void find_scripts(void)
 static char* get_script_status_msg()
 {
     return 
-        script_state == SCRIPT_IDLE ? "idle" :
-        script_state == SCRIPT_RUNNING ? (script_stop_requested ? "stopping" : "running") :
-        script_state == SCRIPT_JUST_FINISHED ? "finished" : "err";
+        script_state == SCRIPT_IDLE ? "空闲" :
+        script_state == SCRIPT_RUNNING ? (script_stop_requested ? "正在停止" : "运行中") :
+        script_state == SCRIPT_JUST_FINISHED ? "已结束" : "错误";
 }
 
 static MENU_UPDATE_FUNC(script_run_display)
@@ -132,13 +132,13 @@ static MENU_UPDATE_FUNC(script_run_display)
     if (script_state)
     {
         MENU_SET_NAME(
-            "Script %s...", get_script_status_msg()
+            "脚本 %s...", get_script_status_msg()
         );
         MENU_SET_ICON(MNI_RECORD, 0);
     }
     else 
     {
-        MENU_SET_NAME("Run script");
+        MENU_SET_NAME("运行脚本");
     }
 }
 
@@ -174,7 +174,7 @@ static MENU_UPDATE_FUNC(script_print)
 {
     if (!script_preview_flag || !entry->selected)
     {
-        MENU_SET_NAME("Show script");
+        MENU_SET_NAME("查看脚本");
         MENU_SET_VALUE("");
         script_preview_flag = 0;
         return;
@@ -194,7 +194,7 @@ static MENU_UPDATE_FUNC(script_print)
         }
         else
         {
-            snprintf(script_preview, sizeof(script_preview), "Could not read '%s'", p);
+            snprintf(script_preview, sizeof(script_preview), "无法读取“%s”", p);
         }
     }
     prev_script = script_selected;
@@ -222,13 +222,13 @@ static void run_script(const char *script)
     
     console_clear();
     console_show();
-    console_set_help_text("SET: show/hide");
-    console_set_status_text("Script running...");
+    console_set_help_text("SET：显示/隐藏");
+    console_set_status_text("脚本运行中...");
     
     int exit_code = tcc_compile_and_run(get_script_path(script_selected));
     if (exit_code == 0)
     {
-        console_puts(    "Script finished.\n");
+        console_puts(    "脚本已结束。\n");
     }
     else
     {
@@ -246,7 +246,7 @@ static void run_script(const char *script)
     
     beep();
     script_state = SCRIPT_JUST_FINISHED;
-    console_set_status_text("Script finished. ");
+    console_set_status_text("脚本已结束。 ");
     msleep(500);
     redraw();
     msleep(500);
@@ -382,51 +382,51 @@ static MENU_UPDATE_FUNC(script_display)
     {
         MENU_SET_ICON(MNI_ON, 0);
         MENU_SET_ENABLED(1);
-        MENU_SET_VALUE("(%s)", get_script_status_msg());
+        MENU_SET_VALUE("（%s）", get_script_status_msg());
     }
 }
 
 static struct menu_entry tccgui_submenu[] = {
         {
-            .name = "Show script",
+            .name = "查看脚本",
             .priv = &script_preview_flag,
             .max = 1,
             .icon_type = IT_ACTION,
             .update    = script_print,
-            .help = "Display the contents of the selected script.",
+            .help = "显示所选脚本的内容。",
         },
         {
-            .name = "Run script",
+            .name = "运行脚本",
             .update    = script_run_display,
             .select        = script_run_fun,
-            .help = "Execute the selected script.",
+            .help = "运行所选脚本。",
         },
         {
-            .help = "Script parameter #1",
+            .help = "脚本参数 #1",
         },
         {
-            .help = "Script parameter #2",
+            .help = "脚本参数 #2",
         },
         {
-            .help = "Script parameter #3",
+            .help = "脚本参数 #3",
         },
         {
-            .help = "Script parameter #4",
+            .help = "脚本参数 #4",
         },
         {
-            .help = "Script parameter #5",
+            .help = "脚本参数 #5",
         },
         {
-            .help = "Script parameter #6",
+            .help = "脚本参数 #6",
         },
         {
-            .help = "Script parameter #7",
+            .help = "脚本参数 #7",
         },
         {
-            .help = "Script parameter #8",
+            .help = "脚本参数 #8",
         },
         {
-            .help = "Script parameter #9",
+            .help = "脚本参数 #9",
         },
         MENU_EOL
 };
@@ -476,8 +476,8 @@ static struct menu_entry tccgui_menu[] = {
             .icon_type = IT_SUBMENU, \
             .submenu_width = 700, \
             .children = tccgui_submenu, \
-            .help  = "Run C scripts with TinyCC, http://bellard.org/tcc/.", \
-            .help2 = "PLAY: quick start.", \
+            .help  = "使用 TinyCC 运行 C 脚本，http://bellard.org/tcc/。", \
+            .help2 = "PLAY：快速启动。", \
         },
     
     SCRIPT_ENTRY(0)

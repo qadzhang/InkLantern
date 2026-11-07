@@ -297,7 +297,7 @@ static int mlv_play_delete_requested = 0;
 static void mlv_play_delete_request()
 {
     mlv_play_delete_requested = 1;
-    mlv_play_show_dlg(0, "Stopping...");
+    mlv_play_show_dlg(0, "正在停止...");
 }
 
 /* returns 1 on success, 0 on failure */
@@ -468,9 +468,9 @@ static void mlv_play_delete_if_requested()
 {
     if (mlv_play_delete_requested)
     {
-        mlv_play_show_dlg(0, "Deleting...");
+        mlv_play_show_dlg(0, "正在删除...");
         int ok = mlv_play_delete();
-        mlv_play_show_dlg(3000, ok ? "Deleted." : "Delete failed.");
+        mlv_play_show_dlg(3000, ok ? "已删除。" : "删除失败。");
         mlv_play_delete_requested = 0;
     }
 }
@@ -484,7 +484,7 @@ static void mlv_play_osd_quality(char *msg, uint32_t msg_len, uint32_t selected)
     
     if(msg)
     {
-        snprintf(msg, msg_len, mlv_play_quality?"fast":"color");
+        snprintf(msg, msg_len, mlv_play_quality?"快速":"彩色");
     }
 }
 
@@ -504,7 +504,7 @@ static void mlv_play_osd_exact(char *msg, uint32_t msg_len, uint32_t selected)
                 if disabled:
                   play frame by frame as fast as possible
        */
-        snprintf(msg, msg_len, mlv_play_exact_fps?"exact":"all");
+        snprintf(msg, msg_len, mlv_play_exact_fps?"精确":"全部");
     }
 }
 
@@ -557,7 +557,7 @@ static void mlv_play_osd_quit(char *msg, uint32_t msg_len, uint32_t selected)
     
     if(msg)
     {
-        snprintf(msg, msg_len, "Exit");
+        snprintf(msg, msg_len, "退出");
     }
 }
 
@@ -589,13 +589,13 @@ static void mlv_play_osd_delete(char *msg, uint32_t msg_len, uint32_t selected)
         
         if(mlv_play_osd_delete_selected && seconds > 0)
         {
-            snprintf(msg, msg_len, "[delete? %ds]", seconds);
+            snprintf(msg, msg_len, "[删除? %ds]", seconds);
         }
         else
         {
             mlv_play_osd_delete_selected = 0;
             mlv_play_osd_force_redraw = 0;
-            snprintf(msg, msg_len, "Del");
+            snprintf(msg, msg_len, "删除");
         }
     }
 }
@@ -1059,7 +1059,7 @@ static void mlv_play_save_index(char *base_filename, mlv_file_hdr_t *ref_file_hd
         {
             char msg[36];
             
-            snprintf(msg, sizeof(msg), "Saving index (%d entries)...", entries);
+            snprintf(msg, sizeof(msg), "正在保存索引（%d 项）...", entries);
             mlv_play_progressbar(pct, msg);
             last_pct = pct;
         }
@@ -1120,7 +1120,7 @@ static void mlv_play_build_index(char *filename, FILE **chunk_files, uint32_t ch
             {
                 char msg[100];
                 
-                snprintf(msg, sizeof(msg), "Building index... (%d/%d)", chunk + 1, chunk_count);
+                snprintf(msg, sizeof(msg), "正在建立索引...（%d/%d）", chunk + 1, chunk_count);
                 mlv_play_progressbar(pct, msg);
                 last_pct = pct;
             }
@@ -1135,7 +1135,7 @@ static void mlv_play_build_index(char *filename, FILE **chunk_files, uint32_t ch
                 }
                 else
                 {
-                    bmp_printf(FONT_MED, 30, 190, "File #%d ends prematurely, %d bytes read", chunk, read);
+                    bmp_printf(FONT_MED, 30, 190, "文件 #%d 提前结束，仅读取 %d 字节", chunk, read);
                     beep();
                     msleep(2000);
                     return;
@@ -1145,7 +1145,7 @@ static void mlv_play_build_index(char *filename, FILE **chunk_files, uint32_t ch
             /* unexpected block header size? */
             if(buf.blockSize < sizeof(mlv_hdr_t) || buf.blockSize > 50 * 1024 * 1024)
             {
-                bmp_printf(FONT_MED, 30, 190, "Invalid header size: %d bytes at 0x%08X", buf.blockSize, position);
+                bmp_printf(FONT_MED, 30, 190, "无效的头部大小：%d 字节，位于 0x%08X", buf.blockSize, position);
                 beep();
                 msleep(2000);
                 return;
@@ -1162,7 +1162,7 @@ static void mlv_play_build_index(char *filename, FILE **chunk_files, uint32_t ch
                 /* read the whole header block, but limit size to either our local type size or the written block size */
                 if(FIO_ReadFile(chunk_files[chunk], &file_hdr, hdr_size) != (int32_t)hdr_size)
                 {
-                    bmp_printf(FONT_MED, 30, 190, "File ends prematurely during MLVI");
+                    bmp_printf(FONT_MED, 30, 190, "文件在 MLVI 处提前结束");
                     beep();
                     msleep(2000);
                     return;
@@ -1178,7 +1178,7 @@ static void mlv_play_build_index(char *filename, FILE **chunk_files, uint32_t ch
                     /* no, its another chunk */
                     if(main_header.fileGuid != file_hdr.fileGuid)
                     {
-                        bmp_printf(FONT_MED, 30, 190, "Error: GUID within the file chunks mismatch!");
+                        bmp_printf(FONT_MED, 30, 190, "错误：文件分块的 GUID 不一致！");
                         beep();
                         msleep(2000);
                         return;
@@ -1230,7 +1230,7 @@ static mlv_xref_hdr_t *mlv_play_get_index(char *filename, FILE **chunk_files, ui
         return table;
     }
     
-    bmp_printf(FONT_LARGE, 30, 100, "Preparing:", filename);
+    bmp_printf(FONT_LARGE, 30, 100, "准备中：", filename);
     bmp_printf(FONT_MED, 40, 100 + font_large.height + 1, filename);
     mlv_play_build_index(filename, chunk_files, chunk_count);
     
@@ -1300,7 +1300,7 @@ static unsigned int mlv_play_read_footer(FILE *f)
     /* check if the footer was read */
     if(read != sizeof(lv_rec_file_footer_t))
     {
-        bmp_printf(FONT_MED, 30, 190, "File position mismatch. Read %d", read);
+        bmp_printf(FONT_MED, 30, 190, "文件位置不匹配。读取了 %d", read);
         beep();
         msleep(1000);
     }
@@ -1308,7 +1308,7 @@ static unsigned int mlv_play_read_footer(FILE *f)
     /* check if the footer is in the right format */
     if(strncmp((char *)footer.magic, "RAWM", 4))
     {
-        bmp_printf(FONT_MED, 30, 190, "Footer format mismatch");
+        bmp_printf(FONT_MED, 30, 190, "文件尾格式不匹配");
         beep();
         msleep(1000);
         return 0;
@@ -1384,7 +1384,7 @@ static void mlv_play_close_chunks(FILE **chunk_files, uint32_t chunk_count)
 {
     if(!chunk_files || !chunk_count || chunk_count > 100)
     {
-        bmp_printf(FONT_MED, 30, 400, "mlv_play_close_chunks(): faulty parameters");
+        bmp_printf(FONT_MED, 30, 400, "mlv_play_close_chunks()：参数错误");
         beep();
         return;
     }
@@ -1521,7 +1521,7 @@ static void mlv_play_render_task(uint32_t priv)
 
         if(!buffer->frameBuffer)
         {
-            bmp_printf(FONT_MED, 30, 400, "buffer empty");
+            bmp_printf(FONT_MED, 30, 400, "缓冲为空");
             beep();
             msleep(1000);
             msg_queue_post(mlv_play_queue_empty, (uint32_t) buffer);
@@ -1717,7 +1717,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
     /* read footer information and update global variables, will seek automatically */
     if(chunk_count < 1 || !mlv_play_is_mlv(chunk_files[0]))
     {
-        bmp_printf(FONT_LARGE, 30, 100, "Invalid MLV:", filename);
+        bmp_printf(FONT_LARGE, 30, 100, "无效的 MLV：", filename);
         bmp_printf(FONT_MED, 40, 100 + font_large.height + 1, filename);
         return;
     }
@@ -1726,7 +1726,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
     block_xref = mlv_play_get_index(filename, chunk_files, chunk_count);
     if (!block_xref)
     {
-        bmp_printf(FONT_LARGE, 30, 100, "Index error:", filename);
+        bmp_printf(FONT_LARGE, 30, 100, "索引错误：", filename);
         bmp_printf(FONT_MED, 40, 100 + font_large.height + 1, filename);
         return;
     }
@@ -1803,7 +1803,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
         FIO_SeekSkipFile(in_file, position, SEEK_SET);
         if(FIO_ReadFile(in_file, &buf, sizeof(mlv_hdr_t)) != sizeof(mlv_hdr_t))
         {
-            bmp_printf(FONT_MED, 30, 190, "File ends prematurely during block header");
+            bmp_printf(FONT_MED, 30, 190, "文件在块头部处提前结束");
             beep();
             msleep(1000);
             break;
@@ -1825,7 +1825,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
             /* read the whole header block, but limit size to either our local type size or the written block size */
             if(FIO_ReadFile(in_file, &file_hdr, hdr_size) != (int32_t)hdr_size)
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during MLVI");
+                bmp_printf(FONT_MED, 30, 190, "文件在 MLVI 处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -1843,7 +1843,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
                 /* no, its another chunk */
                 if(main_header.fileGuid != file_hdr.fileGuid)
                 {
-                    bmp_printf(FONT_MED, 30, 190, "Error: GUID within the file chunks mismatch!");
+                    bmp_printf(FONT_MED, 30, 190, "错误：文件分块的 GUID 不一致！");
                     beep();
                     msleep(1000);
                     break;
@@ -1854,7 +1854,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
         {
             if(FIO_ReadFile(in_file, &lens_block, sizeof(mlv_lens_hdr_t)) != sizeof(mlv_lens_hdr_t))
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during LENS");
+                bmp_printf(FONT_MED, 30, 190, "文件在 LENS 处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -1864,7 +1864,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
         {
             if(FIO_ReadFile(in_file, &rtci_block, sizeof(mlv_rtci_hdr_t)) != sizeof(mlv_rtci_hdr_t))
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during RTCI");
+                bmp_printf(FONT_MED, 30, 190, "文件在 RTCI 处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -1874,7 +1874,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
         {
             if(FIO_ReadFile(in_file, &rawi_block, sizeof(mlv_rawi_hdr_t)) != sizeof(mlv_rawi_hdr_t))
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during RAWI");
+                bmp_printf(FONT_MED, 30, 190, "文件在 RAWI 处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -1887,7 +1887,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
         {
             if(FIO_ReadFile(in_file, &wavi_block, sizeof(mlv_wavi_hdr_t)) != sizeof(mlv_wavi_hdr_t))
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during WAVI");
+                bmp_printf(FONT_MED, 30, 190, "文件在 WAVI 处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -1903,7 +1903,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
             
             if(FIO_ReadFile(in_file, &vidf_block, sizeof(mlv_vidf_hdr_t)) != sizeof(mlv_vidf_hdr_t))
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during VIDF");
+                bmp_printf(FONT_MED, 30, 190, "文件在 VIDF 处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -1940,7 +1940,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
 
             if(!buffer->frameBuffer)
             {
-                bmp_printf(FONT_MED, 30, 400, "allocation failed");
+                bmp_printf(FONT_MED, 30, 400, "内存分配失败");
                 beep();
                 msleep(1000);
                 break;
@@ -1961,7 +1961,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
                     mlv_play_decomp_buf = fio_malloc(mem_size + 0x1000);
                     if(!mlv_play_decomp_buf)
                     {
-                        bmp_printf(FONT_MED, 20, 100, "failed to alloc mlv_play_decomp_buf");
+                        bmp_printf(FONT_MED, 20, 100, "mlv_play_decomp_buf 分配失败");
                         msleep(10000);
                         return;
                     }
@@ -1969,7 +1969,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
                     mlv_play_decomp_suite = CreateMemorySuite(mlv_play_decomp_buf, mem_size, 0);
                     if(!mlv_play_decomp_suite)
                     {
-                        bmp_printf(FONT_MED, 20, 100, "(failed inSuite)");
+                        bmp_printf(FONT_MED, 20, 100, "(内存套件创建失败)");
                         msleep(10000);
                         return;
                     }
@@ -1982,7 +1982,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
             /* safety check to make sure the format matches, but allow the saved block to be larger (some dummy data at the end of frame is allowed) */
             if((uint32_t)read_size > buffer->frameSize)
             {
-                bmp_printf(FONT_MED, 30, 400, "ERROR 0x%X 0x%X 0x%X 0x%X 0x%X", read_size, frame_size, buffer->frameSize, vidf_block.frameSpace, vidf_block.blockSize);
+                bmp_printf(FONT_MED, 30, 400, "错误 0x%X 0x%X 0x%X 0x%X 0x%X", read_size, frame_size, buffer->frameSize, vidf_block.frameSpace, vidf_block.blockSize);
                 beep();
                 msleep(10000);
                 break;
@@ -1994,7 +1994,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
             /* finally read the raw data */
             if(FIO_ReadFile(in_file, read_buffer, read_size) != (int32_t)read_size)
             {
-                bmp_printf(FONT_MED, 30, 190, "File ends prematurely during VIDF raw data");
+                bmp_printf(FONT_MED, 30, 190, "文件在 VIDF 原始数据处提前结束");
                 beep();
                 msleep(1000);
                 break;
@@ -2018,7 +2018,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
 
                 if (r == -1)
                 {
-                    bmp_printf(FONT_MED, 20, 300, "(no decompression on this model)");
+                    bmp_printf(FONT_MED, 20, 300, "（此机型不支持解压）");
                 }
 
                 /* when we have lossless data, we decompressed it already to 16 bpp for raw_twk */
@@ -2033,7 +2033,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
             
             if((main_header.videoClass & 0x0F) != MLV_VIDEO_CLASS_RAW)
             {
-                bmp_printf(FONT_MED, 20, 300, "(format not supported)");
+                bmp_printf(FONT_MED, 20, 300, "（格式不支持）");
             }
             else
             {
@@ -2054,7 +2054,7 @@ static void mlv_play_mlv(char *filename, FILE **chunk_files, uint32_t chunk_coun
                         focusMode = "MF";
                     }
                     
-                    snprintf(buffer->messages.topRight, SCREEN_MSG_LEN, "%s, %dmm, %s, %s", lens_block.lensName, lens_block.focalLength, lens_block.stabilizerMode?"IS":"no IS", focusMode);
+                    snprintf(buffer->messages.topRight, SCREEN_MSG_LEN, "%s, %dmm, %s, %s", lens_block.lensName, lens_block.focalLength, lens_block.stabilizerMode?"IS":"无防抖", focusMode);
                 }
                     
                 if(rtci_block.timestamp)
@@ -2141,7 +2141,7 @@ static void mlv_play_raw(char *filename, FILE **chunk_files, uint32_t chunk_coun
     /* read footer information and update global variables, will seek automatically */
     if(chunk_count < 1 || !mlv_play_is_raw(chunk_files[chunk_count-1]))
     {
-        bmp_printf(FONT_LARGE, 30, 100, "Invalid RAW:", filename);
+        bmp_printf(FONT_LARGE, 30, 100, "无效的 RAW：", filename);
         bmp_printf(FONT_MED, 40, 100 + font_large.height + 1, filename);
         return;
     }
@@ -2252,7 +2252,7 @@ static void mlv_play_raw(char *filename, FILE **chunk_files, uint32_t chunk_coun
 
         if(!buffer->frameBuffer)
         {
-            bmp_printf(FONT_MED, 30, 400, "allocation failed");
+            bmp_printf(FONT_MED, 30, 400, "内存分配失败");
             beep();
             msleep(1000);
             break;
@@ -2263,7 +2263,7 @@ static void mlv_play_raw(char *filename, FILE **chunk_files, uint32_t chunk_coun
         /* reading failed */
         if(r < 0)
         {
-            bmp_printf(FONT_MED, 30, 400, "reading failed");
+            bmp_printf(FONT_MED, 30, 400, "读取失败");
             beep();
             msleep(1000);
             break;
@@ -2286,7 +2286,7 @@ static void mlv_play_raw(char *filename, FILE **chunk_files, uint32_t chunk_coun
             /* it doesnt have enough data. thats enough errors... */
             if(r != remain)
             {
-                bmp_printf(FONT_MED, 30, 400, "reading failed again");
+                bmp_printf(FONT_MED, 30, 400, "再次读取失败");
                 beep();
                 msleep(1000);
                 break;
@@ -2600,7 +2600,7 @@ static void mlv_play_task(void *priv)
     
     if (take_semaphore(mlv_play_sem, 100))
     {
-        NotifyBox(2000, "mlv_play already running");
+        NotifyBox(2000, "mlv_play 已在运行");
         beep();
         return;
     }
@@ -2626,7 +2626,7 @@ static void mlv_play_task(void *priv)
     mlv_play_enter_playback();
 
     /* create playlist */
-    mlv_play_show_dlg(0, "Building playlist...");
+    mlv_play_show_dlg(0, "正在建立播放列表...");
     mlv_playlist_build(0);
     mlv_play_show_dlg(0, 0);
     
@@ -2638,7 +2638,7 @@ static void mlv_play_task(void *priv)
         if(FIO_GetFileSize(filename, &size))
         {
             char msg[50];
-            snprintf(msg, sizeof(msg), "%s\nnot found", strrchr(filename, '/')+1);
+            snprintf(msg, sizeof(msg), "%s\n未找到", strrchr(filename, '/')+1);
             mlv_play_show_dlg(4000, msg);
             
             /* try to play the first file instead */
@@ -2655,7 +2655,7 @@ static void mlv_play_task(void *priv)
     {
         if(mlv_playlist_entries <= 0)
         {
-            mlv_play_show_dlg(2000, "No videos found");
+            mlv_play_show_dlg(2000, "未找到视频");
             goto cleanup;
         }
         
@@ -2676,7 +2676,7 @@ static void mlv_play_task(void *priv)
 
         if(!chunk_files || !chunk_count)
         {
-            bmp_printf(FONT_MED, 30, 190, "failed to load chunks");
+            bmp_printf(FONT_MED, 30, 190, "分块加载失败");
             beep();
             msleep(1000);
             goto cleanup;
@@ -2744,15 +2744,15 @@ FILETYPE_HANDLER(mlv_play_filehandler)
             
             if(mlv_play_is_mlv(f))
             {
-                strcpy(data, "A MLV v2.0 Video");
+                strcpy(data, "MLV v2.0 视频");
             }
             else if(mlv_play_is_raw(f))
             {
-                strcpy(data, "A RAW Video");
+                strcpy(data, "RAW 视频");
             }
             else
             {
-                strcpy(data, "Invalid RAW video format");
+                strcpy(data, "无效的 RAW 视频格式");
             }
             return 1;
         }
@@ -2871,8 +2871,8 @@ static unsigned int mlv_play_init()
     mlv_playlist_queue = (struct msg_queue *) msg_queue_create("mlv_playlist_queue", 500);
     mlv_playlist_scan_queue = (struct msg_queue *) msg_queue_create("mlv_playlist_scan_queue", 500);
     
-    fileman_register_type("RAW", "RAW Video", mlv_play_filehandler);
-    fileman_register_type("MLV", "MLV Video", mlv_play_filehandler);
+    fileman_register_type("RAW", "RAW 视频", mlv_play_filehandler);
+    fileman_register_type("MLV", "MLV 视频", mlv_play_filehandler);
     
     mlv_play_sem = create_named_semaphore("mlv_play_running", SEM_CREATE_UNLOCKED);
     

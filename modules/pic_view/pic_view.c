@@ -122,7 +122,7 @@ static int dng_show(char* filename)
 
     if (header[0] != 0x002A4949 && header[1] != 0x00000008)
     {
-        bmp_printf(FONT_MED, 0, 0, "Not a CHDK DNG");
+        bmp_printf(FONT_MED, 0, 0, "不是 CHDK DNG 文件");
         goto err;
     }
 
@@ -360,10 +360,10 @@ FILETYPE_HANDLER(ppm_filehandler)
 
 static unsigned int pic_view_init()
 {
-    fileman_register_type("BMP", "Bitmap image", bmp_filehandler);
-    fileman_register_type("422", "YUV422 image", yuv422_filehandler);
-    fileman_register_type("DNG", "DNG image", dng_filehandler);
-    fileman_register_type("PPM", "PPM image", ppm_filehandler);
+    fileman_register_type("BMP", "位图图像", bmp_filehandler);
+    fileman_register_type("422", "YUV422 图像", yuv422_filehandler);
+    fileman_register_type("DNG", "DNG 图像", dng_filehandler);
+    fileman_register_type("PPM", "PPM 图像", ppm_filehandler);
     return 0;
 }
 

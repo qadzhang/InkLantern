@@ -99,7 +99,7 @@ DIET_OBJ_00 = \
 DIET_OBJ = $(addprefix $(BUILD_DIR)/dietlibc/, $(DIET_OBJ_00))
 
 $(DIET_OBJ): $(DIETLIBC_A)
-	$(AR) x $? $(DIET_OBJ) --output $(BUILD_DIR)/dietlibc
+	cd $(BUILD_DIR)/dietlibc && $(AR) x $(abspath $?) $(notdir $(DIET_OBJ))
 
 $(BUILD_DIR)/dietlibc.a: $(DIET_OBJ)
 	$(AR) cr $@ $^

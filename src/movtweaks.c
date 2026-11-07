@@ -294,8 +294,8 @@ shutter_lock_print(
     bmp_printf(
         selected ? MENU_FONT_SEL : MENU_FONT,
         x, y,
-        "Shutter Lock  : %s",
-        shutter_lock ? "ON" : "OFF"
+        "快门锁定  : %s",
+        shutter_lock ? "开" : "关"
     );
 }
 
@@ -466,9 +466,9 @@ void screen_layout_toggle(void* priv, int delta)
 static MENU_UPDATE_FUNC(lv_movie_print)
 {
     MENU_SET_VALUE(
-        lv_movie_select != 2 ? "Disabled" :
+        lv_movie_select != 2 ? "禁用" :
         video_mode_resolution == 0 ? "1920x1080, 30fps" : 
-        video_mode_resolution == 2 ? "640x480, 30fps" : "Invalid"
+        video_mode_resolution == 2 ? "640x480, 30fps" : "无效"
     );
     MENU_SET_ENABLED(lv_movie_select == 2);
 }
@@ -527,7 +527,7 @@ void rec_notify_continuous(int called_from_menu)
             bmp_printf(
                 SHADOW_FONT(FONT(FONT_MED, COLOR_WHITE, COLOR_RED)) | FONT_ALIGN_CENTER | FONT_EXPAND(4), 
                 xc, yc - ry - font_med.height,
-                "NOT RECORDING"
+                "未在录制"
             );
             bmp_draw_rect(COLOR_RED, xc - rx, yc - ry, rx * 2, ry * 2);
             bmp_draw_rect(COLOR_WHITE, xc - rx + 1, yc - ry + 1, rx * 2 - 2, ry * 2 - 2);
@@ -555,7 +555,7 @@ void rec_notify_continuous(int called_from_menu)
                 FONT_MED_LARGE,
                 rec_indic_x - 6 * font_med.width + 5, // align with ML bars
                 rec_indic_y,
-                "STBY"
+                "待机"
                 );       
     }
     
@@ -579,7 +579,7 @@ void rec_notify_trigger(int rec)
 
 #ifndef CONFIG_50D
     if (rec == 1 && sound_recording_mode == 1 && !fps_should_record_wav())
-        NotifyBox(1000, "Sound is disabled.");
+        NotifyBox(1000, "声音已禁用。");
 #endif
 }
 #endif
@@ -624,9 +624,9 @@ static MENU_UPDATE_FUNC(bv_display)
 
     if (bv_auto == 1 && !CONTROL_BV) 
         MENU_SET_WARNING(MENU_WARN_NOT_WORKING,
-            (zoom_auto_exposure && lv_dispsize > 1) ? "Temporarily disabled (auto exposure on zoom)." :
-            LVAE_DISP_GAIN ? "Temporarily disabled (display gain active)." :
-            "Temporarily disabled."
+            (zoom_auto_exposure && lv_dispsize > 1) ? "已临时禁用（变焦时自动曝光）。" :
+            LVAE_DISP_GAIN ? "已临时禁用（显示增益生效中）。" :
+            "已临时禁用。"
         );
 }
 
@@ -873,11 +873,11 @@ static MENU_UPDATE_FUNC(print_mov_time_limit)
 {
     if (mov_time_limit >= 60)
     {
-        MENU_SET_VALUE("%d min", mov_time_limit / 60);
+        MENU_SET_VALUE("%d 分钟", mov_time_limit / 60);
     }
     else
     {
-        MENU_SET_VALUE("%d sec", mov_time_limit);
+        MENU_SET_VALUE("%d 秒", mov_time_limit);
     }
     MENU_SET_WARNING(MENU_WARN_ADVICE, entry->help2);
 }
@@ -987,53 +987,53 @@ void movtweak_task_init()
 static struct menu_entry mov_menus[] = {
     #ifdef FEATURE_MOVIE_RECORDING_50D
     {
-        .name       = "Movie Record",
+        .name       = "视频录制",
         .priv       = &lv_movie_select,
         .select     = lv_movie_toggle,
         .select_Q   = lv_movie_size_toggle,
         .update     = lv_movie_print,
-        .help       = "Enable movie recording on 50D :) ",
+        .help       = "在 50D 上启用视频录制 :) ",
         .depends_on = DEP_LIVEVIEW,
     },
     #endif
     #ifdef CONFIG_MOVIE_RECORDING_50D_SHUTTER_HACK
     {
-        .name = "Shutter Button",
+        .name = "快门按钮",
         .priv = &shutter_btn_rec,
         .max  = 2,
-        .choices = CHOICES("Leave unchanged", "Block during REC", "Hold during REC"),
-        .help  = "Block shutter button while recording (avoids ERR99)",
-        .help2 = "or hold it pressed halfway (enables image stabilization).",
+        .choices = CHOICES("保持不变", "录制时屏蔽", "录制时半按"),
+        .help  = "录制时屏蔽快门按钮（避免 ERR99）",
+        .help2 = "或保持半按（可启用镜头防抖）。",
         .depends_on = DEP_MOVIE_MODE,
     },
     #endif
 
     #ifdef FEATURE_MOVIE_REC_KEY
     {
-        .name = "REC key",
+        .name = "录制键",
         .priv = &movie_rec_key, 
         .max = 1,
         .icon_type = IT_BOOL,
-        .choices = CHOICES("OFF", "HalfShutter"),
-        .help = "Start recording by pressing shutter halfway. Wired remote.",
+        .choices = CHOICES("关", "半按快门"),
+        .help = "半按快门开始录制。适用于有线快门线。",
         .submenu_width = 700,
         .depends_on = DEP_MOVIE_MODE,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Require long press",
+                .name = "需长按",
                 .priv = &movie_rec_key_long,
                 .max = 1,
                 .icon_type = IT_BOOL,
-                .choices = CHOICES("OFF", "ON (1s)"),
-                .help = "If ON, you have to hold half-shutter pressed for 1 second.",
+                .choices = CHOICES("关", "开（1秒）"),
+                .help = "开启后，需按住半按快门 1 秒才触发。",
             },
             {
-                .name = "Allowed actions",
+                .name = "允许的操作",
                 .priv = &movie_rec_key_action,
                 .max = 2,
                 .icon_type = IT_DICE,
-                .choices = CHOICES("Start/Stop", "Start only", "Stop only"),
-                .help = "Select actions for half-shutter.",
+                .choices = CHOICES("开始/停止", "仅开始", "仅停止"),
+                .help = "选择半按快门触发的操作。",
             },
             MENU_EOL,
         },
@@ -1041,34 +1041,34 @@ static struct menu_entry mov_menus[] = {
     #endif
     #ifdef FEATURE_OVERRIDE_MOVIE_30_MIN_LIMIT
     {
-        .name = "MOV/MP4 time limit",
+        .name = "MOV/MP4 时长限制",
         .priv = &mov_time_limit,
         .update = print_mov_time_limit,
         .select = change_mov_time_limit,
         .min = 1,
         .max = 180,
-        .help = "Change 29:59 movie recording limit",
-        .help2 = "Too long recording makes empty files on ExFAT, ok on FAT32",
+        .help = "修改 29:59 的视频录制时长限制",
+        .help2 = "录制过长在 ExFAT 上会生成空文件，FAT32 则正常",
     }
     #endif
     #ifdef FEATURE_GRADUAL_EXPOSURE
     {
-        .name = "Gradual Exposure",
+        .name = "渐变曝光",
         .priv = &smooth_iso,
         .max = 1,
-        .help   = "Use smooth exposure transitions, by compensating with ISO.",
-        .help2  = "=> adjust ISO, shutter speed and aperture without large jumps.",
+        .help   = "通过 ISO 补偿实现平滑的曝光过渡。",
+        .help2  = "使 ISO、快门速度和光圈的调整不出现大幅跳变。",
         .submenu_width = 700,
         .depends_on = DEP_MOVIE_MODE | DEP_MANUAL_ISO,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Ramping speed",
+                .name = "过渡速度",
                 .priv       = &smooth_iso_speed,
                 .min = 1,
                 .max = 7,
                 .icon_type = IT_PERCENT,
-                .choices = CHOICES("1 EV / 8 frames", "1 EV / 16 frames", "1 EV / 32 frames", "1 EV / 64 frames", "1 EV / 128 frames", "1 EV / 256 frames", "1 EV / 512 frames"),
-                .help = "How fast the exposure transitions should be.",
+                .choices = CHOICES("1 EV / 8 帧", "1 EV / 16 帧", "1 EV / 32 帧", "1 EV / 64 帧", "1 EV / 128 帧", "1 EV / 256 帧", "1 EV / 512 帧"),
+                .help = "曝光过渡的快慢。",
             },
             MENU_EOL
         },
@@ -1082,24 +1082,24 @@ static struct menu_entry mov_menus[] = {
     || defined(FEATURE_SHUTTER_LOCK) || defined(FEATURE_MOVIE_LOGGING)
 static struct menu_entry movie_tweaks_menus[] = {
     {
-        .name = "Movie Tweaks",
+        .name = "视频小功能",
         .select = menu_open_submenu,
-        .help = "Movie Restart, Movie Logging, REC/Standby Notify...",
+        .help = "自动续录、视频日志、录制/待机提示…",
         .depends_on = DEP_MOVIE_MODE,
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
                 #ifdef FEATURE_MOVIE_RESTART
                 {
-                    .name = "Movie Restart",
+                    .name = "自动续录",
                     .priv = &movie_restart,
                     .max        = 1,
-                    .help = "Auto-restart movie recording, if it happens to stop.",
+                    .help = "录制意外停止时自动重新开始录制。",
                     .depends_on = DEP_MOVIE_MODE,
                 },
                 #endif
                 #ifdef FEATURE_REC_NOTIFY
                 {
-                    .name = "REC/STBY notify", 
+                    .name = "录制/待机提示",
                     .priv = &rec_notify, 
                     #if defined(CONFIG_BLUE_LED) && defined(FEATURE_REC_NOTIFY_BEEP)
                     .max = 4,
@@ -1110,35 +1110,35 @@ static struct menu_entry movie_tweaks_menus[] = {
                     #else
                     .max = 2,
                     #endif
-                    .choices = (const char *[]) {"OFF", "Red Crossout", "REC/STBY",
+                    .choices = (const char *[]) {"关", "红叉标记", "REC/待机",
                             #ifdef CONFIG_BLUE_LED
-                            "Blue LED",
+                            "蓝色 LED",
                             #endif
-                            "Beep, start/stop"
+                            "提示音（开始/停止）"
                         },
                     .icon_type = IT_DICE_OFF,
-                    .help = "Custom REC/STANDBY notifications, visual or audible",
+                    .help = "自定义录制/待机提示，可为视觉或声音提示",
                     .depends_on = DEP_MOVIE_MODE,
                 },
                 #endif
                 #ifdef FEATURE_FORCE_LIVEVIEW
                 {
-                    .name = "Force LiveView",
+                    .name = "强制实时取景",
                     .priv = &enable_liveview,
                     .max = 2,
-                    .choices = CHOICES("OFF", "Start & CPUlens", "Always"),
+                    .choices = CHOICES("关", "启动+CPU镜头", "始终"),
                     .icon_type = IT_DICE_OFF,
-                    .help = "Always use LiveView (with manual lens or after lens swap).",
+                    .help = "始终使用实时取景（手动镜头或换镜头后）。",
                     .depends_on = DEP_MOVIE_MODE,
                 },
                 #endif
                 #ifdef FEATURE_SHUTTER_LOCK
                 {
-                    .name = "Shutter Lock",
+                    .name = "快门锁定",
                     .priv = &shutter_lock,
                     .max = 1,
-                    .help   = "Lock shutter value in movie mode (change from Expo only).",
-                    .help2  = "Tip: it prevents you from changing it by mistake.",
+                    .help   = "在视频模式下锁定快门值（仅可从曝光页修改）。",
+                    .help2  = "提示：可防止误改快门值。",
                     .depends_on = DEP_MOVIE_MODE,
                 },
                 #endif
@@ -1164,13 +1164,13 @@ void movie_tweak_menu_init()
 #ifdef FEATURE_EXPO_OVERRIDE
 struct menu_entry expo_override_menus[] = {
     {
-        .name = "Expo. Override",
+        .name = "曝光覆盖",
         .priv = &bv_auto,
         .select     = bv_toggle,
         .update     = bv_display,
         .max = 1,
-        .help       = "Low-level manual exposure controls (bypasses Canon limits).",
-        .help2      = "Useful for long exposures, manual lenses, manual video ctl.",
+        .help       = "底层手动曝光控制（绕过佳能限制）。",
+        .help2      = "适用于长曝光、手动镜头、手动视频曝光。",
         .depends_on = DEP_LIVEVIEW,
     },
 };

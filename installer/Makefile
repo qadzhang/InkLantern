@@ -270,7 +270,7 @@ DIET_OBJS = \
     $(BUILD_DIR)/atol.o
 
 $(DIET_OBJS): $(DIETLIBC_A) | $(BUILD_DIR)
-	$(AR) x $? $(DIET_OBJS) --output $(BUILD_DIR)
+	cd $(BUILD_DIR) && $(AR) x $(abspath $?) $(notdir $(DIET_OBJS))
 
 $(BUILD_DIR)/dietlibc.a: $(DIET_OBJS) | $(BUILD_DIR)
 	$(AR) cr $@ $^
@@ -292,7 +292,7 @@ NEWLIB_PATH=$(SRC_DIR)/libs/arm-none-eabi-O3
 NEWLIB_LIBM_A=$(NEWLIB_PATH)/libm.a
 NEWLIB_LIBC_A=$(NEWLIB_PATH)/libc.a
 $(NEWLIB_OBJS): $(NEWLIB_LIBC_A) | $(BUILD_DIR)
-	$(AR) x $? $(NEWLIB_OBJS) --output $(BUILD_DIR)
+	cd $(BUILD_DIR) && $(AR) x $(abspath $?) $(notdir $(NEWLIB_OBJS))
 
 $(BUILD_DIR)/newlib-libc.a: $(NEWLIB_OBJS) | $(BUILD_DIR)
 	$(AR) cr $@ $^

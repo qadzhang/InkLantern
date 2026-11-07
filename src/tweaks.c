@@ -186,13 +186,13 @@ static MENU_UPDATE_FUNC(expsim_display)
     if (is_movie_mode())
     {
         #ifndef CONFIG_EXPSIM_MOVIE
-        MENU_SET_VALUE("Movie");
+        MENU_SET_VALUE("视频");
         MENU_SET_ICON(MNI_DICE, 0);
         #endif
     }
     else if (_expsim == 3)
     {
-        MENU_SET_VALUE("OFF");
+        MENU_SET_VALUE("关");
         MENU_SET_ICON(MNI_OFF, 0);
     }
     else
@@ -201,17 +201,17 @@ static MENU_UPDATE_FUNC(expsim_display)
         {
             if (get_expsim())
             {
-                MENU_SET_RINFO("via Expo.Override");
-                MENU_SET_WARNING(MENU_WARN_INFO, "Usable in complete darkness; try with FPS Override or Bulb Timer.");
+                MENU_SET_RINFO("经曝光覆盖");
+                MENU_SET_WARNING(MENU_WARN_INFO, "可在全黑环境下使用；可配合帧率覆盖或B门定时器。");
             }
             else
             {
-                MENU_SET_WARNING(MENU_WARN_ADVICE, "Expo Override is active, LiveView exposure may be incorrect.");
+                MENU_SET_WARNING(MENU_WARN_ADVICE, "曝光覆盖已启用，实时取景曝光可能不准确。");
             }
         }
         else if (shooting_mode == SHOOTMODE_M && !lens_info.lens_exists)  /* Canon's LiveView underexposure bug with manual lenses */
         {
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "LiveView exposure may be incorrect. Enable expo override to fix it.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "实时取景曝光可能不准确。启用曝光覆盖可修复。");
         }
     }
 }
@@ -242,7 +242,7 @@ static void show_display_gain_level()
 {
     int digic_iso_gain_photo = get_digic_iso_gain_photo();
     int G = gain_to_ev_scaled(digic_iso_gain_photo, 1) - 10;
-    NotifyBox(2000, "Display Gain : %d EV", G);
+    NotifyBox(2000, "显示增益 : %d EV", G);
 }
 static void adjust_backlight_level(int delta)
 {
@@ -273,7 +273,7 @@ static void adjust_backlight_level(int delta)
     
     int level = COERCE(backlight_level + delta, 1, 7);
     prop_request_change(PROP_LCD_BRIGHTNESS, &level, 4);
-    NotifyBox(2000, "LCD Backlight: %d", level);
+    NotifyBox(2000, "LCD 背光: %d", level);
 }
 #endif
 
@@ -420,12 +420,12 @@ static void print_set_maindial_hint(int set)
             bmp_printf(
                 SHADOW_FONT(FONT_LARGE),
                 os.x0, os.y_max - font_large.height,
-                "Scrollwheel: %s", 
-                play_set_wheel_action == 1 ? "Exposure Fusion" : 
-                play_set_wheel_action == 2 ? "Compare Images" : 
-                play_set_wheel_action == 3 ? "Timelapse Play" : 
-                play_set_wheel_action == 4 ? "Exposure Adjust" : 
-                "err"
+                "滚轮: %s", 
+                play_set_wheel_action == 1 ? "曝光融合" : 
+                play_set_wheel_action == 2 ? "对比图像" : 
+                play_set_wheel_action == 3 ? "延时回放" : 
+                play_set_wheel_action == 4 ? "曝光调整" : 
+                "错误"
             );
         }
         else
@@ -601,7 +601,7 @@ void play_lv_key_step()
     {
         for (int i = 0; i < 5; i++)
         {
-            NotifyBox(1000, "Rate: %s%d...", (play_rate_flag > 0) ? "+" : "", play_rate_flag % 6);
+            NotifyBox(1000, "评分: %s%d...", (play_rate_flag > 0) ? "+" : "", play_rate_flag % 6);
             msleep(100);
         }
         if (play_rate_flag == prev) break;
@@ -1634,17 +1634,17 @@ static MENU_UPDATE_FUNC(arrow_key_check)
     {
         if (lcd_sensor_mandatory)
         {
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "To use this feature, enable LCD Sensor Shortcuts in Misc Key Settings.");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "要使用此功能，请在“杂项按键设置”中启用“LCD 传感器快捷键”。");
         }
         else
         {
-            MENU_SET_WARNING(MENU_WARN_INFO, "To use LCD sensor, enable LCD Sensor Shortcuts in Misc Key Settings.");
+            MENU_SET_WARNING(MENU_WARN_INFO, "要使用 LCD 传感器，请在“杂项按键设置”中启用“LCD 传感器快捷键”。");
         }
     }
     else if (!get_lcd_sensor_shortcuts())
     {
         MENU_SET_WARNING(lcd_sensor_mandatory ? MENU_WARN_NOT_WORKING : MENU_WARN_INFO,
-            "LCD Sensor Shortcuts are disabled in this mode (see Misc Key Settings)."
+            "此模式下 LCD 传感器快捷键已被禁用（见“杂项按键设置”）。"
         );
     }
     #endif
@@ -1701,15 +1701,15 @@ void display_shortcut_key_hints_lv()
     if (mode == 1)
     {
 #ifdef FEATURE_ANALOG_GAIN
-        bmp_printf(fnt, x0 - 150, y0 - font_med.height/2, "-Rec");
-        bmp_printf(fnt, x0 + 150, y0 - font_med.height/2, "Rec+");
+        bmp_printf(fnt, x0 - 150, y0 - font_med.height/2, "-录音");
+        bmp_printf(fnt, x0 + 150, y0 - font_med.height/2, "录音+");
 #endif
 #ifdef FEATURE_HEADPHONE_OUTPUT_VOLUME
-        bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, "Out+");
-        bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-Out");
+        bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, "输出+");
+        bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-输出");
 #endif
 #ifdef FEATURE_INPUT_SOURCE
-        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3, y0       - font_med.height/2, "Input");
+        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3, y0       - font_med.height/2, "输入");
 #endif
     }
     else if (mode == 2)
@@ -1719,9 +1719,9 @@ void display_shortcut_key_hints_lv()
         bmp_printf(fnt, x0 + 150, y0 - font_med.height/2, "ISO+");
 #endif
 #ifdef FEATURE_WHITE_BALANCE
-        bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, "Kel+");
-        bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-Kel");
-        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3,       y0 - font_med.height/2, "PushWB");
+        bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, "色温+");
+        bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-色温");
+        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3,       y0 - font_med.height/2, "自动WB");
 #endif
     }
     else if (mode == 3)
@@ -1734,15 +1734,15 @@ void display_shortcut_key_hints_lv()
         bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, " Av+");
         bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-Av ");
 #endif
-        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3, y0       - font_med.height/2, "180deg");
+        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3, y0       - font_med.height/2, "180°");
     }
     else if (mode == 4)
     {
-        bmp_printf(fnt, x0 - 150, y0 - font_med.height/2, "-Bri");
-        bmp_printf(fnt, x0 + 150, y0 - font_med.height/2, "Bri+");
-        bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, "Sat+");
-        bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-Sat");
-        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3, y0       - font_med.height/2, "Reset");
+        bmp_printf(fnt, x0 - 150, y0 - font_med.height/2, "-亮度");
+        bmp_printf(fnt, x0 + 150, y0 - font_med.height/2, "亮度+");
+        bmp_printf(fnt, x0, y0 - 100 - font_med.height/2, "饱和+");
+        bmp_printf(fnt, x0, y0 + 100 - font_med.height/2, "-饱和");
+        if (arrow_keys_use_set && NOT_RECORDING) bmp_printf(SHADOW_FONT(FONT_MED), x0 - font_med.width*3, y0       - font_med.height/2, "重置");
     }
     else if (mode == 10)
     {
@@ -1750,10 +1750,10 @@ void display_shortcut_key_hints_lv()
         const int xf = x0;
         const int yf = y0;
         const int xs = 150;
-        bmp_printf(fnt, xf - xs, yf - font_med.height/2, get_follow_focus_dir_h() > 0 ? " +FF" : " -FF");
-        bmp_printf(fnt, xf + xs, yf - font_med.height/2, get_follow_focus_dir_h() > 0 ? "FF- " : "FF+ ");
-        bmp_printf(fnt, xf, yf - 100 - font_med.height/2, get_follow_focus_dir_v() > 0 ? "FF++" : "FF--");
-        bmp_printf(fnt, xf, yf + 100 - font_med.height/2, get_follow_focus_dir_v() > 0 ? "FF--" : "FF++");
+        bmp_printf(fnt, xf - xs, yf - font_med.height/2, get_follow_focus_dir_h() > 0 ? " +跟焦" : " -跟焦");
+        bmp_printf(fnt, xf + xs, yf - font_med.height/2, get_follow_focus_dir_h() > 0 ? "跟焦- " : "跟焦+ ");
+        bmp_printf(fnt, xf, yf - 100 - font_med.height/2, get_follow_focus_dir_v() > 0 ? "跟焦++" : "跟焦--");
+        bmp_printf(fnt, xf, yf + 100 - font_med.height/2, get_follow_focus_dir_v() > 0 ? "跟焦--" : "跟焦++");
 #endif
     }
 
@@ -1860,24 +1860,24 @@ static char* get_warn_msg(char* separator)
     static char msg[15 + 24 + 15 + 21 + 20 + 10 /* Termination \0 and some spare */];
     msg[0] = '\0';
     // Max length: 15 (only one can be active)
-    if (warn_code & 1 && warn_mode==1) { STR_APPEND(msg, "Mode is not M%s", separator); }
-    if (warn_code & 1 && warn_mode==2) { STR_APPEND(msg, "Mode is not Av%s", separator); }
-    if (warn_code & 1 && warn_mode==3) { STR_APPEND(msg, "Mode is not Tv%s", separator); }
-    if (warn_code & 1 && warn_mode==4) { STR_APPEND(msg, "Mode is not P%s", separator); }
+    if (warn_code & 1 && warn_mode==1) { STR_APPEND(msg, "模式不是 M%s", separator); }
+    if (warn_code & 1 && warn_mode==2) { STR_APPEND(msg, "模式不是 Av%s", separator); }
+    if (warn_code & 1 && warn_mode==3) { STR_APPEND(msg, "模式不是 Tv%s", separator); }
+    if (warn_code & 1 && warn_mode==4) { STR_APPEND(msg, "模式不是 P%s", separator); }
 
     // Max length: 24 (only one can be active)
-    if (warn_code & 2 && warn_picq==1) { STR_APPEND(msg, "Pic quality is not RAW%s", separator); } 
-    if (warn_code & 2 && warn_picq==2) { STR_APPEND(msg, "Pic quality is not fine%s", separator); } 
+    if (warn_code & 2 && warn_picq==1) { STR_APPEND(msg, "图像质量不是RAW%s", separator); } 
+    if (warn_code & 2 && warn_picq==2) { STR_APPEND(msg, "图像质量不是精细%s", separator); } 
 
     // Length: 15
-    if (warn_code & 4) { STR_APPEND(msg, "ALO is enabled%s", separator); } 
+    if (warn_code & 4) { STR_APPEND(msg, "ALO 已启用%s", separator); } 
 
     // Length: 21
-    if (warn_code & 8) { STR_APPEND(msg, "WB isn't set to auto%s", separator); } 
+    if (warn_code & 8) { STR_APPEND(msg, "白平衡不是自动%s", separator); } 
 
     // Max length: 20 (only one can be active)
-    if (warn_code & 16 && warn_mf == 1) { STR_APPEND(msg, "Focus is not auto%s", separator); } 
-    if (warn_code & 16 && warn_mf == 2) { STR_APPEND(msg, "Focus is not manual%s", separator); } 
+    if (warn_code & 16 && warn_mf == 1) { STR_APPEND(msg, "对焦不是自动%s", separator); } 
+    if (warn_code & 16 && warn_mf == 2) { STR_APPEND(msg, "对焦不是手动%s", separator); } 
 
     return msg;
 }
@@ -1994,25 +1994,25 @@ static MENU_UPDATE_FUNC(warn_display)
 static struct menu_entry key_menus[] = {
     #if defined(FEATURE_LV_FOCUS_BOX_FAST) || defined(FEATURE_LV_FOCUS_BOX_SNAP) || defined(FEATURE_LV_FOCUS_BOX_AUTOHIDE)
     {
-        .name = "Focus box settings", 
+        .name = "对焦框设置", 
         .select = menu_open_submenu,
         .submenu_width = 700,
-        .help = "Tweaks for LiveView focus box: move faster, snap to points.",
+        .help = "实时取景对焦框调整：移动更快、吸附到预设点。",
         .depends_on = DEP_LIVEVIEW,
         .children =  (struct menu_entry[]) {
             #ifdef FEATURE_LV_FOCUS_BOX_FAST
             {
-                .name = "Speed", 
+                .name = "速度", 
                 .priv = &focus_box_lv_speed,
                 .max = 1,
                 .icon_type = IT_BOOL,
-                .choices = (const char *[]) {"Normal (OFF)", "Fast"},
-                .help = "Move the focus box faster (in LiveView).",
+                .choices = (const char *[]) {"普通（关）", "快速"},
+                .help = "实时取景下更快地移动对焦框。",
             },
             #endif
             #ifdef FEATURE_LV_FOCUS_BOX_SNAP
             {
-                .name = "Snap points",
+                .name = "吸附点",
                 .priv = &focus_box_lv_jump,
                 #ifdef FEATURE_LV_FOCUS_BOX_SNAP_TO_X5_RAW
                 .max = 5,
@@ -2022,21 +2022,21 @@ static struct menu_entry key_menus[] = {
                 .icon_type = IT_DICE_OFF,
                 .choices = (const char *[]) 
                 {
-                    "Center (OFF)", "Center/Top/Right", "Center/T/R/B/L", "Center/TL/TR/BR/BL", "Center + 8 pts"
+                    "中央（关）", "中央/上/右", "中央/上/右/下/左", "中央/四角", "中央 + 8点"
                     #ifdef FEATURE_LV_FOCUS_BOX_SNAP_TO_X5_RAW
-                    ,"Center to x5 RAW"
+                    ,"x5 RAW 居中"
                     #endif
                 },
-                .help = "Snap the focus box to preset points (press CENTER key)",
+                .help = "将对焦框吸附到预设点（按中央键）",
             },
             #endif
             #ifdef FEATURE_LV_FOCUS_BOX_AUTOHIDE
             {
-                .name = "Display",
+                .name = "显示",
                 .priv = &af_frame_autohide, 
                 .max = 1,
-                .choices = (const char *[]) {"Show", "Auto-Hide"},
-                .help = "You can hide the focus box (the little white rectangle).",
+                .choices = (const char *[]) {"显示", "自动隐藏"},
+                .help = "可以隐藏对焦框（那个小白框）。",
                 .icon_type = IT_DISABLE_SOME_FEATURE,
                 //.essential = FOR_LIVEVIEW,
             },
@@ -2047,11 +2047,11 @@ static struct menu_entry key_menus[] = {
     #endif
     #ifdef FEATURE_ARROW_SHORTCUTS
     {
-        .name       = "Arrow/SET shortcuts",
+        .name       = "方向键/SET 快捷键",
         .select = menu_open_submenu,
         .update = arrow_key_check,
         .submenu_width = 650,
-        .help = "Choose functions for arrows keys. Toggle w. " ARROW_MODE_TOGGLE_KEY ".",
+        .help = "为方向键选择功能。用 " ARROW_MODE_TOGGLE_KEY " 切换。",
         #if defined(CONFIG_70D)
         .depends_on = DEP_MOVIE_MODE,
         #else
@@ -2060,35 +2060,35 @@ static struct menu_entry key_menus[] = {
         .children =  (struct menu_entry[]) {
             #ifdef CONFIG_AUDIO_CONTROLS
             {
-                .name = "Audio Gain",
+                .name = "音频增益",
                 .priv       = &arrow_keys_audio,
                 .max = 1,
-                .help = "LEFT/RIGHT: input gain. UP/DOWN: output gain. SET: Input.",
+                .help = "左/右：输入增益。上/下：输出增益。SET：输入源。",
             },
             #endif
             {
-                .name = "ISO/Kelvin",
+                .name = "ISO/色温",
                 .priv       = &arrow_keys_iso_kelvin,
                 .max = 1,
-                .help = "LEFT/RIGHT: ISO. UP/DN: Kelvin white balance. SET: PushWB.",
+                .help = "左/右：ISO。上/下：色温白平衡。SET：自动WB。",
             },
             {
-                .name = "Shutter/Aperture",
+                .name = "快门/光圈",
                 .priv       = &arrow_keys_shutter_aperture,
                 .max = 1,
-                .help = "LEFT/RIGHT: Shutter. UP/DN: Aperture.  SET: 180d shutter.",
+                .help = "左/右：快门。上/下：光圈。SET：180°快门。",
             },
             {
-                .name = "LCD Bright/Saturation",
+                .name = "LCD 亮度/饱和度",
                 .priv       = &arrow_keys_bright_sat,
                 .max = 1,
-                .help = "LEFT/RIGHT: LCD bright. UP/DN: LCD saturation. SET: reset.",
+                .help = "左/右：LCD 亮度。上/下：LCD 饱和度。SET：重置。",
             },
             {
-                .name = "Use SET button",
+                .name = "使用 SET 键",
                 .select = arrow_key_set_toggle, // use a function => this item will not be considered for submenu color
                 .update = arrow_key_set_display,
-                .help = "Enables functions for SET when you use arrow shortcuts.",
+                .help = "使用方向键快捷键时，为 SET 键启用功能。",
             },
             MENU_EOL,
         },
@@ -2097,59 +2097,59 @@ static struct menu_entry key_menus[] = {
 
     #if defined(FEATURE_LCD_SENSOR_SHORTCUTS) || defined(FEATURE_STICKY_DOF) || defined(FEATURE_STICKY_HALFSHUTTER) || defined(FEATURE_SWAP_MENU_ERASE) || defined(FEATURE_SWAP_INFO_PLAY) || defined(FEATURE_DIGITAL_ZOOM_SHORTCUT)
     {
-        .name       = "Misc key settings",
+        .name       = "杂项按键设置",
         .select = menu_open_submenu,
         .submenu_width = 656,
-        .help = "Misc options related to shortcut keys.",
+        .help = "与快捷键相关的杂项选项。",
         .children =  (struct menu_entry[]) {
             #ifdef FEATURE_LCD_SENSOR_SHORTCUTS
             {
-                .name = "LCD Sensor Shortcuts",
+                .name = "LCD 传感器快捷键",
                 .priv       = &lcd_sensor_shortcuts,
                 .max        = 2,
-                .choices = (const char *[]) {"OFF", "ON", "Movie"},
-                .help = "Use the LCD face sensor as an extra key in ML.",
+                .choices = (const char *[]) {"关", "开", "视频"},
+                .help = "将 LCD 面部传感器用作 ML 的额外按键。",
             },
             #endif
             #ifdef FEATURE_STICKY_DOF
             {
-                .name = "Sticky DOF Preview", 
+                .name = "景深预览锁定", 
                 .priv = &dofpreview_sticky, 
                 .max = 1,
-                .help = "Makes the DOF preview button sticky (press to toggle).",
+                .help = "让景深预览按钮可锁定（按下切换）。",
             },
             #endif
             #ifdef FEATURE_STICKY_HALFSHUTTER
             {
-                .name       = "Sticky HalfShutter",
+                .name       = "半按快门锁定",
                 .priv = &halfshutter_sticky,
                 .max = 1,
-                .help = "Makes the half-shutter button sticky (press to toggle).",
+                .help = "让半按快门可锁定（按下切换）。",
             },
             #endif
             #ifdef FEATURE_SWAP_MENU_ERASE
             {
-                .name = "Swap MENU <--> ERASE",
+                .name = "交换 MENU<-->删除键",
                 .priv = &swap_menu,
                 .max  = 1,
-                .help = "Swaps MENU and ERASE buttons."
+                .help = "交换 MENU 和删除键的功能。"
             },
             #endif
             #ifdef FEATURE_SWAP_INFO_PLAY
             {
-                .name = "Swap INFO <--> PLAY",
+                .name = "交换 INFO<-->回放键",
                 .priv = &swap_info,
                 .max  = 1,
-                .help = "Swaps INFO and PLAY buttons."
+                .help = "交换 INFO 和回放键的功能。"
             },
             #endif
             #ifdef FEATURE_DIGITAL_ZOOM_SHORTCUT
             {
-                .name = "DigitalZoom Shortcut",
+                .name = "数码变焦快捷键",
                 .priv = &digital_zoom_shortcut,
                 .max  = 1,
                 .choices = (const char *[]) {"3x...10x", "1x, 3x"},
-                .help = "Movie: DISP + Zoom In toggles between 1x and 3x modes."
+                .help = "视频模式：DISP+变焦放大，在 1x 和 3x 之间切换。"
             },
             #endif
             MENU_EOL
@@ -2161,60 +2161,60 @@ static struct menu_entry key_menus[] = {
 static struct menu_entry tweak_menus[] = {
     #ifdef FEATURE_WARNINGS_FOR_BAD_SETTINGS
     {
-        .name = "Warning for bad settings",
+        .name = "设置异常警告",
         .select     = menu_open_submenu,
         .update = warn_display,
-        .help = "Warn if some of your settings are changed by mistake.",
+        .help = "当某些设置被意外更改时发出警告。",
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Mode warning",
+                .name = "模式警告",
                 .priv = &warn_mode,
                 .max = 4,
                 .icon_type = IT_DICE_OFF,
-                .choices = (const char *[]) {"OFF", "other than M", "other than Av", "other than Tv", "other than P"},
-                .help = "Warn if you turn the mode dial to some other position.",
+                .choices = (const char *[]) {"关", "非M模式", "非Av模式", "非Tv模式", "非P模式"},
+                .help = "当模式转盘转到其他位置时发出警告。",
             },
             {
-                .name = "Quality warning",
+                .name = "画质警告",
                 .priv = &warn_picq,
                 .max = 2,
-                .choices = (const char *[]) {"OFF", "other than RAW", "other than fine"},
-                .help = "Warn if you change the picture quality to something else.",
+                .choices = (const char *[]) {"关", "非RAW", "非精细"},
+                .help = "当画质被改为其他设置时发出警告。",
             },
             {
-                .name = "ALO warning",
+                .name = "ALO 警告",
                 .priv = &warn_alo,
                 .max = 1,
-                .choices = (const char *[]) {"OFF", "other than OFF"},
-                .help = "Warn if you enable ALO by mistake.",
+                .choices = (const char *[]) {"关", "非关闭"},
+                .help = "当误开 ALO 时发出警告。",
             },
             {
-                .name = "WB warning",
+                .name = "白平衡警告",
                 .priv = &warn_wb,
                 .max = 1,
-                .choices = (const char *[]) {"OFF", "other than AWB"},
-                .help = "Warn if you disable AWB by mistake.",
+                .choices = (const char *[]) {"关", "非自动白平衡"},
+                .help = "当误关自动白平衡时发出警告。",
             },
             {
-                .name = "AF/MF warning",
+                .name = "AF/MF 警告",
                 .priv = &warn_mf,
                 .max = 2,
-                .choices = (const char *[]) {"OFF", "other than AF", "other than MF"},
-                .help = "Warn on Manual / Automatic Focus",
+                .choices = (const char *[]) {"关", "非AF", "非MF"},
+                .help = "当手动/自动对焦状态改变时发出警告",
             },
             {
-                .name = "Warning message",
+                .name = "警告方式",
                 .priv = &warn_msg,
                 .max = 6,
-                .choices = (const char *[]) {"LED, popup, beep",
-                                             "LED, popup, rep. beep",
-                                             "LED, popup",
-                                             "popup, beep",
-                                             "popup, rep. beep",
-                                             "popup only",
-                                             "rep. popup"},
-                .help = "Warn type, LED, Messagebox, Beep",
+                .choices = (const char *[]) {"LED、弹窗、提示音",
+                                             "LED、弹窗、重复提示音",
+                                             "LED、弹窗",
+                                             "弹窗、提示音",
+                                             "弹窗、重复提示音",
+                                             "仅弹窗",
+                                             "重复弹窗"},
+                .help = "警告方式：LED、弹窗、提示音",
             },
             MENU_EOL,
         },
@@ -2322,13 +2322,13 @@ struct menu_entry expo_tweak_menus[] = {
         #ifdef CONFIG_EXPSIM_MOVIE
         .name = "LV Display",
         .max = 2,
-        .choices = (const char *[]) {"Photo, no ExpSim", "Photo, ExpSim", "Movie"},
+        .choices = (const char *[]) {"照片，无曝光模拟", "照片，曝光模拟", "视频"},
         .icon_type = IT_DICE,
-        .help = "Exposure simulation (LiveView display type).",
+        .help = "曝光模拟（实时取景显示类型）。",
         #else
-        .name = "ExpSim",
+        .name = "曝光模拟",
         .max = 1,
-        .help = "Exposure simulation.",
+        .help = "曝光模拟。",
         #endif
         .priv = &_expsim,
         .select = expsim_toggle,
@@ -2576,7 +2576,7 @@ static MENU_UPDATE_FUNC(preview_saturation_display)
 {
     extern int focus_peaking_grayscale;
     if (focus_peaking_grayscale && is_focus_peaking_enabled())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Focus peaking with grayscale preview is enabled.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "峰值对焦与灰度预览同时开启。");
     
     if (PREVIEW_SATURATION_BOOST_WB)
         MENU_SET_ICON(MNI_AUTO, 0);
@@ -2587,12 +2587,12 @@ static MENU_UPDATE_FUNC(preview_saturation_display)
 static MENU_UPDATE_FUNC(preview_contrast_display)
 {
     if (preview_contrast == 3) MENU_SET_VALUE(
-            preview_brightness == 0 ? "Auto (normal)" :
-            preview_brightness == 1 ? "Auto (low)" :
-            preview_brightness == 2 ? "Auto (very low)" : "err"
+            preview_brightness == 0 ? "自动（正常）" :
+            preview_brightness == 1 ? "自动（低）" :
+            preview_brightness == 2 ? "自动（很低）" : "错误"
     );
 
-    if (EXT_MONITOR_CONNECTED) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Does not work on external monitors.");
+    if (EXT_MONITOR_CONNECTED) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "在外接显示器上无效。");
     if (PREVIEW_CONTRAST_AUTO) MENU_SET_ICON(MNI_AUTO, 0);
     
     if (menu_active_but_hidden()) preview_show_contrast_curve();
@@ -2601,7 +2601,7 @@ static MENU_UPDATE_FUNC(preview_contrast_display)
 static MENU_UPDATE_FUNC(preview_brightness_display)
 {
     if (EXT_MONITOR_CONNECTED)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Does not work on external monitors.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "在外接显示器上无效。");
     
     if (menu_active_but_hidden())
         preview_show_contrast_curve();
@@ -2613,12 +2613,12 @@ static void adjust_saturation_level(int delta)
 {
     preview_saturation = COERCE((int)preview_saturation + delta, -2, 2);
     NotifyBox(2000, 
-        "LCD Saturation  : %s",
-        preview_saturation == -2 ? "0 (Grayscale)" :
-        preview_saturation == -1 ? "Low" :
-        preview_saturation == 0 ? "Normal" :
-        preview_saturation == 1 ? "High" :
-                                  "Very high"
+        "LCD 饱和度 : %s",
+        preview_saturation == -2 ? "0（灰度）" :
+        preview_saturation == -1 ? "低" :
+        preview_saturation == 0 ? "正常" :
+        preview_saturation == 1 ? "高" :
+                                  "很高"
     );
 }
 
@@ -2627,9 +2627,9 @@ static void brightness_saturation_reset()
     preview_saturation = 0;
     set_backlight_level(5);
     set_display_gain_equiv(0);
-    NotifyBox(2000, "LCD Saturation: Normal\n"
-                    "LCD Backlight : 5     \n"
-                    "Display Gain  : 0 EV  "); 
+    NotifyBox(2000, "LCD 饱和度: 正常\n"
+                    "LCD 背光  : 5\n"
+                    "显示增益  : 0 EV"); 
 }
 #endif
 
@@ -2883,7 +2883,7 @@ static MENU_UPDATE_FUNC(anamorphic_preview_display)
     }
     */
     if (defish_preview)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Too much for this lil' cam... both defishing and anamorphic");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "这台小相机吃不消……鱼眼矫正和变形宽银幕同时开启");
 }
 
 
@@ -3435,7 +3435,7 @@ extern int display_gain_menu_index;
 static struct menu_entry display_menus[] = {
             #ifdef FEATURE_DIGIC_FOCUS_PEAKING
             {
-                .name = "LV DIGIC peaking",
+                .name = "DIGIC峰值对焦",
                 .priv = &preview_peaking,
                 .min = 0,
                 #ifdef FEATURE_LV_SATURATION
@@ -3444,52 +3444,52 @@ static struct menu_entry display_menus[] = {
                 #else
                 .max = 1,   /* the other options require saturation controls available */
                 #endif
-                .choices = (const char *[]) {"OFF", "Slightly sharper", "Edge image", "Edge + chroma"},
-                .help  = "Focus peaking via DIGIC. No CPU usage!",
+                .choices = (const char *[]) {"关", "轻微锐化", "边缘图像", "边缘+色度"},
+                .help  = "通过 DIGIC 实现峰值对焦，不占用 CPU！",
                 .depends_on = DEP_LIVEVIEW,
             },
             #endif
             #ifdef FEATURE_LV_BRIGHTNESS_CONTRAST
             {
-                .name = "LV brightness", 
+                .name = "实时取景亮度", 
                 .priv = &preview_brightness, 
                 .max = 2,
-                .help = "For LiveView preview only. Does not affect recording.",
+                .help = "仅实时取景预览有效，不影响录制。",
                 .update = preview_brightness_display,
                 .edit_mode = EM_SHOW_LIVEVIEW,
-                .choices = (const char *[]) {"Normal", "High", "Very high"},
+                .choices = (const char *[]) {"正常", "高", "很高"},
                 .depends_on = DEP_LIVEVIEW,
                 .icon_type = IT_PERCENT_OFF,
             },
             {
-                .name = "LV contrast",
+                .name = "实时取景对比度",
                 .priv     = &preview_contrast,
                 .min = -3,
                 .max = 3,
                 .update = preview_contrast_display,
-                .help = "For LiveView preview only. Does not affect recording.",
+                .help = "仅实时取景预览有效，不影响录制。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
-                .choices = (const char *[]) {"Zero", "Very low", "Low", "Normal", "High", "Very high", "Auto"},
+                .choices = (const char *[]) {"零", "很低", "低", "正常", "高", "很高", "自动"},
                 .depends_on = DEP_LIVEVIEW,
                 .icon_type = IT_PERCENT_OFF,
             },
             #endif
             #ifdef FEATURE_LV_SATURATION
             {
-                .name = "LV saturation",
+                .name = "实时取景饱和度",
                 .priv     = &preview_saturation,
                 .min = -2,
                 .max = 3,
                 .update = preview_saturation_display,
-                .help = "For LiveView preview only. Does not affect recording.",
+                .help = "仅实时取景预览有效，不影响录制。",
                 .help2 = " \n"
                          " \n"
                          " \n"
                          " \n"
                          " \n"
-                         "Boost on WB: increase saturation when you are adjusting WB.",
+                         "WB增强：调整白平衡时自动提高饱和度。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
-                .choices = (const char *[]) {"Grayscale", "Low", "Normal", "High", "Very high", "Boost on WB adjust"},
+                .choices = (const char *[]) {"灰度", "低", "正常", "高", "很高", "WB调整时增强"},
                 .depends_on = DEP_LIVEVIEW,
                 .icon_type = IT_PERCENT_OFF,
                 /*
@@ -3507,27 +3507,27 @@ static struct menu_entry display_menus[] = {
             #endif
             #ifdef FEATURE_LV_DISPLAY_GAIN
             {
-                .name = "LV display gain",
+                .name = "实时取景显示增益",
                 .priv = &display_gain_menu_index,
                 .update = display_gain_print,
                 .select = display_gain_toggle,
                 .max = 6,
-                .choices = CHOICES("OFF", "1 EV", "2 EV", "3 EV", "4 EV", "5 EV", "6 EV"),
+                .choices = CHOICES("关", "1 EV", "2 EV", "3 EV", "4 EV", "5 EV", "6 EV"),
                 .icon_type = IT_PERCENT_OFF,
-                .help   = "Makes LiveView usable in complete darkness (photo mode).",
-                .help2  = "Tip: if it gets really dark, also enable FPS override.",
+                .help   = "让实时取景在全黑环境下可用（照片模式）。",
+                .help2  = "提示：若画面仍然太暗，请再启用帧率覆盖。",
                 .edit_mode = EM_SHOW_LIVEVIEW,
                 .depends_on = DEP_LIVEVIEW | DEP_PHOTO_MODE,
             },
             #endif
     #ifdef FEATURE_CLEAR_OVERLAYS
     {
-        .name = "Clear overlays",
+        .name = "清除叠加",
         .priv           = &clearscreen,
         .max            = 4,
-        .choices = (const char *[]) {"OFF", "HalfShutter", "WhenIdle", "Always", "Recording"},
+        .choices = (const char *[]) {"关", "半按快门", "空闲时", "总是", "录制时"},
         .icon_type = IT_DICE_OFF,
-        .help = "Clear bitmap overlays from LiveView display.",
+        .help = "从实时取景画面中清除位图叠加层。",
         .depends_on = DEP_LIVEVIEW,
         /*
         .children =  (struct menu_entry[]) {
@@ -3547,14 +3547,14 @@ static struct menu_entry display_menus[] = {
         #error This requires CONFIG_DISPLAY_FILTERS.
         #endif
     {
-        .name = "Defishing",
+        .name = "鱼眼矫正",
         .priv = &defish_preview, 
         .select = defish_toggle,
         //~ .update = defish_preview_display, 
         .max    = 2,
         .depends_on = DEP_GLOBAL_DRAW,
-        .choices = (const char *[]) {"OFF", "Rectilinear", "Panini"},
-        .help = "Preview straightened images from fisheye lenses. LV+PLAY.",
+        .choices = (const char *[]) {"关", "直线投影", "Panini投影"},
+        .help = "预览鱼眼镜头矫正后的画面。实时取景+回放均可用。",
         /*
         .children =  (struct menu_entry[]) {
             {
@@ -3576,12 +3576,12 @@ static struct menu_entry display_menus[] = {
         #error This requires CONFIG_DISPLAY_FILTERS.
         #endif
     {
-        .name = "Anamorphic",
+        .name = "变形宽银幕",
         .priv     = &anamorphic_preview,
         .update = anamorphic_preview_display, 
         .max = 7,
-        .choices = (const char *[]) {"OFF", "5:4 (1.25)", "4:3 (1.33)", "7:5 (1.4)", "3:2 (1.5)", "5:3 (1.66)", "9:5 (1.8)", "2:1"},
-        .help = "Stretches LiveView image vertically, for anamorphic lenses.",
+        .choices = (const char *[]) {"关", "5:4 (1.25)", "4:3 (1.33)", "7:5 (1.4)", "3:2 (1.5)", "5:3 (1.66)", "9:5 (1.8)", "2:1"},
+        .help = "纵向拉伸实时取景画面，用于变形宽银幕镜头。",
         .depends_on = DEP_LIVEVIEW | DEP_GLOBAL_DRAW,
 /*
         .children =  (struct menu_entry[]) {
@@ -3598,106 +3598,106 @@ static struct menu_entry display_menus[] = {
     #endif
     #if defined(CONFIG_KILL_FLICKER) || defined(FEATURE_SCREEN_LAYOUT) || defined(FEATURE_IMAGE_POSITION) || defined(FEATURE_UPSIDE_DOWN) || defined(FEATURE_IMAGE_ORIENTATION) || defined(FEATURE_AUTO_MIRRORING_HACK) || defined(FEATURE_FORCE_HDMI_VGA)
     {
-        .name = "Advanced settings",
+        .name = "高级设置",
         .select         = menu_open_submenu,
         .submenu_width = 710,
-        .help = "Screen orientation, position fine-tuning...",
+        .help = "屏幕方向、位置微调……",
         .children =  (struct menu_entry[]) {
             #ifdef CONFIG_KILL_FLICKER
                 {
-                    .name       = "Kill Canon GUI",
+                    .name       = "隐藏佳能界面",
                     .priv       = &kill_canon_gui_mode,
                     .max        = 2,
-                    .choices    = CHOICES("OFF", "Idle/Menus", "Idle/Menus+Keys"),
+                    .choices    = CHOICES("关", "空闲/菜单", "空闲/菜单+按键"),
                     .depends_on = DEP_GLOBAL_DRAW,
-                    .help = "Workarounds for disabling Canon graphics elements."
+                    .help = "禁用佳能图形元素的变通方法。"
                 },
             #endif
             #ifdef FEATURE_SCREEN_LAYOUT
                 {
-                    .name = "Screen Layout",
+                    .name = "屏幕布局",
                     .priv = &screen_layout_menu_index,
                     .max = 4,
                     .update = screen_layout_update, 
                     .select = screen_layout_toggle,
                     .choices = CHOICES(
                         #ifdef CONFIG_4_3_SCREEN
-                        "4:3 display,auto",
+                        "4:3屏幕,自动",
                         #else
-                        "3:2 display,t/b",
+                        "3:2屏幕,上/下",
                         #endif
-                        "16:10 HDMI,t/b",
-                        "16:9  HDMI,t/b",
-                        "Bottom,under 3:2",
-                        "Bottom,under16:9"
+                        "16:10 HDMI,上/下",
+                        "16:9  HDMI,上/下",
+                        "底部,3:2下方",
+                        "底部,16:9下方"
                     ),
-                    .help = "Position of top/bottom bars, useful for external displays.",
+                    .help = "顶部/底部信息栏的位置，外接显示时有用。",
                     .depends_on = DEP_LIVEVIEW,
                 },
             #endif
             #ifdef FEATURE_COLOR_SCHEME
             {
-                .name = "Color scheme",
+                .name = "配色方案",
                 .priv     = &bmp_color_scheme,
                 .max = 5,
-                .choices = (const char *[]) {"Default", "Dark", "Bright Gray", "Dark Gray", "Dark Red", "Dark Green"},
-                .help = "Color scheme for bitmap overlays (ML menus, Canon menus...)",
+                .choices = (const char *[]) {"默认", "深色", "亮灰", "深灰", "暗红", "暗绿"},
+                .help = "位图叠加层的配色方案（ML 菜单、佳能菜单等）",
                 .icon_type = IT_DICE_OFF,
             },
             #endif
             #ifdef FEATURE_IMAGE_POSITION
                 {
-                    .name = "Image position",
+                    .name = "图像位置",
                     .priv = &lcd_adjust_position,
                     .min = -2,
                     .max = 2,
-                    .choices = (const char *[]) {"-16px", "-8px", "Normal", "+8px", "+16px"},
+                    .choices = (const char *[]) {"-16px", "-8px", "正常", "+8px", "+16px"},
                     .icon_type = IT_PERCENT_OFF,
-                    .help = "May make the image easier to see from difficult angles.",
+                    .help = "从刁钻角度观看屏幕时，画面可能更容易看清。",
                 },
             #endif
             #ifdef FEATURE_UPSIDE_DOWN
                 {
-                    .name = "UpsideDown mode",
+                    .name = "倒转模式",
                     .priv = &menu_upside_down,
                     .max = 1,
-                    .help = "Displays overlay graphics upside-down and flips arrow keys.",
+                    .help = "叠加图形上下倒转显示，并反转方向键。",
                 },
             #endif
             #ifdef FEATURE_IMAGE_ORIENTATION
                 {
-                    .name = "Orientation",
+                    .name = "屏幕方向",
                     .priv = (int*)&DISPLAY_ORIENTATION,
                     .select = display_orientation_toggle,
                     .max = 2,
-                    .choices = (const char *[]) {"Normal", "Reverse", "Mirror"},
-                    .help = "Display + LiveView orientation: Normal / Reverse / Mirror."
+                    .choices = (const char *[]) {"正常", "反转", "镜像"},
+                    .help = "屏幕+实时取景方向：正常/反转/镜像。"
                 },
             #endif
             #ifdef FEATURE_AUTO_MIRRORING_HACK
                 {
-                    .name = "Auto Mirroring",
+                    .name = "自动镜像",
                     .priv = &display_dont_mirror,
                     .max  = 1,
-                    .choices = (const char *[]) {"Allow", "Don't allow"},
-                    .help = "Prevents display mirroring, which may reverse ML texts.",
+                    .choices = (const char *[]) {"允许", "禁止"},
+                    .help = "防止屏幕镜像（镜像会导致 ML 文字反向）。",
                     .icon_type = IT_DISABLE_SOME_FEATURE,
                 },
             #endif
             #ifdef FEATURE_LV_CRAZY_COLORS
             {
-                .name = "LV crazy colors",
+                .name = "实时取景怪异色彩",
                 .priv     = &preview_crazy,
                 .min = 0,
                 .max = 2,
                 .edit_mode = EM_SHOW_LIVEVIEW,
-                .choices = (const char *[]) {"OFF", "Swap U-V", "Extreme Chroma"},
+                .choices = (const char *[]) {"关", "交换UV", "极端色度"},
                 .depends_on = DEP_LIVEVIEW,
                 .icon_type = IT_PERCENT_OFF,
-                .help  = "Crazy color effects that may help with white balance.",
-                .help2 = "For LiveView preview only. Does not affect recording.\n"
-                         "Swap U-V: reverses red and blue components\n"
-                         "Extreme Chroma: highly saturated image showing WB direction\n",
+                .help  = "怪异的色彩效果，或有助判断白平衡。",
+                .help2 = "仅实时取景预览有效，不影响录制。\n"
+                         "交换UV：反转红/蓝色彩分量\n"
+                         "极端色度：高饱和画面，显示白平衡偏差方向\n",
             },
             #endif
             #ifdef FEATURE_DISPLAY_SHAKE
@@ -3705,19 +3705,19 @@ static struct menu_entry display_menus[] = {
                 #define This requires CONFIG_CAN_REDIRECT_DISPLAY_BUFFER_EASILY.
                 #endif
             {
-                .name = "Display Shake",
+                .name = "屏幕抖动",
                 .priv     = &display_shake,
                 .max = 1,
-                .help = "Emphasizes camera shake on LiveView display.",
+                .help = "在实时取景画面上夸张相机抖动。",
                 .depends_on = DEP_LIVEVIEW,
             },
             #endif
             #ifdef FEATURE_FORCE_HDMI_VGA
                 {
-                    .name = "Force HDMI-VGA",
+                    .name = "强制 HDMI-VGA",
                     .priv = &hdmi_force_vga, 
                     .max  = 1,
-                    .help = "Force low resolution (720x480) on HDMI displays.",
+                    .help = "在 HDMI 显示器上强制低分辨率（720x480）。",
                 },
             #endif
             MENU_EOL
@@ -3730,44 +3730,44 @@ static struct menu_entry display_menus[] = {
 static struct menu_entry play_menus[] = {
     #if defined(FEATURE_SET_MAINDIAL) || defined(FEATURE_IMAGE_REVIEW_PLAY) || defined(FEATURE_QUICK_ZOOM) || defined(FEATURE_REMEMBER_LAST_ZOOM_POS_5D3) || defined(FEATURE_LV_BUTTON_PROTECT) || defined(FEATURE_LV_BUTTON_RATE) || defined(FEATURE_QUICK_ERASE)
     {
-        .name = "Image review settings",
+        .name = "图像回看设置",
         .select = menu_open_submenu,
         .submenu_width = 715,
-        .help = "Options for PLAY (image review) mode.",
+        .help = "回放（图像回看）模式的选项。",
         .depends_on = DEP_PHOTO_MODE,
         .children =  (struct menu_entry[]) {
             #ifdef FEATURE_SET_MAINDIAL
             {
-                .name = "Play mode actions",
-                .help = "Several helpful image actions you can trigger in PLAY mode.",
+                .name = "回放模式动作",
+                .help = "回放模式下可触发的多个实用图像操作。",
                 .select = menu_open_submenu,
                 .submenu_width = 660,
                 .children =  (struct menu_entry[])
                 {
                     {
-                        .name = "Action type",
+                        .name = "动作类型",
                         .priv = &play_set_wheel_action, 
                         .max = 4,
-                        .choices = (const char *[]) {"OFF", "Exposure Fusion", "Compare Images", "Timelapse Play", "Exposure Adjust"},
-                        .help = "Chose the action type to perform when triggered.",
+                        .choices = (const char *[]) {"关", "曝光融合", "对比图像", "延时回放", "曝光调整"},
+                        .help = "选择触发时执行的动作类型。",
                         .icon_type = IT_PERCENT_OFF,
                     },
                     #ifdef CONFIG_100D
                     {
-                        .name = "Trigger key(s)",
+                        .name = "触发按键",
                         .priv = &play_set_wheel_trigger,
                         .max = 0,
-                        .choices = (const char *[]) {"Av+MainDial"},
-                        .help = "Use Av+MainDial together to perform selected action.",
+                        .choices = (const char *[]) {"Av+主拨盘"},
+                        .help = "同时按 Av 键和主拨盘执行所选动作。",
                         .icon_type = IT_DICE,
                     },
                     #else
                     {
-                        .name = "Trigger key(s)",
+                        .name = "触发按键",
                         .priv = &play_set_wheel_trigger,
                         .max = 2,
-                        .choices = (const char *[]) {"Set+MainDial", "Left/Right", "L/R & Set+Dial"},
-                        .help = "Either use a key combination and/or just an easier single keystroke.",
+                        .choices = (const char *[]) {"SET+主拨盘", "左/右", "左/右 & SET+拨盘"},
+                        .help = "可用按键组合，也可用更简单的单键触发。",
                         .icon_type = IT_DICE,
                     },
                     #endif
@@ -3777,50 +3777,50 @@ static struct menu_entry play_menus[] = {
             #endif
             #ifdef FEATURE_IMAGE_REVIEW_PLAY
             {
-                .name = "Image Review",
+                .name = "图像回看",
                 .priv = &quick_review_allow_zoom, 
                 .max = 1,
-                .choices = (const char *[]) {"QuickReview default", "CanonMnu:Hold->PLAY"},
-                .help = "When you set \"ImageReview: Hold\", it will go to Play mode.",
+                .choices = (const char *[]) {"默认快速回看", "佳能菜单:按住→回放"},
+                .help = "在佳能菜单设置“图像回看:按住”后，会进入回放模式。",
                 .icon_type = IT_BOOL,
             },
             #endif
             #ifdef FEATURE_QUICK_ZOOM
             {
-                .name = "Quick Zoom",
+                .name = "快速放大",
                 .priv = &quickzoom, 
                 .max = 4,
-                .choices = (const char *[]) {"OFF", "ON (fast zoom)", "SinglePress -> 100%", "Full zoom on AF pt.", "Full Z on last pos."},
-                .help = "Faster zoom in Play mode, for pixel peeping :)",
+                .choices = (const char *[]) {"关", "开（快速放大）", "单按→100%", "对焦点全放大", "上次位置全放大"},
+                .help = "回放模式下更快的放大，方便查看细节 :)",
                 //.essential = FOR_PHOTO,
                 .icon_type = IT_DICE_OFF,
             },
             #endif
             #ifdef FEATURE_REMEMBER_LAST_ZOOM_POS_5D3
             {
-                .name = "Remember last Zoom pos",
+                .name = "记住放大位置",
                 .priv = &quickzoom, 
                 .max = 1,
-                .help = "Remember last Zoom position in playback mode.",
+                .help = "在回放模式记住上次的放大位置。",
                 .icon_type = IT_BOOL,
             },
             #endif
             #if defined(FEATURE_LV_BUTTON_PROTECT) || defined(FEATURE_LV_BUTTON_RATE)
             {
-                .name = "LV button",
+                .name = "LV 键",
                 .priv = &play_lv_action, 
-                .choices = (const char *[]) {"Default", "Protect Image", "Rate Image"},
+                .choices = (const char *[]) {"默认", "保护图像", "评分图像"},
 
                 #if defined(FEATURE_LV_BUTTON_PROTECT) && defined(FEATURE_LV_BUTTON_RATE)
                 .max = 2,
-                .help = "You may use the LiveView button to protect or rate images.",
+                .help = "可用实时取景(LV)键保护或评分图像。",
                 #ifdef FEATURE_LV_BUTTON_RATE_UPDOWN
-                .help2 = "Also up/down keys/joystick work as +/- rating if zoomed out.",
+                .help2 = "缩小时，上/下键或摇杆也可用作 +/- 评分。",
                 #endif
                 .icon_type = IT_DICE_OFF,
                 #elif defined(FEATURE_LV_BUTTON_PROTECT)
                 .max = 1,
-                .help = "You may use the LiveView button to protect images quickly.",
+                .help = "可用实时取景(LV)键快速保护图像。",
                 .icon_type = IT_BOOL,
                 #else
                 #error Hudson, we have a problem!
@@ -3829,14 +3829,14 @@ static struct menu_entry play_menus[] = {
         #endif
             #ifdef FEATURE_QUICK_ERASE
             {
-                .name = "Quick Erase",
+                .name = "快速删除",
                 .priv = &quick_delete, 
                 .max = 1,
                 #ifdef CONFIG_50D // no unpress SET, use the 5Dc method
-                .help = "Delete files quickly with fewer keystrokes (be careful!!!)",
+                .help = "用更少的按键快速删除文件（务必小心！！！）",
                 #else
-                .choices = (const char *[]) {"OFF", "SET+Erase"},
-                .help = "Delete files quickly with SET+Erase (be careful!!!)",
+                .choices = (const char *[]) {"关", "SET+删除"},
+                .help = "用 SET+删除键快速删除文件（务必小心！！！）",
                 #endif
             },
             #endif
@@ -3852,50 +3852,50 @@ static MENU_UPDATE_FUNC(preview_saturation_display_5dc)
 {
     extern int focus_peaking_grayscale;
     if (focus_peaking_grayscale && is_focus_peaking_enabled())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Focus peaking with grayscale preview is enabled.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "峰值对焦与灰度预览同时开启。");
 }
 
 static struct menu_entry play_menus[] = {
         {
-            .name = "Saturation",
+            .name = "饱和度",
             .priv     = &preview_saturation,
             .min = -1,
             .max = 2,
             .update = preview_saturation_display_5dc,
-            .choices = (const char *[]) {"0 (Grayscale)", "Normal", "High", "Very high"},
-            .help = "For preview only - adjust display saturation.",
+            .choices = (const char *[]) {"0（灰度）", "正常", "高", "很高"},
+            .help = "仅预览有效——调整显示饱和度。",
             .icon_type = IT_BOOL,
         },
         {
-            .name = "Image Review",
+            .name = "图像回看",
             .priv = &quick_review_allow_zoom, 
             .max = 1,
-            .choices = (const char *[]) {"QuickReview default", "CanonMnu:Hold->PLAY"},
-            .help = "When you set \"ImageReview: Hold\", it will go to Play mode.",
+            .choices = (const char *[]) {"默认快速回看", "佳能菜单:按住→回放"},
+            .help = "在佳能菜单设置“图像回看:按住”后，会进入回放模式。",
             .icon_type = IT_BOOL,
         },
         {
-            .name = "Quick Zoom",
+            .name = "快速放大",
             .priv = &quickzoom, 
             .max = 2, // don't know how to move the image around
-            .choices = (const char *[]) {"OFF", "ON (fast zoom)"},
-            .help = "Faster zoom in Play mode, for pixel peeping :)",
+            .choices = (const char *[]) {"关", "开（快速放大）"},
+            .help = "回放模式下更快的放大，方便查看细节 :)",
             //.essential = FOR_PHOTO,
             .icon_type = IT_BOOL,
         },
         {
-            .name = "Quick Erase",
+            .name = "快速删除",
             .priv = &quick_delete, 
             .max = 1,
-            .help = "Delete files quickly with fewer keystrokes (be careful!!!)",
+            .help = "用更少的按键快速删除文件（务必小心！！！）",
         },
         {
-            .name = "SET+MainDial",
+            .name = "SET+主拨盘",
             .priv = &play_set_wheel_action, 
             .min = 2,
             .max = 3,
-            .choices = (const char *[]) {"Timelapse Play", "Exposure Adjust"},
-            .help = "What to do when you press SET and turn the scrollwheel.",
+            .choices = (const char *[]) {"延时回放", "曝光调整"},
+            .help = "按住 SET 并转动拨盘时执行的操作。",
             //.essential = FOR_PHOTO,
             .icon_type = IT_BOOL,
         },

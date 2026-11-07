@@ -1,6 +1,10 @@
 #ifndef _ML_SOCKET_H_
 #define _ML_SOCKET_H_
 
+/* forward declaration: old compilers would otherwise treat this as
+ * declared inside the parameter list (scoped to that prototype only) */
+struct timeval;
+
 // DryOS on modern cams has a socket library, with standard bind(), connect()
 // etc functions
 

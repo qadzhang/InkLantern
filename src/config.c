@@ -112,9 +112,9 @@ parse_error:
         line
     );
     
-    bmp_printf(FONT_LARGE, 10, 150, "CONFIG PARSE ERROR");
+    bmp_printf(FONT_LARGE, 10, 150, "配置解析错误");
     bmp_printf(FONT_MED, 10, 200,
-        "%s: PARSE ERROR:\nlen=%d,%d\nstring='%s'",
+        "%s：解析错误：\n长度=%d,%d\n内容=“%s”",
         __func__,
         name_len,
         value_len,
@@ -530,18 +530,18 @@ static MENU_UPDATE_FUNC(delete_config_update)
 {
     if (config_deleted)
     {
-        MENU_SET_RINFO("Restart");
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Restart your camera to complete the process.");
+        MENU_SET_RINFO("重启");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请重启相机以完成该过程。");
     }
 
-    MENU_SET_HELP("Only the current preset: %s", get_config_dir());
+    MENU_SET_HELP("仅限当前预设：%s", get_config_dir());
 }
 
 static MENU_UPDATE_FUNC(config_save_update)
 {
     if (config_deleted)
     {
-        MENU_SET_RINFO("Undo");
+        MENU_SET_RINFO("撤销");
     }
     
     MENU_SET_HELP("%s", get_config_dir());
@@ -706,7 +706,7 @@ static MENU_UPDATE_FUNC(config_preset_update)
         snprintf(current_mode_name, sizeof(current_mode_name), "%s", (char*) get_shootmode_name(shooting_mode_custom));
         if (streq(config_selected_by_mode, current_mode_name))
         {
-            MENU_SET_HELP("Config preset is selected by startup mode (on the mode dial).");
+            MENU_SET_HELP("配置预设由启动模式（模式转盘）决定。");
         }
         else
         {
@@ -716,24 +716,24 @@ static MENU_UPDATE_FUNC(config_preset_update)
             }
             if (config_selected_by_mode[0])
             {
-                MENU_SET_HELP("Camera was started in %s; restart to load the config for %s.", config_selected_by_mode, current_mode_name);
+                MENU_SET_HELP("相机以 %s 模式启动；重启后将加载 %s 的配置。", config_selected_by_mode, current_mode_name);
             }
             else
             {
-                MENU_SET_HELP("Restart to load the config for %s mode.", current_mode_name);
+                MENU_SET_HELP("重启后将加载 %s 模式的配置。", current_mode_name);
             }
         }
     }
     else if (config_new_preset_index == 2) /* startup key */
     {
-        MENU_SET_HELP("At startup, press&hold MENU/PLAY/"INFO_BTN_NAME" to select the cfg preset.");
+        MENU_SET_HELP("开机时按住 MENU/PLAY/"INFO_BTN_NAME" 即可选择配置预设。");
     }
     else /* named preset */
     {
         if (preset_changed)
         {
-            MENU_SET_HELP("The new config preset will be used after you restart your camera.");
-            MENU_SET_RINFO("Restart");
+            MENU_SET_HELP("新的配置预设将在重启相机后生效。");
+            MENU_SET_RINFO("重启");
         }
     }
 }
@@ -871,51 +871,51 @@ static MENU_SELECT_FUNC(set_at_startup_toggle)
 
 static struct menu_entry cfg_menus[] = {
 {
-    .name = "Config options",
+    .name = "配置选项",
     .select = menu_open_submenu,
     .update = config_preset_update,
     .submenu_width = 710,
-    .help = "Config auto save, manual save, restore defaults...",
+    .help = "配置自动保存、手动保存、恢复默认……",
     .children =  (struct menu_entry[]) {
         {
-            .name       = "SET at startup",
+            .name       = "启动时 SET",
             .priv       = &_set_at_startup,
             .max        = 1,
-            .choices    = CHOICES("Bypass loading ML", "Required to load ML"),
+            .choices    = CHOICES("跳过 ML 加载", "需按住才加载"),
             .select     = set_at_startup_toggle,
             .icon_type  = IT_BOOL,
-            .help       = "[GLOBAL] If you hold the SET button pressed at camera startup:",
-            .help2      = "Do not load ML if you start the camera with SET pressed (default)\n"
-                          "Load ML only if SET is pressed at startup (optional)"
+            .help       = "[全局] 若在相机启动时按住 SET 键：",
+            .help2      = "按住 SET 开机时不加载 ML（默认）\n"
+                          "仅在开机时按住 SET 才加载 ML（可选）"
         },
         {
-            .name = "Config preset",
+            .name = "配置预设",
             .priv = &config_new_preset_index,
             .min = 0,
             .max = 2,
             .choices = (const char **) config_preset_choices,
             .select = config_preset_toggle,
             .update = config_preset_update,
-            .help = "Choose a configuration preset."
+            .help = "选择一个配置预设。"
         },
         {
-            .name = "Config AutoSave",
+            .name = "自动保存配置",
             .priv = &config_autosave,
             .max  = 1,
             .select = config_autosave_toggle,
-            .help = "If enabled, ML settings are saved automatically at shutdown."
+            .help = "启用后，关机时会自动保存 ML 设置。"
         },
         {
-            .name = "Save config now",
+            .name = "立即保存配置",
             .select        = config_save_select,
             .update        = config_save_update,
-            .help = "Save ML settings to current preset directory."
+            .help = "将 ML 设置保存到当前预设目录。"
         },
         {
-            .name = "Restore ML defaults",
+            .name = "恢复 ML 默认设置",
             .select        = delete_config,
             .update        = delete_config_update,
-            .help  = "This restores ML default settings, by deleting all CFG files.",
+            .help  = "删除所有 CFG 文件，恢复 ML 默认设置。",
         },
         MENU_EOL,
     },
@@ -932,7 +932,7 @@ void config_load()
 
     if (config_preset_name)
     {
-        NotifyBox(2000, "Config: %s", config_preset_name);
+        NotifyBox(2000, "配置：%s", config_preset_name);
         if (!DISPLAY_IS_ON) beep();
     }
     

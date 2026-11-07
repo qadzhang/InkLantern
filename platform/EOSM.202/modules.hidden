@@ -1,0 +1,5 @@
+# EOSM 内存最紧张：这些模块默认不驻留（卡上保留，可从 模块 菜单手动加载）
+arkanoid
+bench
+selftest
+edmac

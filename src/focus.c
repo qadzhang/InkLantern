@@ -268,13 +268,13 @@ display_lens_hyperfocal()
     {
         y += height;
         bmp_printf( font, x, y,
-            "Lens: manual (without chip)."
+            "镜头：手动（无触点）。"
         );
         return;
     }
 
     bmp_printf( font, x, y,
-        "Lens: %s, %dmm f/%d.%d",
+        "镜头：%s，%dmm f/%d.%d",
         lens_info.name,
         lens_info.focal_len, 
         lens_info.aperture / 10,
@@ -285,7 +285,7 @@ display_lens_hyperfocal()
     {
         y += height;
         bmp_printf( font, x, y,
-            "Your lens does not report focus distance."
+            "镜头未报告对焦距离。"
         );
         return;
     }
@@ -293,30 +293,30 @@ display_lens_hyperfocal()
     y += height;
 
     bmp_printf( font, x, y,
-        "Focus dist: %s",
+        "对焦距离：%s",
         lens_info.focus_dist == 0xFFFF
-                        ? " Infty"
+                        ? " 无穷远"
                         : lens_format_dist( lens_info.focus_dist * 10 )
     );
 
     y += height;
     bmp_printf( font, x, y,
-        "Hyperfocal: %s",
+        "超焦距：%s",
         lens_format_dist( lens_info.hyperfocal )
     );
 
     x += 280;
     y -= height;
     bmp_printf( font, x, y,
-        "DOF Near:   %s",
+        "近景深：%s",
         lens_format_dist( lens_info.dof_near )
     );
 
     y += height;
     bmp_printf( font, x, y,
-        "DOF Far:    %s",
+        "远景深：%s",
         lens_info.dof_far >= 1000*1000
-            ? " Infty"
+            ? " 无穷远"
             : lens_format_dist( lens_info.dof_far )
     );
 
@@ -326,8 +326,8 @@ display_lens_hyperfocal()
     y += height;
     int fg = lens_info.dof_flags & DOF_DIFFRACTION_LIMIT_REACHED ? COLOR_YELLOW : COLOR_WHITE;
     bmp_printf( FONT(font,fg,COLOR_BLACK) | FONT_ALIGN_RIGHT, x, y, 
-        "Diffraction\n"
-        "blur: %d"SYM_MICRO"m",
+        "衍射\n"
+        "模糊量：%d"SYM_MICRO"m",
         lens_info.dof_diffraction_blur
     );
 }
@@ -380,7 +380,7 @@ static void focus_stack_ensure_preconditions()
             if (!lv) force_liveview();
             if (lv) break;
             NotifyBoxHide();
-            NotifyBox(2000, "Please switch to LiveView");
+            NotifyBox(2000, "请切换到实时取景");
             msleep(200);
         }
         msleep(200);
@@ -393,7 +393,7 @@ static void focus_stack_ensure_preconditions()
         #else
             while (is_movie_mode())
             {
-                NotifyBox(2000, "Please switch to photo mode");
+                NotifyBox(2000, "请切换到照片模式");
                 msleep(2000);
             }
         #endif
@@ -402,7 +402,7 @@ static void focus_stack_ensure_preconditions()
     while (is_manual_focus())
     {
         NotifyBoxHide();
-        NotifyBox(2000, "Please enable autofocus");
+        NotifyBox(2000, "请启用自动对焦");
         msleep(2000);
     }
     
@@ -427,11 +427,11 @@ focus_stack(
     else if (drive_mode == DRIVE_SELFTIMER_REMOTE) delay = 10;
     
     if (focus_rack_delay && focus_rack_enable_delay) delay += focus_rack_delay;
-    if (delay) wait_notify(delay, "Focus stack");
+    if (delay) wait_notify(delay, "焦点堆叠");
     
     if (focus_stack_check_stop()) return;
 
-    NotifyBox(1000, "Focus stack: %dx%d", count, ABS(num_steps) );
+    NotifyBox(1000, "焦点堆叠：%dx%d", count, ABS(num_steps) );
     msleep(1000);
     
     int prev_drive_mode = set_drive_single();
@@ -442,7 +442,7 @@ focus_stack(
     int focus_moved_total = 0;
 
     if (pre_focus) {
-        NotifyBox(1000, "Pre-focusing %d steps...", ABS(num_steps*pre_focus) );
+        NotifyBox(1000, "预对焦 %d 步…", ABS(num_steps*pre_focus) );
         focus_stack_ensure_preconditions();
         if (LensFocus(-num_steps*pre_focus) == 0) { beep(); return; }
         focus_moved_total -= (num_steps*pre_focus);
@@ -453,7 +453,7 @@ focus_stack(
     {
         if (focus_stack_check_stop()) break;
         
-        NotifyBox(1000, "Focus stack: %d of %d", i+1, count );
+        NotifyBox(1000, "焦点堆叠：第 %d 张，共 %d 张", i+1, count );
         
         focus_stack_ensure_preconditions();
         if (focus_stack_check_stop()) break;
@@ -484,12 +484,12 @@ focus_stack(
             real_steps = num_steps;
         }
         
-        NotifyBox(1000, "Focusing %d steps...", ABS(real_steps)); msleep(500);
+        NotifyBox(1000, "正在对焦 %d 步…", ABS(real_steps)); msleep(500);
         if (LensFocus(real_steps) == 0)
             break;
         focus_moved_total += real_steps;
 
-        if (focus_flash_delay) wait_notify(focus_flash_delay, "Delaying...");
+        if (focus_flash_delay) wait_notify(focus_flash_delay, "延时中…");
     }
 
     msleep(1000);
@@ -497,7 +497,7 @@ focus_stack(
 
     // Restore to the starting focus position
     if (focus_moved_total) {
-        NotifyBox(1000, "Reversing %d steps...", ABS(focus_moved_total)); msleep(500);
+        NotifyBox(1000, "回退 %d 步…", ABS(focus_moved_total)); msleep(500);
         focus_stack_ensure_preconditions();
         LensFocus(-focus_moved_total); 
         NotifyBoxHide();
@@ -506,12 +506,12 @@ focus_stack(
     if (i >= count-1)
     {
         if (beep_enabled) beep_custom(300,1000,false);
-        NotifyBox(2000, "Focus stack done!" );
+        NotifyBox(2000, "焦点堆叠完成！" );
         msleep(1000);
         hdr_create_script(f0, 1); 
     } else {
         if (beep_enabled) beep_custom(300,250,false);
-        NotifyBox(2000, "Focus stack not completed");
+        NotifyBox(2000, "焦点堆叠未完成");
     }
     
     if (prev_drive_mode != -1)
@@ -564,7 +564,7 @@ static MENU_UPDATE_FUNC(focus_show_a)
         focus_task_delta > 0 ? "+" : 
         focus_task_delta < 0 ? "-" : "",
         ABS(focus_task_delta),
-        focus_task_delta ? "steps from here" : "(here)"
+        focus_task_delta ? "步（自当前位置）" : "（当前位置）"
     );
     MENU_SET_ICON(MNI_BOOL(focus_task_delta), 0);
     MENU_SET_ENABLED(focus_task_delta);
@@ -575,7 +575,7 @@ static MENU_UPDATE_FUNC(rack_focus_print)
 #ifdef FEATURE_LCD_SENSOR_REMOTE
     extern int lcd_release_running;
     if (lcd_release_running && lcd_release_running < 3 && RECORDING)
-        MENU_APPEND_VALUE(" (also w. LCD sensor)");
+        MENU_APPEND_VALUE(" （同时用液晶传感器）");
 #endif
     MENU_SET_ENABLED(0);
 }
@@ -625,7 +625,7 @@ rack_focus_start_delayed( void * priv, int delta )
         if (is_movie_mode())
             rack_focus_start_auto_record(priv, delta);
         else
-            NotifyBox(2000, "Please switch to Movie mode.");
+            NotifyBox(2000, "请切换到视频模式。");
         return;
     }
     focus_rack_auto_record = 0;
@@ -637,12 +637,12 @@ static MENU_UPDATE_FUNC(focus_stack_update)
 {
     if (FOCUS_BRACKET_COUNT <= 1)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Focus stacking not configured.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "未配置焦点堆叠。");
     }
     else
     {
         MENU_SET_VALUE(
-            "(%d pics)",
+            "（%d 张）",
             FOCUS_BRACKET_COUNT
         );
     }
@@ -736,7 +736,7 @@ static void rack_focus_wait()
 {
     if (focus_rack_delay && focus_rack_enable_delay)
     {
-        wait_notify(focus_rack_delay, "Rack Focus");
+        wait_notify(focus_rack_delay, "焦点转移");
     }
 }
 
@@ -758,7 +758,7 @@ focus_task( void* unused )
             if (focus_rack_auto_record)
             {
                 gui_stop_menu();
-                NotifyBox(2000, "Rack Focus: REC Start");
+                NotifyBox(2000, "焦点转移：开始录制");
                 ensure_movie_mode();
                 if (NOT_RECORDING)
                 {
@@ -779,7 +779,7 @@ focus_task( void* unused )
             if (movie_started_by_ml)
             {
                 rack_focus_wait();
-                NotifyBox(2000, "Rack Focus: REC Stop");
+                NotifyBox(2000, "焦点转移：停止录制");
                 movie_end();
             }
 
@@ -812,7 +812,7 @@ TASK_CREATE( "focus_task", focus_task, 0, 0x18, 0x1000 );
 static MENU_UPDATE_FUNC(follow_focus_print)
 {
     if (follow_focus) MENU_SET_VALUE(
-        get_follow_focus_mode() == 0 ? "Arrows" : "LCD sensor"
+        get_follow_focus_mode() == 0 ? "方向键" : "液晶传感器"
     );
 }
 
@@ -1058,9 +1058,9 @@ static MENU_UPDATE_FUNC(trap_focus_display)
 {
     int t = MENU_CURRENT_VALUE;
     if (!lv && !lens_info.lens_exists)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Trap focus outside LiveView requires a chipped lens");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "实时取景外的陷阱对焦需要带触点的镜头");
     if (t == 2 && cfn_get_af_button_assignment() != AF_BTN_HALFSHUTTER)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Assign AF button to half-shutter from CFn!");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请在自定义功能（CFn）中把 AF 键设为半按快门！");
     //~ if (lv && get_silent_pic())
         //~ MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Trap focus in LV not working with silent pictures.");
 }
@@ -1071,7 +1071,7 @@ static void trap_focus_toggle_from_af_dlg()
     trap_focus = !trap_focus;
     clrscr();
     NotifyBoxHide();
-    NotifyBox(2000, "Trap Focus: %s", trap_focus ? "ON" : "OFF");
+    NotifyBox(2000, "陷阱对焦：%s", trap_focus ? "开" : "关");
     msleep(10);
     SW1(1,10);
     SW1(0,0);
@@ -1084,7 +1084,7 @@ static void trap_focus_toggle_from_af_dlg()
 static struct menu_entry trap_focus_menu[] = {
 #ifndef CONFIG_5DC
     {
-        .name = "Trap Focus",
+        .name = "陷阱对焦",
         .priv       = &trap_focus,
         #ifdef CONFIG_PROP_REQUEST_CHANGE
         .max = 2,
@@ -1092,8 +1092,8 @@ static struct menu_entry trap_focus_menu[] = {
         .max = 1,
         #endif
         .update    = trap_focus_display,
-        .choices = (const char *[]) {"OFF", "Hold AF button", "Continuous"},
-        .help = "Takes a picture when the subject comes in focus. MF only.",
+        .choices = (const char *[]) {"关", "按住 AF 键", "连续"},
+        .help = "被摄体合焦时自动拍摄。仅限手动对焦（MF）。",
         .icon_type = IT_DICE_OFF,
         .depends_on = DEP_PHOTO_MODE | DEP_MANUAL_FOCUS
             #ifndef CONFIG_LV_FOCUS_INFO
@@ -1119,22 +1119,22 @@ static struct menu_entry trap_focus_menu[] = {
 static struct menu_entry focus_menu[] = {
     #ifdef FEATURE_FOLLOW_FOCUS
     {
-        .name = "Follow Focus",
+        .name = "跟焦",
         .priv = &follow_focus,
         .update    = follow_focus_print,
         .max = 1,
         .depends_on = DEP_LIVEVIEW | DEP_AUTOFOCUS | DEP_NOT_CONTINUOUS_AF,
         .works_best_in = DEP_CFN_AF_BACK_BUTTON,
-        .help = "Focus with arrow keys. MENU while REC = save focus point.",
+        .help = "用方向键对焦。录制中按 MENU 保存对焦点。",
 
         #ifdef CONFIG_LCD_SENSOR
         .children =  (struct menu_entry[]) {
             {
-                .name = "Focus using",
+                .name = "对焦方式",
                 .priv = &follow_focus_mode, 
                 .max = 1,
-                .choices = (const char *[]) {"Arrow keys", "LCD sensor"},
-                .help = "You can focus with arrow keys or with the LCD sensor",
+                .choices = (const char *[]) {"方向键", "液晶传感器"},
+                .help = "可用方向键或液晶传感器进行对焦",
             },
             MENU_EOL
         },
@@ -1144,87 +1144,87 @@ static struct menu_entry focus_menu[] = {
 
     #ifdef FEATURE_RACK_FOCUS
     {
-        .name = "Focus End Point",
+        .name = "对焦终点",
         .update    = focus_show_a,
         .select_Q    = focus_reset_a,
         .icon_type = IT_BOOL,
         .edit_mode = EM_SHOW_LIVEVIEW,
-        .help = "[Q]: fix here rack end point. SET+L/R: start point.",
+        .help = "[Q]：在此固定转移终点。SET+左/右：设起点。",
         .depends_on = DEP_LIVEVIEW | DEP_AUTOFOCUS | DEP_NOT_CONTINUOUS_AF,
     },
     {
-        .name = "Rack Focus",
+        .name = "焦点转移",
         .update    = rack_focus_print,
         .select     = rack_focus_start_delayed,
         .icon_type = IT_ACTION,
-        .help = "Press SET for rack focus, or PLAY to also start recording.",
+        .help = "按 SET 执行焦点转移，或按 PLAY 同时开始录制。",
         .depends_on = DEP_LIVEVIEW | DEP_AUTOFOCUS | DEP_NOT_CONTINUOUS_AF,
         .works_best_in = DEP_MOVIE_MODE,
     },
     #endif
     #ifdef FEATURE_FOCUS_STACKING
     {
-        .name = "Focus Stacking",
+        .name = "焦点堆叠",
         .select = menu_open_submenu,
-        .help = "Takes pictures at different focus points.",
+        .help = "在不同对焦点拍摄多张照片。",
         .depends_on = DEP_LIVEVIEW | DEP_AUTOFOCUS | DEP_PHOTO_MODE | DEP_NOT_CONTINUOUS_AF,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Run focus stack",
+                .name = "运行焦点堆叠",
                 .select = focus_stack_trigger_from_menu,
                 .update = focus_stack_update,
-                .help = "Run the focus stacking sequence.",
-                .help2 = "Tip: press MENU to interrupt the stacking sequence.",
+                .help = "运行焦点堆叠序列。",
+                .help2 = "提示：按 MENU 可中断堆叠序列。",
             },
             {
-                .name = "Num. pics in front",
+                .name = "前方张数",
                 .priv = &focus_bracket_front,
                 .min = 0,
                 .max = 100,
-                .help  = "Number of shots in front of current focus point.",
-                .help2 = "On some lenses, this may be reversed.",
+                .help  = "当前对焦点前方拍摄的张数。",
+                .help2 = "某些镜头上方向可能相反。",
             },
             {
-                .name = "Num. pics behind",
+                .name = "后方张数",
                 .priv = &focus_bracket_behind,
                 .min = 0,
                 .max = 100,
-                .help  = "Number of shots behind current focus point.",
-                .help2 = "On some lenses, this may be reversed.",
+                .help  = "当前对焦点后方拍摄的张数。",
+                .help2 = "某些镜头上方向可能相反。",
             },
             {
-                .name = "Focus steps / picture",
+                .name = "每张对焦步数",
                 .priv = &focus_stack_steps_per_picture, 
                 .min = 1,
                 .max = 10,
-                .help = "Number of focus steps between two pictures.",
+                .help = "两张照片之间的对焦步数。",
             },
             {
-                .name = "Flash Delay",
+                .name = "闪光灯延时",
                 .priv    = &focus_flash_delay,
                 .max = 10,
-                .help = "Seconds between stack segments to let flashes recycle.",
+                .help = "堆叠片段之间的等待秒数，供闪光灯回电。",
             },
             {
-                .name = "Copy rack focus range",
+                .name = "复制焦点转移范围",
                 .select = focus_stack_copy_rack_focus_settings,
-                .help = "Sets up stack focus to use the same range as rack focus.",
+                .help = "让焦点堆叠使用与焦点转移相同的范围。",
             },
 
             #if 0
             {
-                .name = "Trigger mode",
+                .name = "触发方式",
                 .priv = &focus_stack_enabled, 
                 .max = 1,
-                .choices = (const char *[]) {"Press PLAY", "Take a pic"},
-                .help = "Choose how to start the focus stacking sequence.",
+                .choices = (const char *[]) {"按 PLAY", "拍照触发"},
+                .help = "选择焦点堆叠序列的启动方式。",
             },
             {
-                .name = "Bracket focus",
+                .name = "对焦包围",
                 .priv = &focus_bracket_dir, 
                 .max = 2,
-                .choices = (const char *[]) {"normal", "reverse","disable"},
-                .help = "Start in front or behind focus (varies among lenses)",
+                .choices = (const char *[]) {"正常", "反向","禁用"},
+                .help = "从当前对焦点前方或后方开始（因镜头而异）",
             },
             #endif
             MENU_EOL
@@ -1233,89 +1233,89 @@ static struct menu_entry focus_menu[] = {
     #endif
     #if defined(FEATURE_FOLLOW_FOCUS) || defined(FEATURE_RACK_FOCUS) || defined(FEATURE_FOCUS_STACKING)
     {
-        .name = "Focus Settings",
+        .name = "对焦设置",
         .select     = menu_open_submenu,
-        .help = "Tuning parameters and prefs for rack/stack/follow focus.",
+        .help = "焦点转移/堆叠/跟焦的调校参数与偏好设置。",
         .depends_on = DEP_LIVEVIEW | DEP_AUTOFOCUS | DEP_NOT_CONTINUOUS_AF,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Step Size",
+                .name = "步长",
                 .priv = &lens_focus_stepsize,
                 .min = 1,
                 .max = 3,
-                .help = "Step size for focus commands (same units as in EOS Utility)",
+                .help = "对焦命令的步长（与 EOS Utility 单位相同）",
             },
             {
-                .name = "Step Delay",
+                .name = "步进延时",
                 .priv = &lens_focus_delay,
                 .update = focus_delay_update,
                 .min = 0,
                 .max = 100,
                 .icon_type = IT_PERCENT_LOG,
-                .help = "Delay between two successive focus commands.",
+                .help = "两次对焦命令之间的延时。",
             },
             {
-                .name = "Step Wait",
+                .name = "步进等待",
                 .priv = &lens_focus_waitflag,
                 .max = 1,
-                .help = "Wait for 'focus done' signal before sending next command.",
+                .help = "发送下一条命令前先等待“合焦完成”信号。",
             },
             {
-                .name = "Left/Right dir",
+                .name = "左右键方向",
                 .priv = &follow_focus_reverse_h, 
                 .max = 1,
                 .choices = (const char *[]) {"+ / -", "- / +"},
-                .help = "Focus direction for Left and Right keys.",
+                .help = "左/右键的对焦方向。",
             },
             {
-                .name = "Up/Down dir",
+                .name = "上下键方向",
                 .priv = &follow_focus_reverse_v, 
                 .max = 1,
                 .choices = (const char *[]) {"+ / -", "- / +"},
-                .help = "Focus direction for Up and Down keys.",
+                .help = "上/下键的对焦方向。",
             },
             {
-                .name = "Start Delay",
+                .name = "启动延时",
                 .priv    = &focus_rack_delay,
                 .max = 60,
                 .icon_type = IT_PERCENT_OFF,
-                .help = "Number of seconds before starting focus operation.",
+                .help = "开始对焦操作前的等待秒数。",
             },
             MENU_EOL
         },
     },
     #endif
     {
-        .name = "DOF Settings",
+        .name = "景深设置",
         .select = menu_open_submenu,
         .update = dof_info_update,
-        .help = "Settings about Depth of Field info displays.",
+        .help = "景深信息显示的相关设置。",
         .depends_on = DEP_LIVEVIEW,
         .submenu_width = 650,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Circle of Confusion",
+                .name = "弥散圆",
                 .priv = &dof_info_coc,
                 .update = dof_info_coc_update,
                 .min  = 1,
                 .max = 100,
-                .help = "Circle of confusion used for DOF calculations.",
-                .help2 = "Default value: 19 for APS-C and 29 for full-frame cameras.",
+                .help = "用于景深计算的弥散圆直径。",
+                .help2 = "默认值：APS-C 为 19，全画幅为 29。",
             },
             {
-                .name = "DOF formula",
+                .name = "景深公式",
                 .priv = &dof_info_formula,
                 .max = 1,
-                .choices = CHOICES("Simple", "Diffraction-aware"),
-                .help = "Formula for computing the depth of field:",
-                .help2 = "Simple: only consider defocus blur, ignoring diffraction effects.\n"
-                         "Diffraction-aware: consider both defocus and diffraction blur.\n"
+                .choices = CHOICES("简单", "考虑衍射"),
+                .help = "计算景深所用的公式：",
+                .help2 = "简单：仅考虑离焦模糊，忽略衍射影响。\n"
+                         "考虑衍射：同时考虑离焦与衍射模糊。\n"
             },
             {
-                .name = "DOF info in LiveView",
+                .name = "实时取景景深显示",
                 .priv = &dof_info_display_lv,
                 .max  = 1,
-                .help = "Display DOF above Focus distance, in LiveView.",
+                .help = "在实时取景中对焦距离上方显示景深。",
             },
             MENU_EOL,
         },
@@ -1361,8 +1361,8 @@ int handle_follow_focus_save_restore(struct event * event)
         if (event->param == BGMT_MENU && is_follow_focus_active())
         {
             focus_reset_a(0,0);
-            NotifyBox(2000, "Focus point saved here.     \n"
-                            "To return to it, press PLAY.");
+            NotifyBox(2000, "对焦点已保存在此处。     \n"
+                            "按 PLAY 可返回该点。");
             return 0;
         }
     }

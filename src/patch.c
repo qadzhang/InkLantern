@@ -460,11 +460,11 @@ static MENU_UPDATE_FUNC(patches_update)
 static struct menu_entry patch_menu[] =
 {
     {
-        .name = "Memory patches",
+        .name = "内存补丁",
         .update = patches_update,
         .select = menu_open_submenu,
         .icon_type = IT_SUBMENU,
-        .help = "Show memory addresses patched in Canon code or data areas.",
+        .help = "显示佳能代码或数据区中被补丁的内存地址。",
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             // for i in range(128): print "            PATCH_ENTRY(%d)," % i

@@ -139,7 +139,7 @@ static void opt_set(int num, int den)
             
             if (*opt0 < 10000)
             {
-                bmp_printf(FONT_LARGE, 0, 50, "opt_set: err %d %d %d ", combo, entry, *opt0); 
+                bmp_printf(FONT_LARGE, 0, 50, "opt_set：错误 %d %d %d ", combo, entry, *opt0); 
                 return; 
             }
             (*opt) = (*opt0) * num / den;
@@ -155,7 +155,7 @@ static void opt_set(int num, int den)
             
             if (*opt0 < 10000)
             {
-                bmp_printf(FONT_LARGE, 0, 50, "gop_set: err %d %d %d ", combo, entry, *opt0); 
+                bmp_printf(FONT_LARGE, 0, 50, "gop_set：错误 %d %d %d ", combo, entry, *opt0); 
                 return; 
             }
             (*opt) = (*opt0) * num / den;
@@ -185,7 +185,7 @@ static void opt_set(int num, int den)
         {
             int* opt0 = (int*) &(mvr_config_copy.fullhd_30fps_opt_size_I) + i * MOV_OPT_STEP + j;
             int* opt = (int*) &(mvr_config.fullhd_30fps_opt_size_I) + i * MOV_OPT_STEP + j;
-            if (*opt0 < 10000) { bmp_printf(FONT_LARGE, 0, 50, "opt_set: err %d %d %d ", i, j, *opt0); return; }
+            if (*opt0 < 10000) { bmp_printf(FONT_LARGE, 0, 50, "opt_set：错误 %d %d %d ", i, j, *opt0); return; }
             (*opt) = (*opt0) * num / den;
         }
         
@@ -194,7 +194,7 @@ static void opt_set(int num, int den)
         {
             int* opt0 = (int*) &(mvr_config_copy.fullhd_30fps_gop_opt_0) + i * MOV_GOP_OPT_STEP + j;
             int* opt = (int*) &(mvr_config.fullhd_30fps_gop_opt_0) + i * MOV_GOP_OPT_STEP + j;
-            if (*opt0 < 10000) { bmp_printf(FONT_LARGE, 0, 50, "gop_set: err %d %d %d ", i, j, *opt0); return; }
+            if (*opt0 < 10000) { bmp_printf(FONT_LARGE, 0, 50, "gop_set：错误 %d %d %d ", i, j, *opt0); return; }
             (*opt) = (*opt0) * num / den;
         }
         #endif
@@ -242,15 +242,15 @@ static MENU_UPDATE_FUNC(bitrate_print)
 {
     if (bitrate_mode == 0)
     {
-        MENU_SET_VALUE("FW default%s", bitrate_dirty ? "(reboot)" : "");
+        MENU_SET_VALUE("固件默认%s", bitrate_dirty ? "（重启生效）" : "");
         MENU_SET_ENABLED(0);
         if (bitrate_dirty)
-            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Restart your camera.");
+            MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请重启相机。");
     }
     else if (bitrate_mode == 1)
     {
-        MENU_SET_NAME("Bit Rate (CBR)");
-        MENU_SET_VALUE("%s%d.%dx%s", bitrate_factor>10 ? "up to " : "", bitrate_factor/10, bitrate_factor%10, bitrate_factor != 10 ? "" : " (default)");
+        MENU_SET_NAME("码率（CBR）");
+        MENU_SET_VALUE("%s%d.%dx%s", bitrate_factor>10 ? "最高 " : "", bitrate_factor/10, bitrate_factor%10, bitrate_factor != 10 ? "" : "（默认）");
         if (bitrate_factor != 10)
         {
             MENU_SET_ICON(MNI_PERCENT_ALLOW_OFF, bitrate_factor * 100 / 30);
@@ -262,19 +262,19 @@ static MENU_UPDATE_FUNC(bitrate_print)
         }
         
         if (bitrate_factor > 14 && sound_recording_enabled_canon())
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "Be careful, high bitrates and sound recording don't mix.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "注意：高码率与录音不可兼得。");
         else if (bitrate_factor > 10) 
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "Be careful, recording may stop.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "注意：录制可能会中断。");
         else if (bitrate_factor < 7) 
-            MENU_SET_WARNING(MENU_WARN_ADVICE, "Be careful, image quality may be bad.");
+            MENU_SET_WARNING(MENU_WARN_ADVICE, "注意：画质可能变差。");
     }
     else if (bitrate_mode == 2)
     {
-        MENU_SET_NAME("Bit Rate (VBR)");
+        MENU_SET_NAME("码率（VBR）");
         MENU_SET_VALUE("QScale %s%d", qscale > 0 ? "+" : "", qscale);
         MENU_SET_ICON(MNI_PERCENT, -(qscale-16) * 100 / 32);
         MENU_SET_ENABLED(1);
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Be careful, bitrate is not constant, recording may stop.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "注意：码率不恒定，录制可能会中断。");
     }
 }
 
@@ -297,16 +297,16 @@ void bitrate_mvr_log(char* mvr_logfile_buffer)
 static MENU_UPDATE_FUNC(cbr_display)
 {
     MENU_SET_VALUE("%d.%dx", bitrate_factor/10, bitrate_factor%10);
-    if (bitrate_mode != 1) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "CBR mode inactive => CBR setting not used.");
-    else MENU_SET_WARNING(MENU_WARN_ADVICE, "This is only an upper limit for the bitrate.");
+    if (bitrate_mode != 1) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "CBR 模式未启用，此设置不生效。");
+    else MENU_SET_WARNING(MENU_WARN_ADVICE, "这只是码率的上限。");
     if (bitrate_factor == 10) { MENU_SET_ICON(MNI_PERCENT_OFF, 33); MENU_SET_ENABLED(0); }
 }
 
 static MENU_UPDATE_FUNC(qscale_display)
 {
     MENU_SET_VALUE("%d", qscale);
-    if (bitrate_mode != 2) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "VBR mode inactive => QScale setting not used.");
-    else MENU_SET_WARNING(MENU_WARN_ADVICE, "Bitrate may vary a lot (several orders of magnitude!)");
+    if (bitrate_mode != 2) MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "VBR 模式未启用，此设置不生效。");
+    else MENU_SET_WARNING(MENU_WARN_ADVICE, "码率波动可能极大（相差几个数量级！）");
 }
 
 
@@ -498,7 +498,7 @@ static MENU_SELECT_FUNC(hibr_wav_record_select){
         if (sound_recording_mode != 1){
             int mode  = 1; //disabled
             prop_request_change(PROP_MOVIE_SOUND_RECORD, &mode, 4);
-            NotifyBox(2000,"Canon sound disabled");
+            NotifyBox(2000,"已禁用佳能录音");
             audio_configure(1);
         }
     }
@@ -519,32 +519,32 @@ void movie_indicators_show()
 #ifdef FEATURE_NITRATE
 static struct menu_entry mov_menus[] = {
     {
-        .name = "Bit Rate",
+        .name = "码率",
         .priv = &bitrate_mode,
         .update     = bitrate_print,
         .select     = bitrate_toggle,
         .icon_type  = IT_PERCENT_OFF,
-        .help = "Change H.264 bitrate. Be careful, recording may stop!",
+        .help = "修改 H.264 码率。注意：录制可能中断！",
         .depends_on = DEP_MOVIE_MODE,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Mode",
+                .name = "模式",
                 .priv = &bitrate_mode,
                 .max = 2,
                 .icon_type = IT_DICE_OFF,
                 .select = bitrate_toggle_mode,
-                .choices = (const char *[]) {"FW default", "CBR", "VBR (QScale)"},
-                .help = "Firmware default / CBR (recommended) / VBR (very risky)"
+                .choices = (const char *[]) {"固件默认", "CBR", "VBR（QScale）"},
+                .help = "固件默认 / CBR（推荐）/ VBR（风险极高）"
             },
             {
-                .name = "CBR factor",
+                .name = "CBR 倍率",
                 .priv = &bitrate_factor,
                 .select = bitrate_factor_toggle,
                 .update = cbr_display,
                 .min = 1,
                 .max = 30,
                 .icon_type = IT_PERCENT_OFF, 
-                .help = "1.0x = Canon default, 0.4x = 30minutes, 1.4x = fast card."
+                .help = "1.0x = 佳能默认，0.4x = 30分钟，1.4x = 高速卡。"
             },
             {
                 .name = "QScale",
@@ -554,21 +554,21 @@ static struct menu_entry mov_menus[] = {
                 .min = -16,
                 .max = 16,
                 .icon_type = IT_PERCENT,
-                .help = "Quality factor (-16 = best quality). Try not to use it!"
+                .help = "质量因子（-16 = 最高画质）。尽量不要使用！"
             },
             {
-                .name = "Bitrate Info",
+                .name = "码率信息",
                 .priv       = &bitrate_indicator,
                 .max = 1,
-                .help = "A = average, B = instant bitrate, Q = instant QScale."
+                .help = "A = 平均码率，B = 瞬时码率，Q = 瞬时 QScale。"
             },
             {
-                .name = "BuffWarnLevel",
+                .name = "缓冲区警告阈值",
                 .priv = &buffer_warning_level,
                 .min = 30,
                 .max = 100,
                 .unit = UNIT_PERCENT,
-                .help = "ML will pause CPU-intensive graphics if buffer gets full."
+                .help = "缓冲区将满时，ML 会暂停占用 CPU 的图形绘制。"
             },
             MENU_EOL
         },
@@ -577,12 +577,12 @@ static struct menu_entry mov_menus[] = {
 #ifdef FEATURE_NITRATE_WAV_RECORD
 static struct menu_entry wav_menus[] = {
             {
-                .name = "Sound Record",
+                .name = "录音方式",
                 .priv = &cfg_hibr_wav_record,
                 .select = hibr_wav_record_select,
                 .max = 1,
-                .choices = (const char *[]) {"Normal", "Separate WAV"},
-                .help = "You may get higher bitrates if you record sound separately.",
+                .choices = (const char *[]) {"正常", "独立 WAV"},
+                .help = "分开录音可获得更高码率。",
             },
 };
 #endif
@@ -590,12 +590,12 @@ static struct menu_entry wav_menus[] = {
 static struct menu_entry mov_tweak_menus[] = {
 #ifdef FEATURE_REC_INDICATOR
     {
-        .name = "Time Indicator",
+        .name = "时间指示",
         .priv       = &time_indicator,
-        .help = "Time indicator while recording.",
+        .help = "录制时显示计时指示。",
         .max = 3,
         .depends_on = DEP_MOVIE_MODE | DEP_GLOBAL_DRAW,
-        .choices = (const char *[]) {"OFF", "Elapsed", "Remain.Card", "Remain.4GB"}
+        .choices = (const char *[]) {"关", "已录时间", "剩余（卡）", "剩余（4GB）"}
     },
 #endif
 };
@@ -614,7 +614,7 @@ static void bitrate_init()
 {
     lvinfo_add_item(info_item);
     menu_add( "Movie", mov_menus, COUNT(mov_menus) );
-    menu_add( "Movie Tweaks", mov_tweak_menus, COUNT(mov_tweak_menus) );
+    menu_add( "视频小功能", mov_tweak_menus, COUNT(mov_tweak_menus) );
     #ifdef FEATURE_NITRATE_WAV_RECORD
     menu_add( "Audio", wav_menus, COUNT(wav_menus) );
     #endif

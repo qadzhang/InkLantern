@@ -888,30 +888,30 @@ static MENU_UPDATE_FUNC(script_print_state)
     switch (script->state)
     {
         case SCRIPT_STATE_NOT_RUNNING:
-            MENU_SET_WARNING(MENU_WARN_INFO, "Press SET to load/run this script.");
+            MENU_SET_WARNING(MENU_WARN_INFO, "按 SET 加载/运行此脚本。");
             break;
 
         case SCRIPT_STATE_LOADING_OR_RUNNING:
-            MENU_SET_WARNING(MENU_WARN_INFO, "Script is running.");
+            MENU_SET_WARNING(MENU_WARN_INFO, "脚本正在运行。");
             break;
 
         case SCRIPT_STATE_RUNNING_IN_BACKGROUND:
             if (script->last_menu_parent && script->last_menu_entry)
             {
                 MENU_SET_WARNING(MENU_WARN_INFO,
-                    "Running in background. Menu: %s -> %s.",
+                    "正在后台运行。菜单：%s -> %s。",
                     script->last_menu_parent, script->last_menu_entry
                 );
             }
             else
             {
                 MENU_SET_WARNING(MENU_WARN_INFO,
-                    "Running in background. Complex script%s%s%s%s%s.",
-                    script->cant_unload & (1<<LUA_TASK_UNLOAD_MASK)   ? "; task running" : "",
-                    script->cant_unload & (1<<LUA_LVINFO_UNLOAD_MASK) ? "; LVInfo item" : "",
-                    script->cant_unload & (1<<LUA_PROP_UNLOAD_MASK)   ? "; property handler" : "",
-                    script->cant_unload & 0xFFFFFFF0                  ? "; event handler" : "",
-                    script->cant_unload & (1<<LUA_MENU_UNLOAD_MASK)   ? "; menu item" : ""
+                    "正在后台运行。复杂脚本%s%s%s%s%s。",
+                    script->cant_unload & (1<<LUA_TASK_UNLOAD_MASK)   ? "；正在运行任务" : "",
+                    script->cant_unload & (1<<LUA_LVINFO_UNLOAD_MASK) ? "；LVInfo 项" : "",
+                    script->cant_unload & (1<<LUA_PROP_UNLOAD_MASK)   ? "；属性处理程序" : "",
+                    script->cant_unload & 0xFFFFFFF0                  ? "；事件处理程序" : "",
+                    script->cant_unload & (1<<LUA_MENU_UNLOAD_MASK)   ? "；菜单项" : ""
                 );
             }
             break;
@@ -922,7 +922,7 @@ static MENU_UPDATE_FUNC(lua_script_menu_update)
 {
     if(!lua_loaded)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Please wait for Lua to finish loading...");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请等待 Lua 加载完成...");
         return;
     }
 
@@ -935,7 +935,7 @@ static MENU_UPDATE_FUNC(lua_script_menu_update)
 
         if (script->autorun)
         {
-            MENU_SET_WARNING(MENU_WARN_INFO, "This script will autorun on next boot.");
+            MENU_SET_WARNING(MENU_WARN_INFO, "此脚本将在下次开机时自动运行。");
         }
         else
         {
@@ -944,15 +944,15 @@ static MENU_UPDATE_FUNC(lua_script_menu_update)
         
         const char * script_status = 
             script->autorun
-                ? "AUTORUN" :
+                ? "自动运行" :
             script->last_error
-                ? "ERROR" :
+                ? "错误" :
             script->state == SCRIPT_STATE_NOT_RUNNING
                 ? script->filename :
             script->state == SCRIPT_STATE_LOADING_OR_RUNNING
-                ? "Running" :
+                ? "运行中" :
             script->state == SCRIPT_STATE_RUNNING_IN_BACKGROUND
-                ? "Running (BG)" : "?!";
+                ? "后台运行" : "?!";
         
         if (info->can_custom_draw)
         {
@@ -1082,24 +1082,24 @@ static struct menu_entry script_menu_template = {
 
 static struct menu_entry script_submenu_template[] = {
     {
-        .name       = "Run Script",
+        .name       = "运行脚本",
         .select     = lua_script_menu_select,
         .update     = lua_script_run_update,
         .icon_type  = IT_ACTION,
-        .help       = "Press SET to load/run this script."
+        .help       = "按 SET 加载/运行此脚本。"
     },
     {
-        .name       = "Edit Script",
+        .name       = "编辑脚本",
         .select     = lua_script_edit,
         .update     = menu_no_value,
         .icon_type  = IT_ACTION,
-        .help       = "Load this script in the text editor (EDITOR.LUA)."
+        .help       = "在文本编辑器(EDITOR.LUA)中打开此脚本。"
     },
     {
-        .name       = "Autorun",
+        .name       = "自动运行",
         .select     = lua_script_toggle_autorun,
         .max        = 1,
-        .help       = "Select whether this script will be loaded at camera startup."
+        .help       = "选择是否在相机启动时自动加载此脚本。"
     },
     MENU_EOL,
 };
@@ -1121,11 +1121,11 @@ static MENU_SELECT_FUNC(console_toggle)
 
 static struct menu_entry script_console_menu[] = {
     {
-        .name       = "Show console",
+        .name       = "显示控制台",
         .select     = console_toggle,
         .priv       = &console_visible,
         .max        = 1,
-        .help       = "Show/hide script console."
+        .help       = "显示/隐藏脚本控制台。"
     },
 };
 

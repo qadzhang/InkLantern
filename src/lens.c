@@ -174,7 +174,7 @@ static struct semaphore * focus_done_sem;
 
 
 struct lens_info lens_info = {
-    .name        = "NO LENS NAME"
+    .name        = "无镜头名称"
 };
 
 const char * lens_format_dist( unsigned mm)
@@ -601,7 +601,7 @@ const char * lens_format_shutter(int raw_shutter)
     }
     else if (raw_shutter == SHUTTER_BULB)
     {
-        snprintf(shutter, sizeof(shutter), "BULB");
+        snprintf(shutter, sizeof(shutter), "B门");
     }
     else
     {
@@ -637,7 +637,7 @@ const char * lens_format_iso(int raw_iso)
     }
     else
     {
-        snprintf(iso, sizeof(iso), SYM_ISO"Auto");
+        snprintf(iso, sizeof(iso), SYM_ISO"自动");
     }
 
     return iso;
@@ -709,7 +709,7 @@ PROP_HANDLER( PROP_LV_FOCUS_DONE )
     {
         /* only trigger the error if the lens did not move at all
          * after 2 retries */
-        NotifyBox(1000, "Focus: soft limit reached");
+        NotifyBox(1000, "对焦：已到软限位");
         lv_focus_error = 1;
         
         /* assume the error was handled (e.g. by reversing direction)
@@ -746,7 +746,7 @@ lens_focus_wait(void)
         msleep(10);
     }
     
-    NotifyBox(1000, "Focus not confirmed");
+    NotifyBox(1000, "对焦未确认");
     lv_focus_error = 1;
 }
 
@@ -2060,10 +2060,10 @@ PROP_HANDLER(PROP_HALF_SHUTTER)
 static struct menu_entry lens_menus[] = {
     #ifdef FEATURE_MOVIE_LOGGING
     {
-        .name = "Movie Logging",
+        .name = "视频日志",
         .priv = &movie_log,
         .max = 1,
-        .help = "Save metadata for each movie, e.g. MVI_1234.LOG",
+        .help = "为每个视频保存元数据文件，如 MVI_1234.LOG",
         .depends_on = DEP_MOVIE_MODE,
     },
     #endif
@@ -2073,7 +2073,7 @@ static MENU_UPDATE_FUNC(lens_name_display)
 {
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
     MENU_SET_VALUE("%s", lens_info.name );
@@ -2083,7 +2083,7 @@ static MENU_UPDATE_FUNC(lens_id_display)
 {
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
 
@@ -2095,7 +2095,7 @@ static MENU_UPDATE_FUNC(lens_serial_display)
 {
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
 
@@ -2109,7 +2109,7 @@ static MENU_UPDATE_FUNC(lens_serial_display)
     }
     else
     {
-        MENU_SET_VALUE("(none)");
+        MENU_SET_VALUE("（无）");
     }
 }
 
@@ -2117,7 +2117,7 @@ static MENU_UPDATE_FUNC(lens_extender_display)
 {
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
     MENU_SET_VALUE("0x%02X", lens_info.lens_extender );
@@ -2131,7 +2131,7 @@ static MENU_UPDATE_FUNC(lens_version_display)
     
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
     
@@ -2141,7 +2141,7 @@ static MENU_UPDATE_FUNC(lens_version_display)
     }
     else
     {
-        MENU_SET_VALUE("(none)");
+        MENU_SET_VALUE("（无）");
     }
 }
 
@@ -2149,7 +2149,7 @@ static MENU_UPDATE_FUNC(lens_capabilities_display)
 {
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
     MENU_SET_VALUE("0x%02X", lens_info.lens_capabilities);
@@ -2162,7 +2162,7 @@ static MENU_UPDATE_FUNC(lens_focal_display)
     
     if(!lens_info.lens_exists)
     {
-        MENU_SET_VALUE("(no lens)");
+        MENU_SET_VALUE("（无镜头）");
         return;
     }
     
@@ -2184,25 +2184,25 @@ static MENU_UPDATE_FUNC(lens_focal_display)
 
 static struct menu_entry tweak_menus[] = {
    {
-        .name = "Lens Info Prefs",
+        .name = "镜头信息设置",
         .select   = menu_open_submenu,
         .children =  (struct menu_entry[]) {
             #ifndef CONFIG_FULLFRAME
             {
-                .name = "Crop Factor Display",
+                .name = "裁切系数显示",
                 .priv = &crop_info,
                 .max  = 1,
-                .choices = CHOICES("OFF", "ON, 35mm eq."),
-                .help = "Display the 35mm equiv. focal length including crop factor.",
+                .choices = CHOICES("关", "开（35mm等效）"),
+                .help = "显示换算裁切系数后的 35mm 等效焦距。",
                 .depends_on = DEP_LIVEVIEW | DEP_CHIPPED_LENS,
             },
             #endif
             {
-                .name = "Focus Distance Units",
+                .name = "对焦距离单位",
                 .priv = &focus_units,
                 .choices = CHOICES("mm/cm", "ft/in"),
                 .max = 1,
-                .help  = "Can select between Metric and Imperial focus distance units",
+                .help  = "选择公制或英制的对焦距离单位",
             },
             MENU_EOL
         }
@@ -2212,51 +2212,51 @@ static struct menu_entry tweak_menus[] = {
 /* better place for this menu? */
 static struct menu_entry lens_info_menus[] = {
    {
-        .name = "Lens info",
+        .name = "镜头信息",
         .select   = menu_open_submenu,
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Name",
+                .name = "名称",
                 .update = &lens_name_display,
-                .help  = "Show current lens name (as reported by your lens or adapter).",
-                .help2 = "Read-only.",
+                .help  = "显示当前镜头名称（由镜头或转接环报告）。",
+                .help2 = "只读。",
             },
             {
-                .name = "Focal len",
+                .name = "焦距",
                 .update = &lens_focal_display,
-                .help  = "Show current lens focal length.",
-                .help2 = "Read-only. Zoom lenses are only updated in LiveView.",
+                .help  = "显示当前镜头焦距。",
+                .help2 = "只读。变焦镜头仅在实时取景下更新。",
             },
             {
-                .name = "Lens ID",
+                .name = "镜头 ID",
                 .update = &lens_id_display,
-                .help  = "Show current lens ID. Should match exiftool TEST.CR2 -LensType -b.",
-                .help2 = "Read-only. Lenses from different manufacturers may have the same ID.",
+                .help  = "显示当前镜头 ID。应与 exiftool TEST.CR2 -LensType -b 结果一致。",
+                .help2 = "只读。不同厂商的镜头可能有相同的 ID。",
             },
             {
-                .name = "Serial num",
+                .name = "序列号",
                 .update = &lens_serial_display,
-                .help  = "Show current lens serial number. Not all cameras report this.",
-                .help2 = "Read-only. Should match exiftool TEST.CR2 -LensSerialNumber .",
+                .help  = "显示当前镜头序列号。并非所有相机都会上报。",
+                .help2 = "只读。应与 exiftool TEST.CR2 -LensSerialNumber 结果一致。",
             },
             {
-                .name = "Version",
+                .name = "版本",
                 .update = &lens_version_display,
-                .help  = "Show current lens version string.",
-                .help2 = "Read-only.",
+                .help  = "显示当前镜头版本字符串。",
+                .help2 = "只读。",
             },
             {
-                .name = "Capability",
+                .name = "能力位",
                 .update = &lens_capabilities_display,
-                .help  = "Show current lens capability bits.",
-                .help2 = "Read-only.",
+                .help  = "显示当前镜头能力位。",
+                .help2 = "只读。",
             },
             {
-                .name = "Extender",
+                .name = "增距镜",
                 .update = &lens_extender_display,
-                .help  = "Show current lens extender information byte.",
-                .help2 = "Read-only.",
+                .help  = "显示当前镜头增距镜信息字节。",
+                .help2 = "只读。",
             },
             MENU_EOL
         },
@@ -2287,7 +2287,7 @@ lens_init( void* unused )
 
     focus_done_sem = create_named_semaphore("focus_sem", SEM_CREATE_UNLOCKED);
 #ifndef CONFIG_5DC
-    menu_add("Movie Tweaks", lens_menus, COUNT(lens_menus));
+    menu_add("视频小功能", lens_menus, COUNT(lens_menus));
 #endif
 }
 
@@ -3000,7 +3000,7 @@ static LVINFO_UPDATE_FUNC(focal_len_update)
     {
         snprintf(buffer, sizeof(buffer), "%d%s",
                crop_info ? (lens_info.focal_len * SENSORCROPFACTOR + 5) / 10 : lens_info.focal_len,
-               crop_info ? "eq" : SYM_SMALL_M SYM_SMALL_M
+               crop_info ? "等效" : SYM_SMALL_M SYM_SMALL_M
         );
     }
 }
@@ -3045,7 +3045,7 @@ static LVINFO_UPDATE_FUNC(tv_update)
 
     if (is_bulb_mode())
     {
-        snprintf(buffer, sizeof(buffer), "BULB");
+        snprintf(buffer, sizeof(buffer), "B门");
     }
     else if (is_movie_mode())
     {
@@ -3183,15 +3183,15 @@ static LVINFO_UPDATE_FUNC(wb_update)
     {
         snprintf(buffer, sizeof(buffer), "%s",
             (uniwb_is_active()      ? "UniWB"  :
-            (lens_info.wb_mode == 0 ? "AutoWB" : 
-            (lens_info.wb_mode == 1 ? "Sunny"  :
-            (lens_info.wb_mode == 2 ? "Cloudy" : 
-            (lens_info.wb_mode == 3 ? "Tungst." : 
-            (lens_info.wb_mode == 4 ? "Fluor."  : 
-            (lens_info.wb_mode == 5 ? "Flash"   : 
-            (lens_info.wb_mode == 6 ? "Custom"  : 
-            (lens_info.wb_mode == 8 ? "Shade"   :
-             "unk")))))))))
+            (lens_info.wb_mode == 0 ? "自动" :
+            (lens_info.wb_mode == 1 ? "晴天"  :
+            (lens_info.wb_mode == 2 ? "阴天" :
+            (lens_info.wb_mode == 3 ? "钨丝灯" :
+            (lens_info.wb_mode == 4 ? "荧光灯"  :
+            (lens_info.wb_mode == 5 ? "闪光灯"   :
+            (lens_info.wb_mode == 6 ? "自定义"  :
+            (lens_info.wb_mode == 8 ? "阴影"   :
+             "未知")))))))))
         );
     }
     

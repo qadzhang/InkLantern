@@ -2126,7 +2126,7 @@ int handle_livev_playback(struct event * event, int button)
 static void zebra_init()
 {
     precompute_yuv2rgb();
-    menu_add( "Overlay", zebra_menus, COUNT(zebra_menus) );
+    menu_add( "叠加", zebra_menus, COUNT(zebra_menus) );
 }
 
 INIT_FUNC(__FILE__, zebra_init);

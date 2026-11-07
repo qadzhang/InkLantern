@@ -266,15 +266,15 @@ static void afma_auto_tune_automatic()
 
         if (!get_halfshutter_pressed())
         {
-            NotifyBox(2000, "Canceled by user.");
+            NotifyBox(2000, "已被用户取消。");
             goto error;
         }
 
     }
-    
+
     if (!found_focus)
     {
-        NotifyBox(5000, "OOF, check focus and contrast.");
+        NotifyBox(5000, "脱焦，请检查对焦与对比度。");
         goto error;
     }
 
@@ -320,7 +320,7 @@ static void afma_auto_tune_automatic()
             
             if (!get_halfshutter_pressed())
             {
-                NotifyBox(2000, "Canceled by user.");
+                NotifyBox(2000, "已被用户取消。");
                 goto error;
             }
         }
@@ -343,12 +343,12 @@ static void afma_auto_tune_automatic()
 
     if (w < afma_scan_passes*3)
     {
-        NotifyBox(5000, "OOF, check focus and contrast.");
+        NotifyBox(5000, "脱焦，请检查对焦与对比度。");
         goto error;
     }
 
     int afma = s / w;
-    NotifyBox(10000, "New AFMA: %d", afma);
+    NotifyBox(10000, "新 AFMA：%d", afma);
     set_afma(afma, afma_mode);
     msleep(300);
     afma_print_status_extended(score, range_display_min, range_display_max);
@@ -404,12 +404,12 @@ static void afma_auto_tune_linear(int range_expand_factor)
             
             if (!get_halfshutter_pressed())
             {
-                NotifyBox(2000, "Canceled by user.");
+                NotifyBox(2000, "已被用户取消。");
                 goto error;
             }
         }
     }
-    
+
     SW1(0,100);
     restore_af_button_assignment();
     beep();
@@ -426,12 +426,12 @@ static void afma_auto_tune_linear(int range_expand_factor)
     
     if (w < 10)
     {
-        NotifyBox(5000, "OOF, check focus and contrast.");
+        NotifyBox(5000, "脱焦，请检查对焦与对比度。");
         goto error;
     }
 
     int afma = s / w;
-    NotifyBox(10000, "New AFMA: %d", afma);
+    NotifyBox(10000, "新 AFMA：%d", afma);
     set_afma(afma, afma_mode);
     msleep(300);
     afma_print_status(score, range_expand_factor);
@@ -442,11 +442,11 @@ static void afma_auto_tune_linear(int range_expand_factor)
         msleep(3000);
         beep();
         if (range_expand_factor == 1)
-            NotifyBox(5000, "Try scanning from -40 to +40.");
+            NotifyBox(5000, "请尝试 -40 到 +40 范围扫描。");
         else if (range_expand_factor == 2)
-            NotifyBox(5000, "Try scanning from -100 to +100.");
+            NotifyBox(5000, "请尝试 -100 到 +100 范围扫描。");
         else
-            NotifyBox(5000, "Double-check the focus target.");
+            NotifyBox(5000, "请再次确认对焦目标。");
     }
     
     /* all OK */
@@ -467,7 +467,7 @@ static void afma_auto_tune()
     
     msleep(1000);
 
-    if (is_movie_mode()) { NotifyBox(5000, "Switch to photo mode and try again."); beep(); return; };
+    if (is_movie_mode()) { NotifyBox(5000, "请切换到拍照模式后重试。"); beep(); return; };
     
     if (lv) { close_liveview(); msleep(1000); }
     
@@ -480,13 +480,13 @@ static void afma_auto_tune()
         }
     }
 
-    if (lv) { NotifyBox(5000, "Turn off LiveView and try again."); beep(); return; }
-    if (!display_is_on() || !display_idle()) { NotifyBox(5000, "Press %s and try again.", get_info_button_name()); beep(); return; }
-    if (!is_manual_focus()) { NotifyBox(5000, "Switch to MF and try again."); beep(); return; }
-    if (!lens_info.lens_exists) { NotifyBox(5000, "Attach a chipped lens and try again."); beep(); return; }
-    NotifyBox(5000, "You should have perfect focus.");
+    if (lv) { NotifyBox(5000, "请关闭实时取景后重试。"); beep(); return; }
+    if (!display_is_on() || !display_idle()) { NotifyBox(5000, "请按 %s 键后重试。", get_info_button_name()); beep(); return; }
+    if (!is_manual_focus()) { NotifyBox(5000, "请切换到手动对焦(MF)后重试。"); beep(); return; }
+    if (!lens_info.lens_exists) { NotifyBox(5000, "请装上有电子触点的镜头后重试。"); beep(); return; }
+    NotifyBox(5000, "请先精确合焦。");
     msleep(2000);
-    NotifyBox(5000, "Leave the camera still...");
+    NotifyBox(5000, "请保持机身静止…");
     msleep(2000);
     NotifyBoxHide();
     msleep(100);
@@ -567,7 +567,7 @@ static void afma_mode_sync()
 static MENU_UPDATE_FUNC(afma_generic_update)
 {
     if (!afma_mode)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AFMA is disabled.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "AFMA 已禁用。");
 }
 
 static MENU_SELECT_FUNC(afma_scan_range_toggle)
@@ -627,7 +627,7 @@ static MENU_UPDATE_FUNC(afma_display)
     }
     else
     {
-        MENU_SET_VALUE("Disabled");
+        MENU_SET_VALUE("禁用");
         MENU_SET_ICON(MNI_OFF, 0);
     }
     
@@ -661,47 +661,47 @@ static MENU_SELECT_FUNC(afma_mode_toggle)
 
 static struct menu_entry afma_menu[] = {
     {
-        .name = "DotTune AFMA",
+        .name = "点调AFMA",
         .select = menu_open_submenu,
-        .help  = "Auto calibrate AF microadjustment ( youtu.be/7zE50jCUPhM )",
-        .help2 = "Before running, focus manually on a test target in LiveView.",
+        .help  = "自动校准自动对焦微调(AFMA)（ youtu.be/7zE50jCUPhM ）",
+        .help2 = "运行前请在实时取景下手动对焦测试目标。",
         .depends_on = DEP_CHIPPED_LENS | DEP_PHOTO_MODE,
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Start Scan",
+                .name = "开始扫描",
                 .priv = afma_auto_tune,
                 .select = run_in_separate_task,
                 .update = afma_generic_update,
-                .help  = "Step 1: achieve critical focus in LiveView with 10x zoom.",
-                .help2 = "Step 2: run this and leave the camera still for ~2 minutes.",
+                .help  = "第1步：实时取景 10 倍放大精确合焦。",
+                .help2 = "第2步：运行本项，保持机身静止约 2 分钟。",
                 .depends_on = DEP_MANUAL_FOCUS,
             },
             {
-                .name = "Scan type",
+                .name = "扫描类型",
                 .priv = &afma_scan_range_index,
                 .select = afma_scan_range_toggle,
                 .min = 0,
                 .max = 3,
                 .choices = CHOICES(
-                    "Auto range detection", 
-                    "Linear -20 .. +20", 
-                    "Linear -40 .. +40", 
-                    "Linear -100 .. +100", 
+                    "自动范围检测",
+                    "线性 -20 .. +20",
+                    "线性 -40 .. +40",
+                    "线性 -100 .. +100",
                 ),
-                .help  = "AFMA scan type and range",
+                .help  = "AFMA 扫描类型与范围",
             },
             {
-                .name = "Scan passes",
+                .name = "扫描轮数",
                 .update = afma_scan_passes_display,
                 .select = afma_scan_passes_toggle,
-                .help  = "Number of time to check for focus confirmation.",
+                .help  = "检查对焦确认的次数。",
             },
             {
-                .name = "AF microadjust",
+                .name = "AF 微调",
                 .update = afma_display,
                 .select = afma_toggle,
-                .help  = "Adjust AFMA value manually. Range: -100...+100.",
+                .help  = "手动调整 AFMA 值。范围：-100…+100。",
             },
             MENU_EOL
         },
@@ -711,17 +711,17 @@ static struct menu_entry afma_menu[] = {
 static struct menu_entry afma_mode_menu_regular[] = 
 {
     {
-        .name = "AFMA mode",
+        .name = "AFMA 模式",
         .priv = &afma_mode_index,
         .select = afma_mode_toggle,
         .min = 0,
         .max = 2,
         .choices = CHOICES(
-            "Disabled", 
-            "All lenses",
-            "This lens"
+            "禁用",
+            "所有镜头",
+            "当前镜头"
         ),
-        .help  = "Where to apply the AFMA adjustment.",
+        .help  = "AFMA 调整的应用范围。",
         .icon_type = IT_DICE_OFF,
     },
 };
@@ -729,24 +729,24 @@ static struct menu_entry afma_mode_menu_regular[] =
 static struct menu_entry afma_mode_menu_wide_tele[] = 
 {
     {
-        .name = "AFMA mode",
+        .name = "AFMA 模式",
         .priv = &afma_mode_index,
         .select = afma_mode_toggle,
         .min = 0,
         .max = 4,
         .choices = CHOICES(
-            "Disabled", 
-            "All lenses",
-            "This lens, wide end", 
-            "This lens, tele end",
-            "This lens, prime/both", 
+            "禁用",
+            "所有镜头",
+            "当前镜头 广角端",
+            "当前镜头 长焦端",
+            "当前镜头 定焦/全程",
         ),
-        .help  = "Where to apply the AFMA adjustment:",
+        .help  = "AFMA 调整的应用范围：",
         .help2 = " \n"
-                 "All lenses will be adjusted with the same amount.\n"
-                 "For this zoom lens: adjust the wide end only (zoom out).\n"
-                 "For this zoom lens: adjust the tele end only (zoom in).\n"
-                 "For this lens (prime or zoom): adjust for the entire range.\n",
+                 "所有镜头以相同量调整。\n"
+                 "变焦镜头：仅调整广角端（变焦到广角）。\n"
+                 "变焦镜头：仅调整长焦端（变焦到长焦）。\n"
+                 "定焦或变焦镜头：对整个焦段调整。\n",
         .icon_type = IT_DICE_OFF,
     },
 };
@@ -759,7 +759,7 @@ static unsigned int dottune_init()
     if (AFMA_MAX)
     {
         menu_add("Focus", afma_menu, COUNT(afma_menu));
-        menu_add("DotTune AFMA", afma_wide_tele ? afma_mode_menu_wide_tele : afma_mode_menu_regular, 1);
+        menu_add("点调AFMA", afma_wide_tele ? afma_mode_menu_wide_tele : afma_mode_menu_regular, 1);
         return 0;
     }
     else

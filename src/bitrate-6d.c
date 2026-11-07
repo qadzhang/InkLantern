@@ -150,7 +150,7 @@ buffer_warning_level_display( void * priv, int x, int y, int selected )
     bmp_printf(
         selected ? MENU_FONT_SEL : MENU_FONT,
         x, y,
-        "BuffWarnLevel : %d%%",
+        "缓冲区警告阈值 : %d%%",
         buffer_warning_level
     );
     menu_draw_icon(x, y, MNI_PERCENT, buffer_warning_level);
@@ -256,7 +256,7 @@ void bitrate_set()
 	if (sound != 1)
 	 {	static int mode  = 1;
 		prop_request_change(PROP_MOVIE_SOUND_RECORD, &mode, 4);
-		NotifyBox(1000,"Canon sound disabled");
+		NotifyBox(1000,"已禁用佳能录音");
 	 }
 	}
 	if (!bitrate_gop_size)
@@ -390,7 +390,7 @@ static MENU_SELECT_FUNC(hibr_wav_record_select){
         if (sound_recording_mode != 1){
             int mode  = 1; //disabled
             prop_request_change(PROP_MOVIE_SOUND_RECORD, &mode, 4);
-            NotifyBox(2000,"Canon sound disabled");
+            NotifyBox(2000,"已禁用佳能录音");
             //~ audio_configure(1);
         }
     }
@@ -425,7 +425,7 @@ if ( (!config_loaded || config_disabled || override) && MENU_CURRENT_VALUE != 0)
 MENU_SET_ENABLED(1);
 else
 { MENU_SET_ENABLED(0);
-	MENU_SET_VALUE("OFF");
+	MENU_SET_VALUE("关");
 }
 
 }
@@ -436,56 +436,56 @@ if ( (!config_loaded || (override || config_disabled)) && MENU_CURRENT_VALUE != 
 MENU_SET_ENABLED(1);
 else
 { MENU_SET_ENABLED(0);
-	MENU_SET_VALUE("OFF");
+	MENU_SET_VALUE("关");
 }
 
 }
 
 MENU_UPDATE_FUNC(ivaparam_d)
 { 
-if (!ivaparam) { MENU_SET_ENABLED(0); MENU_SET_VALUE("No"); }
-if (ivaparam == 1) { MENU_SET_ENABLED(1);	MENU_SET_VALUE("Yes"); }
-if (ivaparam == 2) { MENU_SET_ENABLED(0);	MENU_SET_VALUE("Disable"); }
-if (ivaparam == 3) { MENU_SET_ENABLED(0);	MENU_SET_VALUE("Check"); }
+if (!ivaparam) { MENU_SET_ENABLED(0); MENU_SET_VALUE("否"); }
+if (ivaparam == 1) { MENU_SET_ENABLED(1);	MENU_SET_VALUE("是"); }
+if (ivaparam == 2) { MENU_SET_ENABLED(0);	MENU_SET_VALUE("禁用"); }
+if (ivaparam == 3) { MENU_SET_ENABLED(0);	MENU_SET_VALUE("检查"); }
 					
 }
 
 static MENU_UPDATE_FUNC(bitrate_flushing_rate_update)
 {
-    MENU_SET_VALUE("%d frames", bitrate_flushing_rate );
+    MENU_SET_VALUE("%d 帧", bitrate_flushing_rate );
     if(bitrate_flushing_rate == 3)
     {
-        MENU_SET_VALUE("Auto");
+        MENU_SET_VALUE("自动");
     }
 }
 
 static MENU_UPDATE_FUNC(bitrate_gop_size_update)
 {
-    MENU_SET_VALUE("%d frames", bitrate_gop_size);
+    MENU_SET_VALUE("%d 帧", bitrate_gop_size);
     if(!bitrate_gop_size)
     {
-        MENU_SET_VALUE("Default");
+        MENU_SET_VALUE("默认");
     }
 }
 
 
 static struct menu_entry mov_menus[] = {
     
-   {     .name = "Encoder",
+   {     .name = "编码器",
 		.select = menu_open_submenu,     
-		.help = "Change H.264 bitrate. Pick configs. Be careful, recording may stop!",
+		.help = "修改 H.264 码率，选择配置文件。注意：录制可能中断！",
 		.submenu_width = 715,        
         .depends_on = DEP_MOVIE_MODE,
         .children =  (struct menu_entry[]) {
     {
-        .name = "Bit Rate     ",
+        .name = "码率     ",
         .priv = &bitrate,
 		.update = bit_rated,        
 		.min = 0,
         .max = 50,
 		.icon_type = IT_BOOL,		
-		.help = "H.264 bitrate. One unit = 10 mb/s. 0 = Off",	
-		.help2 = "If not loading a config MUST set InitQP"
+		.help = "H.264 码率。1 单位 = 10 mb/s。0 = 关",
+		.help2 = "若不加载配置，必须设置 InitQP"
     },
     {
         .name = "InitQP     ",
@@ -494,82 +494,82 @@ static struct menu_entry mov_menus[] = {
         .min = 0,
         .max = 50,
 		.icon_type = IT_BOOL,
-        .help = "Init QP - Lower is better. 0 = Off",
-		.help2 = "Overriding dynamic configs will result in fixed QP"
+        .help = "初始 QP，越低画质越好。0 = 关",
+		.help2 = "覆盖动态配置会导致 QP 固定"
     },
 			{
-                .name = "Flush rate",
+                .name = "缓冲刷新率",
                 .priv = &bitrate_flushing_rate,
                 .update = bitrate_flushing_rate_update,
                 .min  = 3, // It can do 1 but can't figure patch.
                 .max  = 50,
-                .help = "Flush movie buffer every n frames."
+                .help = "每 n 帧刷新一次录像缓冲区。"
             },
             {
-                .name = "GOP size",
+                .name = "GOP 大小",
                 .priv = &bitrate_gop_size,
                 .update = bitrate_gop_size_update,
                 .min  = 0,
                 .max  = 100,
-                .help = "Set GOP size to n frames."
+                .help = "将 GOP 大小设为 n 帧。"
             },
 	    {
-        .name = "Autoload Conf  ",
+        .name = "自动加载配置  ",
         .priv = &autoload,
         .min = 0,
         .max = 2,
-		.choices = (const char *[]) {"Off", "On", "Override"},        
-		.help = "Auto Load Config at Start and/or Override BR/InitQP"
+		.choices = (const char *[]) {"关", "开", "强制覆盖"},
+		.help = "启动时自动加载配置，并可覆盖码率/InitQP"
     },
 
     {
-        .name = "Config Select",
+        .name = "选择配置",
         .priv = &h2config,
         .min = 0,
         .max = 3,
-        .choices = (const char *[]) {"Off/H264.ini", "CBR Fixed QP", "VBR", "Rate Control"},
-        .help = "Select an Encoder Config. If off H264.ini will load. Exit menu to apply."
+        .choices = (const char *[]) {"关/H264.ini", "CBR 固定QP", "VBR", "码率控制"},
+        .help = "选择编码器配置。选关则加载 H264.ini。退出菜单后生效。"
     },
 		MENU_EOL
         },
     },
     {
-        .name = "Load Config",
+        .name = "加载配置",
         .select = load_h264_ini,
-        .help = "Manual Load Config from selection"
+        .help = "按当前所选配置手动加载"
     },
 
     {
-        .name = "Config Loaded ",
+        .name = "已加载配置 ",
          .priv = &ivaparam,
          .min = 2,
          .max = 3,
 		.update = ivaparam_d,        
 		.icon_type = IT_BOOL,		
-		.choices = (const char *[]) {"Disable", "Check"},    
-		.help = "Config Loaded. Disabling may keep some of the parameters"
+		.choices = (const char *[]) {"禁用", "检查"},
+		.help = "配置已加载。禁用后可能保留部分参数"
     },
      
 
     {
-        .name = "REC indicator",
+        .name = "录制指示",
         .priv = &time_indicator,
         .min = 0,
         .max = 3,
-        .choices = (const char *[]) {"Off", "Elapsed Time", "Remain.time (card)", "Time Until 4GB"},
-        .help = "What to display in top-right corner while recording."
+        .choices = (const char *[]) {"关", "已录时间", "剩余时间（卡）", "到4GB的时间"},
+        .help = "录制时右上角显示的内容。"
     },
 };
 
 #ifdef FEATURE_NITRATE_WAV_RECORD
 static struct menu_entry wav_menus[] = {
             {
-                .name = "Sound Record",
+                .name = "录音方式",
                 .priv = &cfg_hibr_wav_record,
                 .select = hibr_wav_record_select,
                 .max = 1,
-                .choices = (const char *[]) {"Normal", "Separate WAV"},
-                .help = "Record audio with WAV separately. Source will auto select.",
+                .choices = (const char *[]) {"正常", "独立 WAV"},
+                .help = "单独用 WAV 录制音频。输入源自动选择。",
             },
 /*			{
                 .name = "Input Volume",
@@ -625,7 +625,7 @@ bitrate_task( void* unused )
 							//call ("SHUTDOWN");
 							//~ call ("dumpf");
 					gui_uilock(UILOCK_NONE);
-					NotifyBox(2000,"Not writing! Check settings, reboot!");
+					NotifyBox(2000,"未在写入！请检查设置并重启！");
 					msleep(1000);					
 					//~ prop_request_change(PROP_REBOOT_MAYBE, 0, 4);
 					//msleep(100000);

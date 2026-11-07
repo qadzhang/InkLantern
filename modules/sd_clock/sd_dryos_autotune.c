@@ -43,14 +43,14 @@ static struct patch mode_192[] =
         .old_value = 0x8,
         .new_value = 0x9,
         .size = 4,
-        .description = "Allow 192MHz SD speed (156)"
+        .description = "允许 192MHz SD 速度(原为 156)"
     },
     {
         .addr = (uint8_t *)0xe0ea7ec0,
         .old_value = 0x7,
         .new_value = 0x8,
         .size = 4,
-        .description = "Allow 156MHz SD speed (130)"
+        .description = "允许 156MHz SD 速度(原为 130)"
     },
 };
 
@@ -92,11 +92,11 @@ static void run_SD_autotune(void *priv_unused, int unused)
 
 static struct menu_entry autotune_SD_speed_menu[] = {
     {
-        .name = "SD speed autotune",
+        .name = "SD 速度自动调优",
         .priv = &is_autotune_enabled,
         .select = run_SD_autotune,
         .max = 1,
-        .help = "Run Canon's SD autotune. You can benchmark to check improvement",
+        .help = "运行 Canon 的 SD 自动调优。可通过基准测试检验提升效果",
     }
 };
 

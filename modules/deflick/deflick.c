@@ -174,16 +174,16 @@ static void post_deflicker_step()
 static MENU_UPDATE_FUNC(post_deflicker_update)
 {
     if (!can_use_raw_overlays_photo())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Photo RAW data not available.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "照片 RAW 数据不可用。");
 
     if (is_hdr_bracketing_enabled())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Not compatible with HDR bracketing.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "与 HDR 包围不兼容。");
 
     if (image_review_time == 0)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Enable image review from Canon menu.");
-    
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请在 Canon 菜单中启用图像确认。");
+
     if (is_continuous_drive())
-        MENU_SET_WARNING(MENU_WARN_ADVICE, "Not fully compatible with continuous drive.");
+        MENU_SET_WARNING(MENU_WARN_ADVICE, "与连拍模式不完全兼容。");
 
     if (post_deflicker)
     {
@@ -192,7 +192,7 @@ static MENU_UPDATE_FUNC(post_deflicker_update)
     }
     
     if (post_deflicker && post_deflicker_sidecar_type==1)
-        MENU_SET_WARNING(MENU_WARN_INFO, "You must rename *.UFR to *.ufraw: rename 's/UFR$/ufraw/' *");
+        MENU_SET_WARNING(MENU_WARN_INFO, "必须把 *.UFR 重命名为 *.ufraw：rename 's/UFR$/ufraw/' *");
 }
 
 PROP_HANDLER(PROP_GUI_STATE)
@@ -206,39 +206,39 @@ PROP_HANDLER(PROP_GUI_STATE)
 
 static struct menu_entry post_deflicker_menu[] = {
     {
-        .name = "Post Deflicker", 
-        .priv = &post_deflicker, 
+        .name = "后期去闪烁",
+        .priv = &post_deflicker,
         .max = 1,
         .update = post_deflicker_update,
-        .help  = "Create sidecar files with exposure compensation,",
-        .help2 = "so all your pics look equally exposed, without flicker.",
+        .help  = "生成附带曝光补偿的附属文件，",
+        .help2 = "使所有照片曝光一致，消除闪烁。",
         .works_best_in = DEP_PHOTO_MODE,
         .submenu_width = 710,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Sidecar file type",
+                .name = "附属文件类型",
                 .priv = &post_deflicker_sidecar_type,
                 .max = 1,
                 .choices = CHOICES("Adobe XMP", "UFRaw"),
-                .help = "Sidecar file format, for deflicker metadata.",
+                .help = "去闪烁元数据的附属文件格式。",
             },
             {
-                .name = "Deflicker percentile",
+                .name = "去闪烁百分位",
                 .priv = &post_deflicker_percentile,
                 .min = 20,
                 .max = 80,
                 .unit = UNIT_PERCENT,
-                .help  = "Where to meter for deflicking. Recommended: 50% (median).",
-                .help2 = "Try 75% if you get black borders (e.g. Samyang 8mm on 5D).",
+                .help  = "去闪烁的测光位置。推荐 50%（中位数）。",
+                .help2 = "若出现黑边可尝试 75%（如 5D 配三阳 8mm 鱼眼）。",
             },
             {
-                .name = "Deflicker target level",
+                .name = "去闪烁目标电平",
                 .priv = &post_deflicker_target_level,
                 .min = -8,
                 .max = -1,
                 .choices = CHOICES("-8 EV", "-7 EV", "-6 EV", "-5 EV", "-4 EV", "-3 EV", "-2 EV", "-1 EV"),
-                .help = "Where to place the exposure level for processed pics",
-                .help2 = "EV below overexposure.",
+                .help = "处理后照片的曝光电平位置",
+                .help2 = "（低于过曝点的 EV 值）。",
             },
             MENU_EOL,
         },

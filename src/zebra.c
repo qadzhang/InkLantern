@@ -861,7 +861,7 @@ static MENU_UPDATE_FUNC(raw_zebra_update)
     menu_checkdep_raw(entry, info);
 
     if (raw_zebra_enable)
-        MENU_SET_WARNING(MENU_WARN_INFO, "Will use RAW RGB zebras %safter taking a pic.", raw_zebra_enable == 1 ? "in LiveView and " : "");
+        MENU_SET_WARNING(MENU_WARN_INFO, "将在%s拍照后使用RAW RGB斑马纹。", raw_zebra_enable == 1 ? "实时取景和" : "");
 }
 #endif // FEATURE_RAW_ZEBRAS
 
@@ -1061,7 +1061,7 @@ void bvram_mirror_init()
         {   
             while(1)
             {
-                bmp_printf(FONT_MED, 30, 30, "Failed to allocate BVRAM mirror");
+                bmp_printf(FONT_MED, 30, 30, "BVRAM镜像内存分配失败");
                 msleep(100);
             }
         }
@@ -1933,22 +1933,22 @@ static MENU_UPDATE_FUNC(zebra_draw_display)
     if (z)
     {
         MENU_SET_VALUE(
-            "%s, ",
-            zebra_colorspace == 0 ? "Luma" :
-            zebra_colorspace == 1 ? "RGB" : "LumaFast"
+            "%s，",
+            zebra_colorspace == 0 ? "亮度" :
+            zebra_colorspace == 1 ? "RGB" : "快速亮度"
         );
     
         if (over_disabled)
         {
             MENU_APPEND_VALUE(
-                "under %d%%",
+                "欠曝%d%%",
                 zebra_level_lo
             );
         }
         else if (under_disabled)
         {
             MENU_APPEND_VALUE(
-                "over %d%%",
+                "过曝%d%%",
                 zebra_level_hi
             );
         }
@@ -1974,7 +1974,7 @@ static MENU_UPDATE_FUNC(zebra_param_not_used_for_raw)
 {
     #ifdef FEATURE_RAW_ZEBRAS
     if (raw_zebra_enable && can_use_raw_overlays_menu())
-        MENU_SET_WARNING(RAW_ZEBRA_ENABLE ? MENU_WARN_NOT_WORKING : MENU_WARN_ADVICE, "Not used for RAW zebras.");
+        MENU_SET_WARNING(RAW_ZEBRA_ENABLE ? MENU_WARN_NOT_WORKING : MENU_WARN_ADVICE, "RAW斑马纹不使用此参数。");
     #endif
 }
 
@@ -1983,7 +1983,7 @@ static MENU_UPDATE_FUNC(zebra_level_display)
     int level = MENU_CURRENT_VALUE;
     if (level == 0 || level > 100)
     {
-        MENU_SET_VALUE("Disabled");
+        MENU_SET_VALUE("禁用");
         MENU_SET_ICON(MNI_PERCENT_OFF, 0);
         MENU_SET_ENABLED(0);
     }
@@ -2007,17 +2007,17 @@ static MENU_UPDATE_FUNC(focus_peaking_display)
     unsigned f = MENU_CURRENT_VALUE;
     if (f)
         MENU_SET_VALUE(
-            "ON,%d.%d,%s%s",
+            "开,%d.%d,%s%s",
             focus_peaking_pthr / 10, focus_peaking_pthr % 10, 
-            focus_peaking_color == 0 ? "R" :
-            focus_peaking_color == 1 ? "G" :
-            focus_peaking_color == 2 ? "B" :
-            focus_peaking_color == 3 ? "C" :
-            focus_peaking_color == 4 ? "M" :
-            focus_peaking_color == 5 ? "Y" :
-            focus_peaking_color == 6 ? "global" :
-            focus_peaking_color == 7 ? "local" : "err",
-            focus_peaking_grayscale ? ",Gray" : ""
+            focus_peaking_color == 0 ? "红" :
+            focus_peaking_color == 1 ? "绿" :
+            focus_peaking_color == 2 ? "蓝" :
+            focus_peaking_color == 3 ? "青" :
+            focus_peaking_color == 4 ? "品红" :
+            focus_peaking_color == 5 ? "黄" :
+            focus_peaking_color == 6 ? "全局" :
+            focus_peaking_color == 7 ? "局部" : "err",
+            focus_peaking_grayscale ? "，灰度" : ""
         );
 }
 
@@ -2034,9 +2034,9 @@ static MENU_UPDATE_FUNC(waveform_print)
 {
     if (waveform_draw)
         MENU_SET_VALUE(
-            waveform_size == 0 ? "Small" : 
-            waveform_size == 1 ? "Large" : 
-                                 "FullScreen"
+            waveform_size == 0 ? "小" :
+            waveform_size == 1 ? "大" :
+                                 "全屏"
         );
 }
 #endif
@@ -2052,10 +2052,10 @@ static MENU_UPDATE_FUNC(global_draw_display)
 
     #ifdef CONFIG_5D3
     if (hdmi_code >= 5 && video_mode_resolution>0) // unusual VRAM parameters
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Not compatible with HDMI 50p/60p.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "与HDMI 50p/60p不兼容。");
     #endif
     if (lv && lv_disp_mode && ZEBRAS_IN_LIVEVIEW)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Press " INFO_BTN_NAME " (outside ML menu) to turn Canon displays off.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "在ML菜单外按" INFO_BTN_NAME "键可关闭佳能显示。");
     if (global_draw && lv && !ZEBRAS_IN_LIVEVIEW)
     {
         MENU_SET_ENABLED(0);
@@ -2074,26 +2074,26 @@ static MENU_UPDATE_FUNC(zoom_overlay_display)
         "%s%s%s%s%s",
         zoom_overlay_trigger_mode == 0 ? "err" :
 #ifdef CONFIG_ZOOM_BTN_NOT_WORKING_WHILE_RECORDING
-        zoom_overlay_trigger_mode == 1 ? "HalfS, " :
-        zoom_overlay_trigger_mode == 2 ? "Focus, " :
-        zoom_overlay_trigger_mode == 3 ? "F+HS, " : "ALW, ",
+        zoom_overlay_trigger_mode == 1 ? "半快门，" :
+        zoom_overlay_trigger_mode == 2 ? "对焦环，" :
+        zoom_overlay_trigger_mode == 3 ? "环+快门，" : "始终，",
 #else
-        zoom_overlay_trigger_mode == 1 ? "Zrec, " :
-        zoom_overlay_trigger_mode == 2 ? "F+Zr, " :
-        zoom_overlay_trigger_mode == 3 ? "(+), " : "ALW, ",
+        zoom_overlay_trigger_mode == 1 ? "录制缩放，" :
+        zoom_overlay_trigger_mode == 2 ? "环+录制缩放，" :
+        zoom_overlay_trigger_mode == 3 ? "(+)，" : "始终，",
 #endif
 
         zoom_overlay_trigger_mode == 0 ? "" :
-            zoom_overlay_size == 0 ? "Small, " :
-            zoom_overlay_size == 1 ? "Med, " :
-            zoom_overlay_size == 2 ? "Large, " : "FullScreen",
+            zoom_overlay_size == 0 ? "小，" :
+            zoom_overlay_size == 1 ? "中，" :
+            zoom_overlay_size == 2 ? "大，" : "全屏",
 
         zoom_overlay_trigger_mode == 0 || zoom_overlay_size == 3 ? "" :
-            zoom_overlay_pos == 0 ? "AFbox, " :
-            zoom_overlay_pos == 1 ? "TL, " :
-            zoom_overlay_pos == 2 ? "TR, " :
-            zoom_overlay_pos == 3 ? "BR, " :
-            zoom_overlay_pos == 4 ? "BL, " : "err",
+            zoom_overlay_pos == 0 ? "对焦框，" :
+            zoom_overlay_pos == 1 ? "左上，" :
+            zoom_overlay_pos == 2 ? "右上，" :
+            zoom_overlay_pos == 3 ? "右下，" :
+            zoom_overlay_pos == 4 ? "左下，" : "err",
 
         zoom_overlay_trigger_mode == 0 || zoom_overlay_size == 3 ? "" :
             zoom_overlay_x == 0 ? "1:1" :
@@ -2103,28 +2103,28 @@ static MENU_UPDATE_FUNC(zoom_overlay_display)
 
         zoom_overlay_trigger_mode == 0 || zoom_overlay_size == 3 ? "" :
             zoom_overlay_split == 0 ? "" :
-            zoom_overlay_split == 1 ? ", Ss" :
-            zoom_overlay_split == 2 ? ", Sz" : "err"
+            zoom_overlay_split == 1 ? "，分屏" :
+            zoom_overlay_split == 2 ? "，过零" : "err"
 
     );
 
     if (EXT_MONITOR_RCA)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Magic Zoom does not work with SD monitors");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "魔术变焦不支持SD监视器");
     else if (hdmi_code >= 5)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Magic Zoom does not work in HDMI 1080i.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "魔术变焦在HDMI 1080i下不可用。");
     #if defined(CONFIG_DISPLAY_FILTERS) && defined(CONFIG_CAN_REDIRECT_DISPLAY_BUFFER) && !defined(CONFIG_CAN_REDIRECT_DISPLAY_BUFFER_EASILY)
     extern int display_broken_for_mz(); /* tweaks.c */
     if (display_broken_for_mz())
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "After using display filters, go outside LiveView and back.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "使用显示滤镜后，请退出实时取景再重新进入。");
     #endif
     #if !defined(CONFIG_6D) && !defined(CONFIG_5D3) && !defined(CONFIG_EOSM)
     else if (is_movie_mode() && video_mode_fps > 30)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Magic Zoom does not work well in current video mode");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "魔术变焦在当前视频模式下效果不佳");
     #endif
     else if (is_movie_mode() && video_mode_crop && zoom_overlay_size == 3)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Full-screen Magic Zoom does not work in crop mode");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "全屏魔术变焦在裁切模式下不可用");
     else if (zoom_overlay_enabled && zoom_overlay_trigger_mode && !get_zoom_overlay_trigger_mode() && get_global_draw()) // MZ enabled, but for some reason it doesn't work in current mode
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Magic Zoom is not available in this mode");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "魔术变焦在当前模式下不可用");
 }
 #endif
 
@@ -2136,12 +2136,12 @@ static MENU_UPDATE_FUNC(spotmeter_menu_display)
         MENU_SET_VALUE(
             "%s%s",
             
-            spotmeter_formula == 0 ? "Percent" :
+            spotmeter_formula == 0 ? "百分比" :
             spotmeter_formula == 1 ? "0..255" :
             spotmeter_formula == 2 ? "RGB" :          
-            spotmeter_formula == 3 ? "RAW" : "Percent RGB",
+            spotmeter_formula == 3 ? "RAW" : "百分比RGB",
 
-            spotmeter_draw && spotmeter_position ? ", AFbox" : ""
+            spotmeter_draw && spotmeter_position ? "，对焦框" : ""
         );
         
         #ifdef FEATURE_RAW_SPOTMETER
@@ -2595,7 +2595,7 @@ static MENU_UPDATE_FUNC(transparent_overlay_display)
 {
     if (transparent_overlay && (transparent_overlay_offx || transparent_overlay_offy))
         MENU_SET_VALUE(
-            "ON, dx=%d, dy=%d", 
+            "开, dx=%d, dy=%d", 
             transparent_overlay_offx, 
             transparent_overlay_offy
         );
@@ -2680,7 +2680,7 @@ static CONFIG_INT("electronic.level", electronic_level, 0);
 struct menu_entry zebra_menus[] = {
     #ifdef FEATURE_GLOBAL_DRAW
     {
-        .name = "Global Draw",
+        .name = "全局绘制",
         .priv       = &global_draw,
         #ifdef FEATURE_OVERLAYS_IN_PLAYBACK_MODE
         .max = 3,
@@ -2690,76 +2690,76 @@ struct menu_entry zebra_menus[] = {
         .select_Q   = toggle_disp_mode_menu,
         .update    = global_draw_display,
         .icon_type = IT_DICE_OFF,
-        .choices = (const char *[]) {"OFF", "LiveView", "QuickReview", "ON, all modes"},
-        .help = "Enable/disable ML overlay graphics (zebra, cropmarks...)",
+        .choices = (const char *[]) {"关", "实时取景", "快速回放", "开,所有模式"},
+        .help = "启用/禁用ML叠加图形（斑马纹、剪裁标记等）。",
         //.essential = FOR_LIVEVIEW,
     },
     #endif
     #ifdef FEATURE_ZEBRA
     {
-        .name = "Zebras",
+        .name = "斑马纹",
         .priv       = &zebra_draw,
         .update     = zebra_draw_display,
         .max = 1,
-        .help = "Zebra stripes: show overexposed or underexposed areas.",
+        .help = "斑马纹：指示过曝或欠曝区域。",
         .depends_on = DEP_GLOBAL_DRAW | DEP_EXPSIM,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Color Space",
+                .name = "色彩空间",
                 .priv = &zebra_colorspace, 
                 #ifdef FEATURE_ZEBRA_FAST
                 .max = 2,
                 #else
                 .max = 1,
                 #endif
-                .choices = (const char *[]) {"Luma", "RGB", "Luma Fast"},
+                .choices = (const char *[]) {"亮度", "RGB", "快速亮度"},
                 .icon_type = IT_DICE,
                 .update = zebra_param_not_used_for_raw,
-                .help = "Luma: red/blue. RGB: show color of the clipped channel(s).",
+                .help = "亮度模式：红/蓝条纹。RGB模式：显示溢出通道的颜色。",
             },
             {
-                .name = "Underexposure",
+                .name = "欠曝阈值",
                 .priv = &zebra_level_lo, 
                 .min = 0,
                 .max = 20,
                 .icon_type = IT_PERCENT_OFF,
                 .update = zebra_level_display,
-                .help = "Underexposure threshold.",
+                .help = "欠曝警告阈值。",
             },
             {
-                .name = "Overexposure", 
+                .name = "过曝阈值", 
                 .priv = &zebra_level_hi,
                 .min = 70,
                 .max = 101,
                 .icon_type = IT_PERCENT_OFF,
                 .update = zebra_level_display,
-                .help = "Overexposure threshold.",
+                .help = "过曝警告阈值。",
             },
             #ifdef CONFIG_MOVIE
             {
-                .name = "When recording", 
+                .name = "录制时", 
                 .priv = &zebra_rec,
                 .max = 1,
-                .choices = (const char *[]) {"Hide", "Show"},
-                .help = "You can hide zebras when recording.",
+                .choices = (const char *[]) {"隐藏", "显示"},
+                .help = "可在录制时隐藏斑马纹。",
             },
             #endif
             #ifdef FEATURE_RAW_ZEBRAS
             {
-                .name = "Use RAW zebras",
+                .name = "使用RAW斑马纹",
                 .priv = &raw_zebra_enable,
                 .max = 2,
                 .update = raw_zebra_update,
-                .choices = (const char *[]) {"OFF", "Always", "Photo only"},
-                .help = "Use RAW zebras if possible.",
+                .choices = (const char *[]) {"关", "始终", "仅拍照"},
+                .help = "尽可能使用RAW斑马纹。",
             },
             {
-                .name = "Raw zebra underexposure",
+                .name = "RAW斑马纹欠曝",
                 .priv = &zebra_raw_underexposure,
                 .max = 5,
-                .choices = (const char *[]) {"OFF", "0 EV", "1 EV", "2 EV", "3 EV", "4 EV"},
-                .help = "RAW zebra underexposure threshold",
-                .help2 = "(in EVs above the noise floor)"
+                .choices = (const char *[]) {"关", "0 EV", "1 EV", "2 EV", "3 EV", "4 EV"},
+                .help = "RAW斑马纹欠曝阈值",
+                .help2 = "（高于噪底多少EV）"
             },
             #endif
             MENU_EOL
@@ -2775,23 +2775,23 @@ struct menu_entry zebra_menus[] = {
 
     #ifdef FEATURE_FOCUS_PEAK
     {
-        .name = "Focus Peak",
+        .name = "峰值对焦",
         .priv           = &focus_peaking,
         .update         = focus_peaking_display,
         .max = 1,
-        .help = "Show which parts of the image are in focus.",
+        .help = "显示画面中合焦的区域。",
         .submenu_width = 650,
         .depends_on = DEP_GLOBAL_DRAW,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Filter bias", 
+                .name = "滤镜偏向", 
                 .priv = &focus_peaking_filter_edges,
                 .max = 2,
-                .choices = (const char *[]) {"Strong edges", "Balanced", "Fine details"},
-                .help  = "Fine-tune the focus detection algorithm:",
-                .help2 = "Strong edges: looks for edges, works best in low light.\n"
-                         "Balanced: tries to cover both strong edges and fine details.\n"
-                         "Fine details: looks for microcontrast. Needs lots of light.\n",
+                .choices = (const char *[]) {"强边缘", "均衡", "精细细节"},
+                .help  = "微调对焦检测算法：",
+                .help2 = "强边缘：检测强边缘，弱光下效果最好。\n"
+                         "均衡：兼顾强边缘与精细细节。\n"
+                         "精细细节：检测微对比，需要充足光线。\n",
                 .icon_type = IT_DICE
             },
             /*
@@ -2807,35 +2807,35 @@ struct menu_entry zebra_menus[] = {
                 #error This requires CONFIG_DISPLAY_FILTERS.
                 #endif
             {
-                .name = "Display type",
+                .name = "显示方式",
                 .priv = &focus_peaking_disp, 
                 .max = 4,
-                .choices = (const char *[]) {"Blinking dots", "Fine dots", "Alpha blend", "Sharpness", "Raw"},
-                .help = "How to display peaking. Alpha looks nicer, but image lags.",
+                .choices = (const char *[]) {"闪烁圆点", "细圆点", "Alpha混合", "锐度", "RAW"},
+                .help = "峰值显示方式。Alpha较美观，但画面有延迟。",
             },
             #endif
             {
-                .name = "Threshold", 
+                .name = "阈值", 
                 .priv = &focus_peaking_pthr,
                 .select = focus_peaking_adjust_thr,
                 .max    = 50,
                 .icon_type = IT_PERCENT_LOG,
                 .unit = UNIT_PERCENT_x10,
-                .help = "How many pixels are considered in focus (percentage).",
+                .help = "视为合焦的像素比例（百分比）。",
             },
             {
-                .name = "Color", 
+                .name = "颜色", 
                 .priv = &focus_peaking_color,
                 .max = 7,
-                .choices = (const char *[]) {"Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "Global Focus", "Local Focus"},
-                .help = "Focus peaking color (fixed or color coding).",
+                .choices = (const char *[]) {"红", "绿", "蓝", "青", "品红", "黄", "全局对焦", "局部对焦"},
+                .help = "峰值对焦颜色（固定色或按对焦状态着色）。",
                 .icon_type = IT_DICE,
             },
             {
-                .name = "Grayscale image", 
+                .name = "灰度图像", 
                 .priv = &focus_peaking_grayscale,
                 .max = 1,
-                .help = "Display LiveView image in grayscale.",
+                .help = "以灰度显示实时取景画面。",
             },
             MENU_EOL
         },
@@ -2843,65 +2843,65 @@ struct menu_entry zebra_menus[] = {
     #endif
     #ifdef FEATURE_MAGIC_ZOOM
     {
-        .name = "Magic Zoom",
+        .name = "魔术变焦",
         .priv = &zoom_overlay_enabled,
         .update = zoom_overlay_display,
         .min = 0,
         .max = 1,
-        .help = "Zoom box for checking focus. Can be used while recording.",
+        .help = "用于检查合焦的放大框，录制时也可使用。",
         .submenu_width = 650,
         .depends_on = DEP_GLOBAL_DRAW | DEP_LIVEVIEW,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Trigger mode",
+                .name = "触发方式",
                 .priv = &zoom_overlay_trigger_mode, 
                 .min = 1,
                 .max = 4,
                 #ifdef CONFIG_ZOOM_BTN_NOT_WORKING_WHILE_RECORDING
-                .choices = (const char *[]) {"HalfShutter", "Focus Ring", "FocusR+HalfS", "Always On"},
-                .help = "Trigger Magic Zoom by focus ring or half-shutter.",
+                .choices = (const char *[]) {"半按快门", "对焦环", "对焦环+半快门", "始终开启"},
+                .help = "通过对焦环或半按快门触发魔术变焦。",
                 #else
-                .choices = (const char *[]) {"Zoom.REC", "Focus+ZREC", "ZoomIn (+)", "Always On"},
-                .help = "Zoom when recording / trigger from focus ring / Zoom button",
+                .choices = (const char *[]) {"录制时缩放", "对焦环+录制缩放", "缩放键(+)", "始终开启"},
+                .help = "录制时缩放/对焦环触发/缩放键触发",
                 #endif
             },
             {
-                .name = "Size", 
+                .name = "大小", 
                 .priv = &zoom_overlay_size,
                 #ifdef FEATURE_MAGIC_ZOOM_FULL_SCREEN // most new cameras can do fullscreen :)
                 .max = 3,
-                .help = "Size of zoom box (small / medium / large / full screen).",
+                .help = "放大框大小（小/中/大/全屏）。",
                 #else // old cameras - simple zoom box
                 .max = 2,
-                .help = "Size of zoom box (small / medium / large).",
+                .help = "放大框大小（小/中/大）。",
                 #endif
-                .choices = (const char *[]) {"Small", "Medium", "Large", "FullScreen"},
+                .choices = (const char *[]) {"小", "中", "大", "全屏"},
                 .icon_type = IT_SIZE,
             },
             {
-                .name = "Position", 
+                .name = "位置", 
                 .priv = &zoom_overlay_pos,
                 .max = 4,
-                .choices = (const char *[]) {"Focus box", "Top-Left", "Top-Right", "Bottom-Right", "Bottom-Left"},
+                .choices = (const char *[]) {"对焦框", "左上", "右上", "右下", "左下"},
                 .icon_type = IT_DICE,
-                .help = "Position of zoom box (fixed or linked to focus box).",
+                .help = "放大框位置（固定或跟随对焦框）。",
             },
             {
-                .name = "Magnification", 
+                .name = "放大倍率", 
                 .priv = &zoom_overlay_x,
                 .max = 2,
                 .choices = (const char *[]) {"1:1", "2:1", "3:1", "4:1"},
                 .icon_type = IT_SIZE,
-                .help = "1:1 displays recorded pixels, 2:1 displays them doubled.",
+                .help = "1:1按原始像素显示，2:1放大一倍显示。",
             },
             #ifdef CONFIG_LV_FOCUS_INFO
             {
-                .name = "Focus confirm", 
+                .name = "合焦确认", 
                 .priv = &zoom_overlay_split,
                 .max = 2,
-                .choices = (const char *[]) {"Green Bars", "SplitScreen", "SS ZeroCross"},
+                .choices = (const char *[]) {"绿色条纹", "分屏", "分屏过零"},
                 .icon_type = IT_DICE,
-                .help = "How to show focus confirmation (green bars / split screen).",
+                .help = "合焦确认的显示方式（绿色条纹/分屏）。",
             },
             #endif
             /*{
@@ -2916,26 +2916,26 @@ struct menu_entry zebra_menus[] = {
     },
     #endif
     #ifdef FEATURE_CROPMARKS
-    MENU_PLACEHOLDER("Cropmarks"),
+    MENU_PLACEHOLDER("剪裁标记"),
     #endif
     #ifdef FEATURE_GHOST_IMAGE
         #ifndef FEATURE_CROPMARKS
         #error This requires FEATURE_CROPMARKS.
         #endif
     {
-        .name = "Ghost image",
+        .name = "幽灵图像",
         .priv = &transparent_overlay, 
         .update = transparent_overlay_display, 
         .max = 1,
-        .help = "Overlay any image in LiveView. In PLAY mode, press LV btn.",
+        .help = "在实时取景中叠加任意图像。回放模式下按LV键。",
         .depends_on = DEP_GLOBAL_DRAW,
         .works_best_in = DEP_LIVEVIEW, // it will actually go into LV if it's not
         .children =  (struct menu_entry[]) {
             {
-                .name = "Auto-update",
+                .name = "自动更新",
                 .priv = &transparent_overlay_auto_update, 
                 .max = 1,
-                .help = "Update the overlay whenever you take a picture.",
+                .help = "每次拍照时自动更新叠加图像。",
             },
             MENU_EOL
         }
@@ -2943,38 +2943,38 @@ struct menu_entry zebra_menus[] = {
     #endif
     #ifdef FEATURE_SPOTMETER
     {
-        .name = "Spotmeter",
+        .name = "点测光",
         .priv           = &spotmeter_draw,
         .max = 1,
         .update        = spotmeter_menu_display,
-        .help = "Exposure aid: display brightness from a small spot.",
+        .help = "曝光辅助：显示小区域的亮度。",
         .depends_on = DEP_GLOBAL_DRAW | DEP_EXPSIM,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Spotmeter Unit",
+                .name = "点测单位",
                 .priv = &spotmeter_formula, 
                 #ifdef FEATURE_RAW_SPOTMETER
                 .max = 4,
                 #else
                 .max = 3,
                 #endif
-                .choices = (const char *[]) {"Percent", "0..255", "RGB (HTML)", "RAW (EV)", "RGB (Percent)"},
+                .choices = (const char *[]) {"百分比", "0..255", "RGB (HTML)", "RAW (EV)", "RGB百分比"},
                 .icon_type = IT_DICE,
-                .help = "Measurement unit for brightness level(s).",
+                .help = "亮度测量单位。",
                 .help2 =
-                    "Percentage of overall brightness level.\n"
-                    "8 bit RGB level.\n"
-                    "HTML like color codes.\n"
-                    "Negative value from clipping, in EV (RAW).\n"
-                    "RGB color in Percentage.\n"
+                    "整体亮度的百分比。\n"
+                    "8位RGB数值。\n"
+                    "类HTML颜色代码。\n"
+                    "距溢出的负差值，单位EV（RAW）。\n"
+                    "RGB颜色的百分比。\n"
             },
             {
-                .name = "Spot Position",
+                .name = "测光位置",
                 .priv = &spotmeter_position, 
                 .max = 1,
-                .choices = (const char *[]) {"Center", "Focus box"},
+                .choices = (const char *[]) {"中央", "对焦框"},
                 .icon_type = IT_DICE,
-                .help = "Spotmeter position: center or linked to focus box.",
+                .help = "点测位置：中央或跟随对焦框。",
             },
             MENU_EOL
         }
@@ -2982,23 +2982,23 @@ struct menu_entry zebra_menus[] = {
     #endif
     #ifdef FEATURE_FALSE_COLOR
     {
-        .name = "False color",
+        .name = "伪色",
         .priv       = &falsecolor_draw,
         .update     = falsecolor_display,
         .max = 1,
         .submenu_width = 700,
         .submenu_height = 160,
-        .help = "Exposure aid: each brightness level is color-coded.",
+        .help = "曝光辅助：以颜色标示各亮度等级。",
         .depends_on = DEP_GLOBAL_DRAW | DEP_EXPSIM,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Palette      ",
+                .name = "调色板      ",
                 .priv = &falsecolor_palette,
                 .max = 5,
                 .icon_type = IT_DICE,
-                .choices = CHOICES("Marshall", "SmallHD", "50-55%", "67-72%", "Banding detection", "GreenScreen"),
+                .choices = CHOICES("Marshall", "SmallHD", "50-55%", "67-72%", "断层检测", "绿幕"),
                 .update = falsecolor_display_palette,
-                .help = "False color palettes for exposure, banding, green screen...",
+                .help = "用于曝光、断层检测、绿幕等的伪色调色板。",
             },
             MENU_EOL
         }
@@ -3006,16 +3006,16 @@ struct menu_entry zebra_menus[] = {
     #endif
     #ifdef FEATURE_HISTOGRAM
     {
-        .name = "Histogram",
+        .name = "直方图",
         .priv       = &hist_draw,
         .max = 1,
         .update = hist_print,
-        .help = "Exposure aid: shows the distribution of brightness levels.",
+        .help = "曝光辅助：显示亮度分布情况。",
         .depends_on = DEP_GLOBAL_DRAW | DEP_EXPSIM,
         .submenu_width = 700,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Histogram type",
+                .name = "直方图类型",
                 .priv = &hist_type,
                 .update = raw_histo_update,
                 #ifdef FEATURE_RAW_HISTOGRAM
@@ -3024,42 +3024,42 @@ struct menu_entry zebra_menus[] = {
                 .max = 1,
                 #endif
                 .choices = (const char *[]) {
-                    "YUV-based, Luma",
-                    "YUV-based, RGB",
-                    "RAW-based (RGB)",
-                    "RAW HistoBar (MAX)",
+                    "基于YUV的亮度",
+                    "基于YUV的RGB",
+                    "基于RAW (RGB)",
+                    "RAW直方条 (MAX)",
                 },
                 .icon_type = IT_DICE,
-                .help  = "Choose between YUV-based (JPG) or RAW-based histogram.",
-                .help2 = "If RAW data is not available, it will fall back to YUV-based.",
+                .help  = "选择基于YUV（JPG）或基于RAW的直方图。",
+                .help2 = "若无RAW数据，将自动改用基于YUV的模式。",
             },
             #ifdef FEATURE_RAW_HISTOGRAM
             {
-                .name = "RAW EV indicator",
+                .name = "RAW EV指示",
                 .priv = &hist_meter,
                 .max = 2,
-                .choices = CHOICES("OFF", "Dynamic Range", "ETTR hint"),
-                .help = "Choose an EV image indicator to display on the histogram.",
+                .choices = CHOICES("关", "动态范围", "ETTR提示"),
+                .help = "选择显示在直方图上的EV指示。",
                 .help2 = 
                     " \n"
-                    "Display the dynamic range at current ISO, from noise stdev.\n"
-                    "Show how many stops you can push the exposure to the right.\n"
+                    "显示当前ISO下的动态范围（由噪声标准差算出）。\n"
+                    "显示曝光还能向右增加多少档。\n"
             },
             #endif
             {
-                .name = "Scaling",
+                .name = "刻度",
                 .priv = &hist_log, 
                 .max = 1,
-                .choices = (const char *[]) {"Linear", "Log"},
-                .help = "Linear or logarithmic histogram.",
+                .choices = (const char *[]) {"线性", "对数"},
+                .help = "线性或对数刻度的直方图。",
                 .icon_type = IT_DICE,
             },
             {
-                .name = "Clip warning",
+                .name = "溢出警告",
                 .priv = &hist_warn, 
                 .max = 1,
-                .help = "Display warning dots when one color channel is clipped.",
-                .help2 = "Numbers represent the percentage of pixels clipped.",
+                .help = "某一颜色通道溢出时显示警告点。",
+                .help2 = "数字表示溢出像素的百分比。",
             },
             MENU_EOL
         },
@@ -3067,33 +3067,33 @@ struct menu_entry zebra_menus[] = {
     #endif
     #ifdef FEATURE_WAVEFORM
     {
-        .name = "Waveform",
+        .name = "波形图",
         .priv       = &waveform_draw,
         .update = waveform_print,
         .max = 1,
-        .help = "Exposure aid: useful for checking overall brightness.",
+        .help = "曝光辅助：便于检查整体亮度。",
         .depends_on = DEP_GLOBAL_DRAW | DEP_EXPSIM,
         .children =  (struct menu_entry[]) {
             {
-                .name = "Waveform Size",
+                .name = "波形图大小",
                 .priv = &waveform_size, 
                 .max = 2,
-                .choices = (const char *[]) {"Small", "Large", "FullScreen"},
+                .choices = (const char *[]) {"小", "大", "全屏"},
                 .icon_type = IT_SIZE,
-                .help = "Waveform size: Small / Large / FullScreen.",
+                .help = "波形图大小：小/大/全屏。",
             },
             MENU_EOL
         },
         //.essential = FOR_LIVEVIEW | FOR_PLAYBACK,
     },
     #endif
-    MENU_PLACEHOLDER("Vectorscope"),
+    MENU_PLACEHOLDER("矢量示波器"),
     #ifdef FEATURE_LEVEL_INDICATOR
     {
-        .name = "Level Indicator", 
+        .name = "水平指示", 
         .priv = &electronic_level, 
         .max  = 1, 
-        .help = "Electronic level indicator in 0.5 degree steps.",
+        .help = "以0.5度为步长的电子水平仪。",
         .depends_on = DEP_GLOBAL_DRAW,
     },
     #endif
@@ -3102,10 +3102,10 @@ struct menu_entry zebra_menus[] = {
 static struct menu_entry livev_dbg_menus[] = {
     #ifdef FEATURE_SHOW_OVERLAY_FPS
     {
-        .name = "Show Overlay FPS",
+        .name = "显示叠加帧率",
         .priv = &show_lv_fps, 
         .max = 1,
-        .help = "Show the frame rate of overlay loop (zebras, peaking...)"
+        .help = "显示叠加绘制循环的帧率（斑马纹、峰值对焦等）"
     },
     #endif
 };
@@ -3113,12 +3113,12 @@ static struct menu_entry livev_dbg_menus[] = {
 #ifdef FEATURE_LV_DISPLAY_PRESETS
 struct menu_entry livev_cfg_menus[] = {
     {
-        .name = "LV Display Presets",
+        .name = "LV显示预设",
         .priv       = &disp_profiles_0,
         .max        = 3,
-        .choices    = (const char *[]) {"OFF (1)", "2", "3", "4"},
+        .choices    = (const char *[]) {"关 (1)", "2", "3", "4"},
         .icon_type  = IT_DICE_OFF,
-        .help = "Num. of LV display presets. Switch with " INFO_BTN_NAME " or from LiveV.",
+        .help = "LV显示预设数量。按" INFO_BTN_NAME "键或在实时取景中切换。",
         .depends_on = DEP_LIVEVIEW,
     },
 };
@@ -4413,7 +4413,7 @@ static void do_disp_mode_change()
     clrscr();
     idle_globaldraw_dis();
     //~ redraw();
-    bmp_printf(SHADOW_FONT(FONT_LARGE), 50, 50, "Display preset: %d", disp_mode);
+    bmp_printf(SHADOW_FONT(FONT_LARGE), 50, 50, "显示预设：%d", disp_mode);
     msleep(250);
     idle_globaldraw_en();
     update_disp_mode_params_from_bits();
@@ -4546,7 +4546,7 @@ static void make_overlay()
 {
     clrscr();
 
-    bmp_printf(FONT_MED, 0, 0, "Saving overlay...");
+    bmp_printf(FONT_MED, 0, 0, "正在保存叠加图像...");
 
     struct vram_info * vram = get_yuv422_vram();
     uint8_t * const lvram = vram->vram;
@@ -4582,11 +4582,11 @@ static void make_overlay()
         /* note: bvram_mirror's size is smaller than BMP_VRAM_SIZE */
         FIO_WriteFile( f, (const void *) bvram_mirror, BMPPITCH * 480);
         FIO_CloseFile(f);
-        bmp_printf(FONT_MED, 0, 0, "Overlay saved.   ");
+        bmp_printf(FONT_MED, 0, 0, "叠加图像已保存   ");
     }
     else
     {
-        bmp_printf(FONT_MED, 0, 0, "Overlay error.   ");
+        bmp_printf(FONT_MED, 0, 0, "叠加图像出错   ");
     }
     msleep(1000);
 }
@@ -4695,7 +4695,7 @@ void peaking_benchmark()
         draw_zebra_and_focus(0,1);
     }
     int b = get_seconds_clock();
-    NotifyBox(10000, "%d seconds => %d fps", b-a, 1000 / (b-a));
+    NotifyBox(10000, "%d 秒 => %d fps", b-a, 1000 / (b-a));
     beep();
     lv = old_lv;
     focus_peaking = old_peaking;

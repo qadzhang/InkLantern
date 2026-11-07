@@ -154,7 +154,7 @@ static int wav_find_chunk(uint8_t* buf, int size, uint32_t chunk_code)
         offset += *(uint32_t*)(buf + offset + 4) + 8;
     if (*(uint32_t*)(buf + offset) != chunk_code) 
     { 
-        NotifyBox(5000, "WAV: subchunk not found");
+        NotifyBox(5000, "WAV：未找到子数据块");
         return 0;
     }
     return offset;
@@ -179,7 +179,7 @@ static void wav_playsmall(char* filename)
     
     int data_size = *(int*)(buf + data_offset + 4);
     int16_t* data = (int16_t*)(buf + data_offset + 8);
-    if (data_size > size - data_offset - 8) { NotifyBox(5000, "WAV: data size wrong"); goto end; }
+    if (data_size > size - data_offset - 8) { NotifyBox(5000, "WAV：数据大小错误"); goto end; }
     
     info_led_on();
     normalize_audio(data, data_size);
@@ -286,7 +286,7 @@ static void record_show_progress()
     bmp_printf(
         FONT_LARGE,
         50, 50,
-        "Recording... %02d:%02d", s/60, s%60
+        "录音中… %02d:%02d", s/60, s%60
     );
 }
 
@@ -397,7 +397,7 @@ static void add_write_q(void *buf){
         i++;
     }
     if(i > QBUF_MAX){
-        NotifyBox(2000,"Lost WAV data\nUse more faster card");
+        NotifyBox(2000,"WAV 数据丢失\n请使用更快的存储卡");
         return;
     }
 
@@ -506,13 +506,13 @@ static MENU_UPDATE_FUNC(record_display)
     if (audio_recording)
     {
         int s = get_seconds_clock() - audio_recording_start_time;
-        MENU_SET_NAME("Recording...");
+        MENU_SET_NAME("录音中…");
         MENU_SET_VALUE("%02d:%02d", s/60, s%60);
         MENU_SET_ICON(MNI_RECORD, 0);
     }
     else
     {
-        MENU_SET_NAME("Record new audio clip");
+        MENU_SET_NAME("录制新音频片段");
         MENU_SET_ICON(MNI_ACTION, 0);
     }
 }
@@ -563,7 +563,7 @@ static void play_test_tone()
 
 #ifdef CONFIG_600D
     if (AUDIO_MONITORING_HEADPHONES_CONNECTED){
-        NotifyBox(2000,"600D does not support\nPlay and monitoring together");
+        NotifyBox(2000,"600D 不支持\n边播放边监听");
         return;
     }
 #endif
@@ -588,7 +588,7 @@ void unsafe_beep()
 
 #ifdef CONFIG_600D
     if (AUDIO_MONITORING_HEADPHONES_CONNECTED){
-        NotifyBox(2000,"600D does not support\nPlay and monitoring together");
+        NotifyBox(2000,"600D 不支持\n边播放边监听");
         return;
     }
 #endif
@@ -796,7 +796,7 @@ static int find_wav(int * index, char* fn)
     dirent = FIO_FindFirstEx( get_dcim_dir(), &file );
     if( IS_ERROR(dirent) )
     {
-        bmp_printf( FONT_LARGE, 40, 40, "find_wav: dir err" );
+        bmp_printf( FONT_LARGE, 40, 40, "find_wav：目录错误" );
         return 0;
     }
 
@@ -833,7 +833,7 @@ static void find_next_wav(void* priv, int dir)
     }
     else
     {
-        snprintf(current_wav_filename, sizeof(current_wav_filename), "(no WAV files)");
+        snprintf(current_wav_filename, sizeof(current_wav_filename), "（无 WAV 文件）");
     }
 }
 
@@ -861,7 +861,7 @@ static void playback_start(void* priv, int delta)
     if (audio_stop_rec_or_play()) return;
 #ifdef CONFIG_600D
     if (AUDIO_MONITORING_HEADPHONES_CONNECTED){
-        NotifyBox(2000,"600D does not support\nPlay and monitoring together");
+        NotifyBox(2000,"600D 不支持\n边播放边监听");
         return;
     }
 #endif
@@ -894,7 +894,7 @@ static void wav_notify_filename()
     // display only the filename, without the path
     char* fn = current_wav_filename + strlen(current_wav_filename) - 1;
     while (fn > current_wav_filename && *fn != '/') fn--; fn++;
-    NotifyBox(1000, "Sound: %s", fn);
+    NotifyBox(1000, "声音：%s", fn);
 }
 
 static void wav_record_do()
@@ -921,8 +921,8 @@ static void record_start(void* priv, int delta)
     if (RECORDING_H264 && sound_recording_mode != 1)
     {
         NotifyBox(2000, 
-            "Cannot record WAV sound \n"
-            "with Canon audio enabled"
+            "无法录制 WAV 声音\n"
+            "（佳能音频已启用）"
         );
         return ;
     }
@@ -996,7 +996,7 @@ static MENU_UPDATE_FUNC(beep_update)
     
     if (!is_safe_to_beep())
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Beeps disabled to prevent interference with audio recording.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "提示音已禁用，以免干扰录音。");
     }
 }
 
@@ -1004,56 +1004,56 @@ static struct menu_entry beep_menus[] = {
 #ifdef FEATURE_BEEP
 #if !defined(CONFIG_7D)
     {
-        .name = "Speaker Volume",
+        .name = "扬声器音量",
         .priv       = &beep_volume,
         .min = 1,
         .max = ASIF_MAX_VOL,
         .icon_type = IT_PERCENT,
-        .help = "Volume for ML beeps and WAV playback (1-5).",
+        .help = "ML 提示音和 WAV 播放的音量（1-5）。",
     },
 #endif
     {
-        .name = "Beep, test tones",
+        .name = "提示音与测试音",
         .select = menu_open_submenu,
         .update = beep_update,
         .submenu_width = 680,
-        .help = "Configure ML beeps and play test tones (440Hz, 1kHz...)",
+        .help = "配置 ML 提示音并播放测试音（440Hz、1kHz…）",
         .children =  (struct menu_entry[]) {
             {
-                .name = "Enable Beeps",
+                .name = "启用提示音",
                 .priv       = &beep_enabled,
                 .max = 1,
-                .help = "Enable beep signal for misc events in ML.",
+                .help = "为 ML 的各类事件发出提示音。",
             },
             {
-                .name = "Tone Waveform", 
+                .name = "音调波形",
                 .priv = &beep_wavetype,
                 .max = 2,
-                .choices = (const char *[]) {"Square", "Sine", "White Noise"},
-                .help = "Type of waveform to be generated: square, sine, white noise.",
+                .choices = (const char *[]) {"方波", "正弦波", "白噪声"},
+                .help = "生成测试音的波形类型：方波、正弦波、白噪声。",
             },
             {
-                .name = "Tone Frequency",
+                .name = "音调频率",
                 .priv       = &beep_freq_idx,
                 .max = 16,
                 .icon_type = IT_PERCENT,
                 //  {55, 110, 220, 262, 294, 330, 349, 392, 440, 494, 880, 1000, 1760, 2000, 3520, 5000, 12000};
-                .choices = (const char *[]) {"55 Hz (A1)", "110 Hz (A2)", "220 Hz (A3)", "262 Hz (Do)", "294 Hz (Re)", "330 Hz (Mi)", "349 Hz (Fa)", "392 Hz (Sol)", "440 Hz (La-A4)", "494 Hz (Si)", "880 Hz (A5)", "1 kHz", "1760 Hz (A6)", "2 kHz", "3520 Hz (A7)", "5 kHz", "12 kHz"},
-                .help = "Frequency for ML beep and test tones (Hz).",
+                .choices = (const char *[]) {"55 Hz（A1）", "110 Hz（A2）", "220 Hz（A3）", "262 Hz（哆）", "294 Hz（来）", "330 Hz（咪）", "349 Hz（发）", "392 Hz（唆）", "440 Hz（啦-A4）", "494 Hz（西）", "880 Hz（A5）", "1 kHz", "1760 Hz（A6）", "2 kHz", "3520 Hz（A7）", "5 kHz", "12 kHz"},
+                .help = "ML 提示音和测试音的频率（Hz）。",
             },
             {
-                .name = "Play test tone",
+                .name = "播放测试音",
                 //~ .update = play_test_tone_print,
                 .icon_type = IT_ACTION,
                 .select = play_test_tone,
-                .help = "Play a 5-second test tone with current settings.",
+                .help = "以当前设置播放 5 秒测试音。",
             },
             {
-                .name = "Test beep sound",
+                .name = "试听提示音",
                 //~ .update = play_test_tone_print,
                 .icon_type = IT_ACTION,
                 .select = beep,
-                .help = "Play a short beep which will be used for ML events.",
+                .help = "播放 ML 事件所用的短提示音。",
             },
             MENU_EOL,
         }
@@ -1061,31 +1061,31 @@ static struct menu_entry beep_menus[] = {
     #endif
     #ifdef FEATURE_WAV_RECORDING
     {
-        .name = "Sound Recorder",
+        .name = "录音机",
         .select = menu_open_submenu,
-        .help = "Record and playback short audio clips (WAV).",
+        .help = "录制并回放短音频片段（WAV）。",
         .children =  (struct menu_entry[]) {
             {
-                .name = "File name",
+                .name = "文件名",
                 .update = filename_display,
                 .select = find_next_wav,
-                .help = "Select a file name for playback.",
+                .help = "选择要回放的文件。",
             },
             {
-                .name = "Record",
+                .name = "录制",
                 .update = record_display,
                 .select = record_start,
-                .help = "Press SET to start or stop recording.",
+                .help = "按 SET 键开始或停止录音。",
             },
             {
-                .name = "Playback selected file",
+                .name = "回放所选文件",
                 .select = playback_start,
-                .help = "Play back a WAV file, in built-in speaker or headphones.",
+                .help = "通过内置扬声器或耳机回放 WAV 文件。",
             },
             {
-                .name = "Delete selected file",
+                .name = "删除所选文件",
                 .select = delete_file,
-                .help = "Be careful :)",
+                .help = "请谨慎操作 :)",
             },
             MENU_EOL,
         }

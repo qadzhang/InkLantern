@@ -63,7 +63,7 @@ static MENU_SELECT_FUNC(file_prefix_enter)
     snprintf(prefix, sizeof(prefix), "%s", get_file_prefix());
 
     ime_base_start(
-        "Enter file prefix",
+        "输入文件前缀",
         prefix,
         5,
         IME_UTF8,
@@ -80,13 +80,13 @@ static MENU_UPDATE_FUNC(file_prefix_upd)
     switch (key)
     {
         case -1:
-            MENU_SET_VALUE("OFF");
+            MENU_SET_VALUE("关");
             MENU_SET_RINFO(default_prefix);
             MENU_SET_ENABLED(0);
             MENU_SET_ICON(MNI_DICE_OFF, 0);
             break;
         case 0:
-            MENU_SET_VALUE("FAILED");
+            MENU_SET_VALUE("失败");
             MENU_SET_RINFO(get_file_prefix());
             MENU_SET_ICON(MNI_RECORD, 0);
             break;
@@ -100,7 +100,7 @@ static MENU_UPDATE_FUNC(file_prefix_upd)
 
     if ((void *) &ime_base_start == (void *) &ret_0)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Please load the IME modules (ime_base.mo and one ime_*.mo)");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "请加载 IME 模块（ime_base.mo 和一个 ime_*.mo）");
     }
 }
 
@@ -178,8 +178,8 @@ static MENU_UPDATE_FUNC(file_number_upd)
 
     if (file_num_dirty)
     {
-        MENU_SET_RINFO("Restart");
-        MENU_SET_WARNING(MENU_WARN_INFO, "Please restart your camera to apply the changes.");
+        MENU_SET_RINFO("需重启");
+        MENU_SET_WARNING(MENU_WARN_INFO, "请重启相机以应用更改。");
     }
     else
     {
@@ -215,12 +215,12 @@ static MENU_UPDATE_FUNC(folder_number_upd)
     file_folder_number_refresh();
 
     /* fixme: hackish */
-    bmp_printf(FONT(FONT_LARGE, COLOR_GRAY(50), 0), 50, 350, "Next image: %s", next_image_filename(0));
+    bmp_printf(FONT(FONT_LARGE, COLOR_GRAY(50), 0), 50, 350, "下一张：%s", next_image_filename(0));
 
     if (folder_num_dirty)
     {
-        MENU_SET_RINFO("Take pic");
-        MENU_SET_WARNING(MENU_WARN_INFO, "Please take a picture to apply the changes.");
+        MENU_SET_RINFO("需拍照");
+        MENU_SET_WARNING(MENU_WARN_INFO, "请拍一张照片以应用更改。");
     }
     else
     {
@@ -237,13 +237,13 @@ static MENU_UPDATE_FUNC(file_name_upd)
 
     if (file_num_dirty)
     {
-        MENU_SET_RINFO("Restart");
-        MENU_SET_WARNING(MENU_WARN_INFO, "Please restart your camera to apply the changes.");
+        MENU_SET_RINFO("需重启");
+        MENU_SET_WARNING(MENU_WARN_INFO, "请重启相机以应用更改。");
     }
     else if (folder_num_dirty)
     {
-        MENU_SET_RINFO("Take pic");
-        MENU_SET_WARNING(MENU_WARN_INFO, "Please take a picture to apply the changes.");
+        MENU_SET_RINFO("需拍照");
+        MENU_SET_WARNING(MENU_WARN_INFO, "请拍一张照片以应用更改。");
     }
 
     /* fixme: you can't change both at the same time */
@@ -252,41 +252,41 @@ static MENU_UPDATE_FUNC(file_name_upd)
 static struct menu_entry img_name_menu[] =
 {
     {
-        .name           = "Image file naming",
+        .name           = "图像文件命名",
         .select         = menu_open_submenu,
         .update         = file_name_upd,
-        .help           = "Customize image file naming for still pictures. Experimental.", 
-        .help2          = "Examples: IMG_1234.JPG -> ABCD1234.JPG, IMG_1234.JPG -> IMG_0001.JPG.",
+        .help           = "自定义照片文件命名规则。实验性功能。",
+        .help2          = "示例：IMG_1234.JPG -> ABCD1234.JPG，IMG_1234.JPG -> IMG_0001.JPG。",
         .submenu_width  = 720,
         .children       = (struct menu_entry[]) {
             {
-                .name       = "Image file prefix",
+                .name       = "图像文件前缀",
                 .select     = file_prefix_enter,
                 .update     = file_prefix_upd,
                 .icon_type  = IT_ACTION,
-                .help       = "Custom image file prefix (e.g. IMG_1234.JPG -> ABCD1234.JPG).",
-                .help2      = "Might conflict with Dual ISO prefixes (to be tested).",
+                .help       = "自定义文件名前缀（如 IMG_1234.JPG -> ABCD1234.JPG）。",
+                .help2      = "可能与双ISO前缀冲突（待测试）。",
             },
             {
-                .name       = "Image file number",
+                .name       = "图像文件编号",
                 .priv       = &file_num,
                 .min        = 0,            /* we can set to 0 and the next image will be IMG_0001 */
                 .max        = 9999,         /* setting it to 9999 => next image will be IMG_0001, too */
                 .unit       = UNIT_DEC,
                 .icon_type  = IT_DICE,
                 .update     = file_number_upd,
-                .help       = "Custom image file number (e.g. IMG_1234.JPG -> IMG_5678.JPG).",
-                .help2      = "You will need to restart the camera for the changes to take effect.",
+                .help       = "自定义文件编号（如 IMG_1234.JPG -> IMG_5678.JPG）。",
+                .help2      = "需重启相机才能生效。",
             },
             {
-                .name       = "Image folder number",
+                .name       = "图像文件夹编号",
                 .priv       = &folder_num,
                 .update     = folder_number_upd,
                 .min        = 100,
                 .max        = 999,
                 .unit       = UNIT_DEC,
                 .icon_type  = IT_DICE,
-                .help       = "Custom image folder num. You must take a picture to apply this setting.",
+                .help       = "自定义文件夹编号。需拍一张照片才能生效。",
                 .help2      = "DCIM/100CANON/IMG_1234.JPG -> DCIM/123CANON/IMG_1234.JPG",
             },
             MENU_EOL,

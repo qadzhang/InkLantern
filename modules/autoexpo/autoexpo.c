@@ -185,7 +185,7 @@ static void autoexpo_task()
         lens_set_rawshutter(60 + 56);
         lens_set_rawaperture(1);
         lens_set_rawiso(1);
-        NotifyBox(1000, "AE_VALUE overflows");
+        NotifyBox(1000, "AE_VALUE 溢出");
         goto cleanup;
     }
 
@@ -319,19 +319,19 @@ static void unset_rear() { last_key = 0; }
 // curves
 static MENU_SELECT_FUNC(aperture_curve_set) { CURVE_SET(av, 0, 50); }
 static MENU_UPDATE_FUNC(aperture_curve_upd) {
-    MENU_SET_VALUE("at %s%d.%d BV -%d.%d EVpBV", FMT_FIXEDPOINT1(av_off), av_step /10, av_step % 10);
+    MENU_SET_VALUE("在 BV %s%d.%d 时每 BV -%d.%d EV", FMT_FIXEDPOINT1(av_off), av_step /10, av_step % 10);
     MENU_CUSTOM_DRAW(av);
 }
 
 static MENU_SELECT_FUNC(iso_curve_set) { CURVE_SET(iso, 0, 50); }
 static MENU_UPDATE_FUNC(iso_curve_upd) {
-    MENU_SET_VALUE("at %s%d.%d BV +%d.%d EVpBV", FMT_FIXEDPOINT1(iso_off), iso_step / 10, iso_step % 10);
+    MENU_SET_VALUE("在 BV %s%d.%d 时每 BV +%d.%d EV", FMT_FIXEDPOINT1(iso_off), iso_step / 10, iso_step % 10);
     MENU_CUSTOM_DRAW(sv);
 }
 
 static MENU_SELECT_FUNC(ec_curve_set) { CURVE_SET(ec, -50, 50); }
 static MENU_UPDATE_FUNC(ec_curve_upd) {
-    MENU_SET_VALUE("at %s%d.%d BV %s%d.%d EVpBV", FMT_FIXEDPOINT1(ec_off), FMT_FIXEDPOINT1S(ec_step));
+    MENU_SET_VALUE("在 BV %s%d.%d 时每 BV %s%d.%d EV", FMT_FIXEDPOINT1(ec_off), FMT_FIXEDPOINT1S(ec_step));
     MENU_CUSTOM_DRAW(ec);
 }
 
@@ -356,13 +356,13 @@ static MENU_SELECT_FUNC(aperture_range_set) {
 
 static MENU_UPDATE_FUNC(lens_av_upd) {
     if(!lens_av) {
-        MENU_SET_VALUE("OFF");
+        MENU_SET_VALUE("关");
         MENU_SET_ENABLED(0);
         MENU_SET_ICON(IT_DICE_OFF, 0);
     }
     else if (lens_av == LENS_AV_THIS) {
         int ap = APEX10_AV2VAL(APEX10_RAW2AV(lens_info.raw_aperture_min));
-        MENU_SET_VALUE("this lens "SYM_F_SLASH"%d.%d", ap / 10, ap % 10);
+        MENU_SET_VALUE("当前镜头 "SYM_F_SLASH"%d.%d", ap / 10, ap % 10);
         MENU_SET_ENABLED(1);
         MENU_SET_ICON(IT_DICE, 0);
     }
@@ -458,102 +458,102 @@ static MENU_UPDATE_FUNC(menu_custom_draw_upd) { MENU_CUSTOM_DRAW(0); }
 static struct menu_entry autoexpo_menu[] =
 {
     {
-        .name = "Auto exposure",
+        .name = "自动曝光",
         .priv = &autoexpo_enabled,
         .max = 1,
         .depends_on = DEP_M_MODE,
         .submenu_width = 720,
-        .help = "Automatic exposure algorithm based on predefined curves.",
-        .help2 = "You have to press halfshutter for a while.",
+        .help = "基于预设曲线的自动曝光算法。",
+        .help2 = "需持续半按快门片刻。",
         .children = (struct menu_entry[]) {
             {
-                .name = "Show graph",
+                .name = "显示曲线图",
                 .priv = &show_graph,
                 .update = menu_custom_draw_upd,
                 .max = 1,
             },
             {
-                .name = "Use in LV",
+                .name = "实时取景中使用",
                 .priv = &autoexpo_lv,
                 .update = menu_custom_draw_upd,
                 .max = 1,
-                .help = "When you press halfshutter exposure will be set.",
-                .help2 = "After release you previos exposure will be restored.",
+                .help = "半按快门时自动设定曝光。",
+                .help2 = "松开后恢复原曝光设置。",
             },
             {
-                .name = "Lens aperture",
+                .name = "镜头光圈",
                 .update = lens_av_upd,
                 .select = lens_av_set,
                 .icon_type = IT_DICE,
-                .help = "Simulate minimum aperture value.",
+                .help = "模拟最小光圈值。",
             },
             {
-                .name = "TV minimum",
+                .name = "最慢快门",
                 .priv = &tv_min,
                 .update = tv_min_upd,
                 .select = tv_min_set,
                 .icon_type = IT_DICE,
-                .help = "Set minimum shutter value.",
+                .help = "设置快门下限（最长曝光时间）。",
             },
             {
-                .name = "Same TV curve",
+                .name = "同步快门曲线",
                 .priv = &same_tv,
                 .update = same_tv_upd,
                 .max = 1,
-                .help = "Auto compensate minimum ISO & minimum AV & EC changes.",
+                .help = "自动补偿最低ISO、最低光圈与曝光补偿的变化。",
             },
             {
-                .name = "AV range",
+                .name = "光圈范围",
                 .update = aperture_range_upd,
                 .select = aperture_range_set,
                 .icon_type = IT_DICE,
-                .help = "Use left & right for minimum. Main dial for maximum.",
+                .help = "左右键调最小值，主拨盘调最大值。",
             },
             {
-                .name = "AV curve",
+                .name = "光圈曲线",
                 .update = aperture_curve_upd,
                 .select = aperture_curve_set,
                 .icon_type = IT_DICE,
-                .help = "Main dial changes curve offset. Left & right sets EV steps per BV.",
+                .help = "主拨盘调曲线偏移，左右键设每 BV 的 EV 步长。",
             },
             {
-                .name = "ISO range",
+                .name = "ISO 范围",
                 .update = iso_range_upd,
                 .select = iso_range_set,
                 .icon_type = IT_DICE,
-                .help = "Use left & right for minimum. Main dial for maximum.",
-                .help2 = "Make sure that it corresponds to your extended ISO settings.",
+                .help = "左右键调最小值，主拨盘调最大值。",
+                .help2 = "请确保与机身扩展 ISO 设置相符。",
             },
             {
-                .name = "ISO curve",
+                .name = "ISO 曲线",
                 .update = iso_curve_upd,
                 .select = iso_curve_set,
                 .icon_type = IT_DICE,
-                .help = "Main dial changes curve offset. Left & right sets EV steps per BV.",
+                .help = "主拨盘调曲线偏移，左右键设每 BV 的 EV 步长。",
             },
             {
                 .name = "EC",
                 .update = ec_upd,
                 .select = ec_sel,
                 .icon_type = IT_DICE,
-                .help = "Exposure compensation.",
+                .help = "曝光补偿。",
             },
             {
-                .name = "EC range",
+                .name = "EC 范围",
                 .update = ec_range_upd,
                 .select = ec_range_set,
                 .icon_type = IT_DICE,
-                .help = "Use left & right for minimum. Main dial for maximum.",
+                .help = "左右键调最小值，主拨盘调最大值。",
             },
             {
-                .name = "EC curve",
+                .name = "EC 曲线",
                 .update = ec_curve_upd,
                 .select = ec_curve_set,
                 .icon_type = IT_DICE,
-                .help = "Main dial changes curve offset. Left & right sets EV steps per BV.",
+                .help = "主拨盘调曲线偏移，左右键设每 BV 的 EV 步长。",
             },
             {
-                .name = "Browse",
+                .name = "浏览",
                 .update = last_bv_upd,
                 .select = last_bv_set,
                 .icon_type = IT_DICE,

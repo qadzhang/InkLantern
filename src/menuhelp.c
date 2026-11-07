@@ -43,20 +43,20 @@ draw_beta_warning()
 
     bmp_printf(FONT_CANON, 242, 53, "Magic Lantern");
 
-    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 150, "This is a development snapshot for testing purposes.");
+    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 150, "这是供测试用的开发版快照。");
 
-    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 200, "Please report all bugs at www.magiclantern.fm.");
+    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 200, "请在 www.magiclantern.fm 报告所有错误。");
 
-    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 250, "Be careful using it for production work.      ");
+    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 250, "请谨慎用于正式拍摄工作。      ");
 
-    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 300, "Enjoy!");
-    
-    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 350, "(Press any camera button to enter ML settings)");
+    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 300, "祝使用愉快！");
+
+    bmp_printf(FONT_MED | FONT_ALIGN_CENTER, 360, 350, "（按任意机身按键进入 ML 设置）");
 
     big_bmp_printf(FONT_MED,  10,  410,
-        "Magic Lantern version: %s\n"
-        "Git commit: %s\n"
-        "Built on %s by %s.",
+        "Magic Lantern 版本：%s\n"
+        "Git 提交：%s\n"
+        "构建于 %s，构建者 %s。",
         build_version,
         build_id,
         build_date,
@@ -68,17 +68,17 @@ draw_404_page()
 {
     bmp_fill(COLOR_BLACK, 0, 0, 720, 480);
 
-    bmp_printf(FONT_CANON, 10, 20, "404 Undocumented Feature");
-    
-    bmp_printf(FONT_MED, 10, 100, "This feature is probably not yet documented.");
-    bmp_printf(FONT_MED, 10, 120, "After all, we are programmers, not tech writers.");
+    bmp_printf(FONT_CANON, 10, 20, "404 未记录功能");
 
-    bmp_printf(FONT_MED, 10, 180, "But... you can simply try it and see what it does.");
+    bmp_printf(FONT_MED, 10, 100, "此功能可能尚未编写文档。");
+    bmp_printf(FONT_MED, 10, 120, "毕竟我们是程序员，不是技术文档作者。");
 
-    bmp_printf(FONT_MED, 10, 240, "Then, write a short paragraph to describe it,");
-    bmp_printf(FONT_MED, 10, 260, "and we will include it in the user guide.");
+    bmp_printf(FONT_MED, 10, 180, "不过……您可以直接试用，看看它有何作用。");
 
-    bmp_printf(FONT_MED, 10, 320, "Thanks!");
+    bmp_printf(FONT_MED, 10, 240, "然后写一小段文字描述它，");
+    bmp_printf(FONT_MED, 10, 260, "我们会将其收录进用户指南。");
+
+    bmp_printf(FONT_MED, 10, 320, "谢谢！");
 
 }
 
@@ -87,13 +87,13 @@ draw_help_not_installed_page()
 {
     bmp_fill(COLOR_BLACK, 0, 0, 720, 480);
 
-    bmp_printf(FONT_CANON, 10, 20, "Help files not found");
-    
-    bmp_printf(FONT_MED, 10, 150, "Magic Lantern help files could not be found.              ");
+    bmp_printf(FONT_CANON, 10, 20, "未找到帮助文件");
 
-    bmp_printf(FONT_MED, 10, 200, "Make sure all ML files are installed to your card.        ");
+    bmp_printf(FONT_MED, 10, 150, "找不到 Magic Lantern 帮助文件。              ");
 
-    bmp_printf(FONT_MED, 10, 250, "See http://wiki.magiclantern.fm/install for instructions. ");
+    bmp_printf(FONT_MED, 10, 200, "请确保所有 ML 文件已安装到存储卡。        ");
+
+    bmp_printf(FONT_MED, 10, 250, "安装说明请见 http://wiki.magiclantern.fm/install。 ");
 }
 
 void menu_help_show_page(int page)
@@ -136,7 +136,7 @@ void menu_help_show_page(int page)
         else
         {
             clrscr();
-            bmp_printf(FONT_MED, 0, 0, "Could not load help page %s.", path);
+            bmp_printf(FONT_MED, 0, 0, "无法加载帮助页 %s。", path);
         }
     }
 }

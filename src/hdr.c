@@ -93,7 +93,7 @@ static MENU_UPDATE_FUNC (hdrv_extended_shutter_display)
     
     if(hdrv_extended_step_edit > hdrv_extended_steps)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This entry is unused. Increase step count.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此项未使用，请增加级数。");
     }
 }
 
@@ -149,12 +149,12 @@ static MENU_UPDATE_FUNC (hdrv_extended_iso_display)
     }
     else
     {
-        MENU_SET_VALUE("#%d: OFF", pos + 1);
+        MENU_SET_VALUE("#%d: 关", pos + 1);
     }
     
     if(hdrv_extended_step_edit > hdrv_extended_steps)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This entry is unused. Increase step count.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此项未使用，请增加级数。");
     }
 }
 #endif
@@ -319,7 +319,7 @@ static MENU_UPDATE_FUNC(hdr_print)
         if(hdrv_extended_mode)
         {
             MENU_SET_VALUE(
-                "ON (Extended)"
+                "开（扩展）"
             );
         }
         else
@@ -371,8 +371,8 @@ static MENU_UPDATE_FUNC(hdr_iso_display)
 #ifdef FEATURE_HDR_EXTENDED
     if(hdrv_extended_mode)
     {
-        MENU_SET_VALUE("(n/a)");
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Extended mode is enabled. Set ISO/Shutter on frame basis.");
+        MENU_SET_VALUE("（无）");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "扩展模式已启用，请按帧设置ISO/快门。");
         return;
     }
 #endif
@@ -394,12 +394,12 @@ static MENU_UPDATE_FUNC(hdr_iso_display)
 
 static struct menu_entry hdr_menu[] = {
     {
-        .name = "HDR video",
+        .name = "HDR视频",
         .priv = &hdrv_enabled,
         .min = 0,
         .max = 1,
         .update = hdr_print,
-        .help = "Alternates ISO between frames. Flickers while recording.",
+        .help = "在帧间交替改变ISO，录制时画面会闪烁。",
         .depends_on = DEP_MOVIE_MODE | DEP_MANUAL_ISO,
         .children =  (struct menu_entry[]) {
             {
@@ -410,7 +410,7 @@ static struct menu_entry hdr_menu[] = {
                 .select = hdr_iso_toggle,
                 .update = hdr_iso_display,
                 .unit = UNIT_ISO,
-                .help = "ISO value for one half of the frames.",
+                .help = "其中一半帧使用的ISO值。",
             },
             {
                 .name = "ISO B",
@@ -420,28 +420,28 @@ static struct menu_entry hdr_menu[] = {
                 .select = hdr_iso_toggle,
                 .update = hdr_iso_display,
                 .unit = UNIT_ISO,
-                .help = "ISO value for the other half of the frames.",
+                .help = "另一半帧使用的ISO值。",
             },
             #ifdef FEATURE_HDR_EXTENDED
             {
-                .name = "Extended mode",
+                .name = "扩展模式",
                 .priv = &hdrv_extended_mode,
                 .max = 1,
-                .help = "Extended ISO/Shutter settings.",
+                .help = "扩展的ISO/快门设置。",
             },
             {
-                .name = "Ext. steps",
+                .name = "扩展级数",
                 .priv = &hdrv_extended_steps,
                 .min = 1,
                 .max = CONFIG_HDR_EXTENDED_STEPS,
-                .help = "Number of ISO/Shutter settings.",
+                .help = "ISO/快门设置的级数。",
             },
             {
-                .name = "Ext. step edit",
+                .name = "扩展级编辑",
                 .priv = &hdrv_extended_step_edit,
                 .min = 1,
                 .max = CONFIG_HDR_EXTENDED_STEPS,
-                .help = "Edit ISO/Shutter settings.",
+                .help = "编辑各级的ISO/快门设置。",
             },
             {
                 .name = "ISO",
@@ -450,15 +450,15 @@ static struct menu_entry hdr_menu[] = {
                 .select = hdrv_extended_iso_toggle,
                 .update = hdrv_extended_iso_display,
                 .unit = UNIT_ISO,
-                .help = "Edit ISO settings.",
+                .help = "编辑ISO设置。",
             },
             {
-                .name = "Shutter",
+                .name = "快门",
                 .min = 0,
                 .max = COUNT(hdrv_shutter_table),
                 .select = hdrv_extended_shutter_toggle,
                 .update = hdrv_extended_shutter_display,
-                .help = "Edit Shutter settings.",
+                .help = "编辑快门设置。",
             },
             #endif
             MENU_EOL

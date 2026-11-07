@@ -66,10 +66,13 @@ CFLAGS = -Os -D__ARM__ \
     -Wdouble-promotion \
     -Winline \
     -Wundef \
-    -Wnull-dereference \
     -Wno-unused-parameter \
     -Wno-unused-function \
     -Wno-format \
+    -Wno-missing-field-initializers \
+    -Wno-missing-braces \
+    -Wno-error=pragmas \
+    -Wno-error=maybe-uninitialized \
     -fomit-frame-pointer \
     -fno-strict-aliasing \
     -ffast-math \

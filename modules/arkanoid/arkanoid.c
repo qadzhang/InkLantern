@@ -757,20 +757,20 @@ static MENU_SELECT_FUNC(level_select) {
 static struct menu_entry arkanoid_menu[] =
 {
     {
-        .name = "Arkanoid",
+        .name = "打砖块",
         .select = arkanoid_start,
-        .help = "Second game for Magic Lantern. Try it in LiveView.",
+        .help = "Magic Lantern 的第二个小游戏。在实时取景下试试吧。",
         .children = (struct menu_entry[])
         {
             {
-                .name = "Level",
+                .name = "关卡",
                 .priv = &level,
                 .select = level_select,
                 .max = 10,
                 .min = 1,
             },
             {
-                .name = "Sound",
+                .name = "音效",
                 .priv = &sound,
                 .max = 1,
             },

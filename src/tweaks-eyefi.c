@@ -149,30 +149,30 @@ static void MP4to422(void* priv, int delta)
 
 static struct menu_entry eyefi_menus[] = {
     {
-        .name        = "EyeFi Trick",
+        .name        = "EyeFi 技巧",
         .select        = menu_open_submenu,
-        .help = "Rename CR2 files to AVI (trick for EyeFi cards).",
+        .help = "将 CR2 文件重命名为 AVI（EyeFi 卡的小技巧）。",
         .children =  (struct menu_entry[]) {
             {
-            	.name        = "Rename CR2 to AVI",
+            	.name        = "CR2 重命名为 AVI",
             	.select        = CR2toAVI,
-            	.help = "Rename CR2 files to AVI (trick for EyeFi cards)."
+            	.help = "将 CR2 文件重命名为 AVI（EyeFi 卡的小技巧）。"
          	},
             {
-            	.name        = "Rename AVI to CR2",
+            	.name        = "AVI 重命名回 CR2",
             	.select        = AVItoCR2,
-            	.help = "Rename back AVI files to CR2 (trick for EyeFi cards)."
+            	.help = "将 AVI 文件重命名回 CR2（EyeFi 卡的小技巧）。"
          	},
             #ifdef FEATURE_EYEFI_RENAME_422_MP4
             {
-            	.name        = "Rename 422 to MP4",
+            	.name        = "422 重命名为 MP4",
             	.select        = f422toMP4,
-            	.help = "Rename 422 files to MP4 (trick for EyeFi cards)."
+            	.help = "将 422 文件重命名为 MP4（EyeFi 卡的小技巧）。"
          	},
             {
-            	.name        = "Rename MP4 to 422",
+            	.name        = "MP4 重命名回 422",
             	.select        = MP4to422,
-            	.help = "Rename back MP4 files to 422 (trick for EyeFi cards)."
+            	.help = "将 MP4 文件重命名回 422（EyeFi 卡的小技巧）。"
          	},
             #endif
             MENU_EOL

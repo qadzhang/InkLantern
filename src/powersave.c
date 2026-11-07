@@ -307,11 +307,11 @@ static void idle_display_off_show_warning()
     extern int motion_detect;
     if (motion_detect || RECORDING)
     {
-        NotifyBox(3000, "DISPLAY OFF...");
+        NotifyBox(3000, "屏幕即将关闭...");
     }
     else
     {
-        NotifyBox(3000, "DISPLAY AND SENSOR OFF...");
+        NotifyBox(3000, "屏幕与传感器即将关闭...");
     }
 }
 
@@ -354,8 +354,8 @@ static void idle_display_dim()
     int backlight_mode = lcd_brightness_mode;
     if (backlight_mode == 0) // can't restore brightness properly in auto mode
     {
-        NotifyBox(2000, "LCD brightness is automatic.\n"
-                        "ML will not dim the display.");
+        NotifyBox(2000, "LCD 亮度为自动。\n"
+                        "ML 不会调暗屏幕。");
         return;
     }
     #endif
@@ -522,8 +522,8 @@ PROP_HANDLER(PROP_LV_ACTION)
 static char* idle_time_format(int t)
 {
     static char msg[50];
-    if (t) snprintf(msg, sizeof(msg), "after %d%s", t < 60 ? t : t/60, t < 60 ? "sec" : "min");
-    else snprintf(msg, sizeof(msg), "OFF");
+    if (t) snprintf(msg, sizeof(msg), "%d%s后", t < 60 ? t : t/60, t < 60 ? "秒" : "分");
+    else snprintf(msg, sizeof(msg), "关");
     return msg;
 }
 
@@ -537,7 +537,7 @@ static MENU_UPDATE_FUNC(idle_display_dim_print)
     int backlight_mode = lcd_brightness_mode;
     if (backlight_mode == 0) // can't restore brightness properly in auto mode
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "LCD brightness is auto in Canon menu. It won't work.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "佳能菜单中 LCD 亮度为自动，此功能无效。");
     }
     #endif
 }
@@ -571,7 +571,7 @@ static MENU_UPDATE_FUNC(idle_disable_30min_timer_upd)
 {
     if (auto_power_off_time)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Only works when 'Auto power off' is disabled in Canon menu.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "仅在佳能菜单禁用“自动关闭电源”后有效。");
     }
     else if (idle_disable_30min_timer)
     {
@@ -581,70 +581,70 @@ static MENU_UPDATE_FUNC(idle_disable_30min_timer_upd)
 
 static struct menu_entry powersave_menus[] = {
   {
-    .name = "Powersave in LiveView",
+    .name = "实时取景省电",
     .select = menu_open_submenu,
     .submenu_width = 715,
-    .help = "Options for reducing power consumption during idle times.",
+    .help = "空闲时降低电量消耗的选项。",
     .depends_on = DEP_LIVEVIEW,
     .children =  (struct menu_entry[]) {
         {
-            .name       = "Enable while recording",
+            .name       = "录制时启用",
             .priv       = &idle_rec,
             .max        = 1,
-            .help       = "Powersave always works during standby; optionally also while recording.",
-            .help2      = "Other ML features may use the options below (e.g. intervalometer in LV).",
+            .help       = "待机时省电始终有效；也可选择在录制时启用。",
+            .help2      = "其他 ML 功能也可能用到以下选项（如实时取景中的间隔拍摄）。",
         },
         #ifdef CONFIG_LCD_SENSOR
         {
-            .name           = "Use LCD sensor",
+            .name           = "使用 LCD 传感器",
             .priv           = &lcd_sensor_wakeup,
             .max            = 1,
-            .help           = "With the LCD sensor you may wakeup or force powersave mode."
+            .help           = "可通过 LCD 传感器唤醒相机或立即进入省电模式。"
         },
         #endif
         {
-            .name           = "Use shortcut key",
+            .name           = "使用快捷键",
             .priv           = &idle_shortcut_key,
             .max            = 1,
-            .choices        = (const char *[]) {"OFF", INFO_BTN_NAME},
-            .help           = "Shortcut key for enabling powersave modes right away."
+            .choices        = (const char *[]) {"关", INFO_BTN_NAME},
+            .help           = "立即启用省电模式的快捷键。"
         },
         {
-            .name           = "Dim display",
+            .name           = "调暗屏幕",
             .priv           = &idle_display_dim_after,
             .update         = idle_display_dim_print,
             .select         = idle_timeout_toggle,
             .max            = 900,
             .icon_type      = IT_PERCENT_LOG_OFF,
-            .help           = "Dim LCD display in LiveView when idle, to save power.",
+            .help           = "空闲时调暗实时取景的 LCD 屏幕以省电。",
         },
         {
-            .name           = "Turn off LCD",
+            .name           = "关闭屏幕",
             .priv           = &idle_display_turn_off_after,
             .update         = idle_display_feature_print,
             .select         = idle_timeout_toggle,
             .max            = 900,
             .icon_type      = IT_PERCENT_LOG_OFF,
-            .help           = "Turn off display. Will also pause LiveView if not recording.",
+            .help           = "关闭屏幕。若未在录制，也会暂停实时取景。",
         },
         {
-            .name           = "Turn off GlobalDraw",
+            .name           = "关闭全局绘制",
             .priv           = &idle_display_global_draw_off_after,
             .update         = idle_display_feature_print,
             .select         = idle_timeout_toggle,
             .max            = 900,
             .icon_type      = IT_PERCENT_LOG_OFF,
-            .help           = "Turn off GlobalDraw when idle, to save some CPU cycles.",
+            .help           = "空闲时关闭全局绘制，节省一些 CPU 资源。",
         },
         {
-            .name           = "30-minute timer",
+            .name           = "30分钟定时器",
             .priv           = &idle_disable_30min_timer,
             .max            = 1,
             .update         = idle_disable_30min_timer_upd,
-            .choices        = CHOICES("ON", "Disabled"),
+            .choices        = CHOICES("开", "禁用"),
             .icon_type      = IT_DISABLE_SOME_FEATURE,
-            .help           = "Prevent Canon firmware from turning off LiveView after 30 minutes.",
-            .help2          = "LED will blink every 10s. WARNING: this limit is there for good reason!",
+            .help           = "防止佳能固件在 30 分钟后关闭实时取景。",
+            .help2          = "LED 每 10 秒闪烁一次。警告：此限制的存在自有其原因，请谨慎开启！",
         },
         MENU_EOL
     },

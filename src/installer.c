@@ -198,10 +198,10 @@ static void print_bootflags()
     );
     
     char* labels =
-        "Firmware\n"
-        "Bootdisk\n"
+        "固件\n"
+        "引导盘\n"
         "RAM_EXE\n"
-        "Update\n";
+        "更新\n";
     
     int labels_w = bmp_string_width(FONT_SMALL, labels);
     bmp_printf( FONT_SMALL, 700 - values_w - labels_w, 0, labels);
@@ -220,7 +220,7 @@ static void hook_on_canon_menu()
         {
             msleep(100);
             bmp_fill(COLOR_BLACK, 0, 0, 720, 480);
-            bmp_printf(FONT_LARGE, 0, 0, "Magic Lantern install");
+            bmp_printf(FONT_LARGE, 0, 0, "Magic Lantern 安装");
         }
     }
     else
@@ -283,7 +283,7 @@ static int backup_region(char *file, uint32_t base, uint32_t length)
         return 1;
     }
 
-    bmp_printf(FONT_LARGE, 0, y+=FH, "Backing up ROM%d...", file[11] - '0');
+    bmp_printf(FONT_LARGE, 0, y+=FH, "正在备份 ROM%d...", file[11] - '0');
     
     /* no, create file and store data */
     FILE* handle = FIO_CreateFile(file);
@@ -294,7 +294,7 @@ static int backup_region(char *file, uint32_t base, uint32_t length)
     }
     else
     {
-        bmp_printf(error_font, 0, y+=FH, "Could not backup ROM%d.", file[11] - '0');
+        bmp_printf(error_font, 0, y+=FH, "无法备份 ROM%d。", file[11] - '0');
         return 0;
     }
     
@@ -323,29 +323,29 @@ static int install(void)
 {
     FH = fontspec_font(normal_font)->height;
     
-    bmp_printf(normal_font, 0, y, "Magic Lantern install");
+    bmp_printf(normal_font, 0, y, "Magic Lantern 安装");
     print_bootflags();
 
     if (!is_file("AUTOEXEC.BIN"))
     {
-        bmp_printf(warning_font, 0, y+=FH, "AUTOEXEC.BIN not found!");
-        bmp_printf(warning_font, 0, y+=FH, "Please copy all ML files.");
+        bmp_printf(warning_font, 0, y+=FH, "未找到 AUTOEXEC.BIN！");
+        bmp_printf(warning_font, 0, y+=FH, "请复制全部 ML 文件。");
         msleep(5000);
         return 0;
     }
 
     if (!is_dir("ML"))
     {
-        bmp_printf(warning_font, 0, y+=FH, "ML directory not found!");
-        bmp_printf(warning_font, 0, y+=FH, "Please copy all ML files.");
+        bmp_printf(warning_font, 0, y+=FH, "未找到 ML 目录！");
+        bmp_printf(warning_font, 0, y+=FH, "请复制全部 ML 文件。");
         msleep(5000);
         return 0;
     }
 
     if (!is_dir("ML/FONTS"))
     {
-        bmp_printf(warning_font, 0, y+=FH, "FONTS directory not found!");
-        bmp_printf(warning_font, 0, y+=FH, "Please copy all ML files.");
+        bmp_printf(warning_font, 0, y+=FH, "未找到 FONTS 目录！");
+        bmp_printf(warning_font, 0, y+=FH, "请复制全部 ML 文件。");
         msleep(5000);
         return 0;
     }
@@ -354,44 +354,44 @@ static int install(void)
 
     if (boot_flags->firmware)
     {
-        bmp_printf(error_font, 0, y+=FH, "MAIN_FIRMWARE flag is DISABLED!");
-        bmp_printf(error_font, 0, y+=FH, "Please contact ML developers for a fix.");
+        bmp_printf(error_font, 0, y+=FH, "MAIN_FIRMWARE 标志已禁用！");
+        bmp_printf(error_font, 0, y+=FH, "请联系 ML 开发者获取修复。");
         msleep(5000);
         return 0;
     }
 
     if (!boot_flags->bootdisk )
     {
-        bmp_printf(FONT_LARGE, 0, y+=FH, "Setting boot flag...");
+        bmp_printf(FONT_LARGE, 0, y+=FH, "正在设置引导标志...");
         call_bootflag_eventproc( "EnableBootDisk" );
         if (!boot_flags->bootdisk )
         {
-            bmp_printf(error_font, 0, y+=FH, "Could not enable boot flag.");
+            bmp_printf(error_font, 0, y+=FH, "无法设置引导标志。");
             msleep(5000);
             return 0;
         }
     }
     else
     {
-        bmp_printf(FONT_LARGE, 0, y+=FH, "Boot flag is already set.");
+        bmp_printf(FONT_LARGE, 0, y+=FH, "引导标志已设置。");
     }
 
-    bmp_printf(FONT_LARGE, 0, y+=FH, "Making card bootable...");
+    bmp_printf(FONT_LARGE, 0, y+=FH, "正在使存储卡可引导...");
     extern int bootflag_write_bootblock();
     int bootflag_written = bootflag_write_bootblock();
     if (!bootflag_written)
     {
-        bmp_printf(warning_font, 0, y+=FH, "Could not make the card bootable.");
-        bmp_printf(warning_font, 0, y+=FH, "You need to run EOSCard or MacBoot.");
+        bmp_printf(warning_font, 0, y+=FH, "无法使存储卡可引导。");
+        bmp_printf(warning_font, 0, y+=FH, "请使用 EOSCard 或 MacBoot 制作引导。");
         msleep(5000);
     }
 
-    bmp_printf(FONT_LARGE, 0, y+=FH, "Done!");
+    bmp_printf(FONT_LARGE, 0, y+=FH, "完成！");
     bmp_fill(COLOR_BLACK, 0, 430, 720, 50);
     y += 60;
 
     print_bootflags();
-    bmp_printf(FONT(FONT_CANON, COLOR_GREEN2, COLOR_BLACK), 0, y, "Please restart your camera.");
+    bmp_printf(FONT(FONT_CANON, COLOR_GREEN2, COLOR_BLACK), 0, y, "请重启相机。");
     y += 60;
 
     if (rom_backup_done)
@@ -399,8 +399,8 @@ static int install(void)
         int fnt2 = FONT(FONT_MED, COLOR_GRAY(50), COLOR_BLACK);
         int fnt1 = fnt2 | FONT_ALIGN_JUSTIFIED | FONT_TEXT_WIDTH(720-32);
         int fh = fontspec_font(fnt1)->height;
-        bmp_printf(fnt1, 0, y+=fh, "After restart, please copy ML/LOGS/ROM*.BIN to PC, in a safe place.");
-        bmp_printf(fnt2, 0, y+=fh, "We may need these files in case of emergency.");
+        bmp_printf(fnt1, 0, y+=fh, "重启后，请将 ML/LOGS/ROM*.BIN 复制到电脑妥善保存。");
+        bmp_printf(fnt2, 0, y+=fh, "紧急情况下可能需要这些文件。");
     }
 
     gui_uilock(UILOCK_SHUTTER);
@@ -414,7 +414,7 @@ static int install(void)
         }
 
         bmp_printf(FONT(FONT_MED, COLOR_YELLOW, COLOR_BLACK), 0, 480 - font_med.height, 
-            "To uninstall Magic Lantern, please wait for %d seconds.  ", i
+            "卸载 Magic Lantern：请等待 %d 秒。  ", i
         );
         info_led_blink(1,50,950);
 
@@ -429,34 +429,34 @@ static int install(void)
 static int uninstall(void)
 {
     int y = 0;
-    bmp_printf(FONT_LARGE, 0, y, "Magic Lantern uninstall");
+    bmp_printf(FONT_LARGE, 0, y, "Magic Lantern 卸载");
     print_bootflags();
 
     if (boot_flags->firmware)
     {
-        bmp_printf(error_font, 0, y+=FH, "MAIN_FIRMWARE flag is DISABLED!");
-        bmp_printf(error_font, 0, y+=FH, "Please contact ML developers for a fix.");
+        bmp_printf(error_font, 0, y+=FH, "MAIN_FIRMWARE 标志已禁用！");
+        bmp_printf(error_font, 0, y+=FH, "请联系 ML 开发者获取修复。");
         msleep(5000);
         return 0;
     }
 
     if (boot_flags->bootdisk )
     {
-        bmp_printf(FONT_LARGE, 0, y+=FH, "Disabling boot flag...");
+        bmp_printf(FONT_LARGE, 0, y+=FH, "正在取消引导标志...");
         call_bootflag_eventproc( "DisableBootDisk" );
         if (boot_flags->bootdisk )
         {
-            bmp_printf(error_font, 0, y+=FH, "Could not disable boot flag.");
+            bmp_printf(error_font, 0, y+=FH, "无法取消引导标志。");
             msleep(5000);
             return 0;
         }
     }
     else
     {
-        bmp_printf(FONT_LARGE, 0, y+=FH, "Boot flag is not set.");
+        bmp_printf(FONT_LARGE, 0, y+=FH, "引导标志未设置。");
     }
 
-    bmp_printf(FONT_LARGE, 0, y+=FH, "Done!");
+    bmp_printf(FONT_LARGE, 0, y+=FH, "完成！");
     bmp_fill(COLOR_BLACK, 0, 430, 720, 50);
     return 1;
 }
@@ -473,7 +473,7 @@ void install_task()
     vram_update_luts();
     _find_ml_card();
     _load_fonts();
-    bmp_printf(FONT_LARGE, 0, 0, "Please wait...");
+    bmp_printf(FONT_LARGE, 0, 0, "请稍候...");
     
     msleep(1000);
     
@@ -500,7 +500,7 @@ void install_task()
             msleep(2000);
             bmp_fill(COLOR_BLACK, 0, 420, 720, 60);
             int fnt = FONT(FONT_CANON, COLOR_WHITE, COLOR_BLACK);
-            bmp_printf(fnt, 0, 430, "Please restart your camera.");
+            bmp_printf(fnt, 0, 430, "请重启相机。");
             print_bootflags();
         }
         else

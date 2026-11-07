@@ -140,11 +140,11 @@ static void load_h264_ini()
     if (is_file(path))
     {
         call("IVAParamMode", path);
-        NotifyBox(2000, "Loaded %s", path);
+        NotifyBox(2000, "已加载 %s", path);
     }
     else
     {
-        NotifyBox(2000, "%s not found", path);
+        NotifyBox(2000, "未找到 %s", path);
     }
 }
 
@@ -158,22 +158,22 @@ static struct menu_entry mov_menus[] = {
     },*/
 #ifdef FEATURE_NITRATE
     {
-        .name = "Load H264.ini     ",
+        .name = "加载 H264.ini     ",
         //~ .priv = &bitrate,
         //~ .min = 1,
         //~ .max = 20,
         .select = load_h264_ini,
-        .help = "Bitrate settings",
+        .help = "码率设置",
         .depends_on = DEP_MOVIE_MODE,
     },
 #endif
     {
-        .name = "REC indicator",
+        .name = "录制指示",
         .priv = &rec_indicator,
         .min = 0,
         .max = 3,
-        .choices = (const char *[]) {"Elapsed Time", "Remaining Time", "Avg Bitrate", "Instant Bitrate"},
-        .help = "What to display in top-right corner while recording.",
+        .choices = (const char *[]) {"已录时间", "剩余时间", "平均码率", "瞬时码率"},
+        .help = "录制时右上角显示的内容。",
         .depends_on = DEP_MOVIE_MODE | DEP_GLOBAL_DRAW,
     },
 };

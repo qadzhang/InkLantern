@@ -69,12 +69,12 @@ extern int bmp_color_scheme;
 #define MENU_OFFSET 20
 #endif
 
-#define MY_MENU_NAME "MyMenu"
+#define MY_MENU_NAME "我的菜单"
 static struct menu * my_menu;
 static int my_menu_dirty = 0;
 
 /* modified settings menu */
-#define MOD_MENU_NAME "Modified"
+#define MOD_MENU_NAME "已修改"
 static struct menu * mod_menu;
 static int mod_menu_dirty = 1;
 
@@ -258,7 +258,7 @@ draw_version( void )
     bmp_printf(
         FONT( FONT_SMALL, COLOR_WHITE, COLOR_BLUE ),
         0, 0,
-        "Magic Lantern Firmware version %s (%s)\nBuilt on%s by %s\n%s",
+        "Magic Lantern 固件版本 %s (%s)\n构建于%s，作者 %s\n%s",
         build_version,
         build_id,
         build_date,
@@ -313,7 +313,7 @@ static MENU_SELECT_FUNC(customize_toggle)
 
 static struct menu_entry customize_menu[] = {
     {
-        .name   = "Customize Menus",
+        .name   = "自定义菜单",
         .priv   = &customize_mode,
         .max    = 1,
         .select = customize_toggle,
@@ -330,7 +330,7 @@ static int is_customize_selected(struct menu * menu) // argument is optional, ju
 
 #define MY_MENU_ENTRY \
         { \
-            .name = "(empty)", \
+            .name = "（空）", \
             .hidden = 1, \
             .jhidden = 1, \
         },
@@ -2398,7 +2398,7 @@ static int check_default_warnings(struct menu_entry * entry, char* warning)
             if (!MENU_INT(entry->parent))   /* is the master menu entry disabled? if so, gray out the entire submenu */
             {
                 int is_plural = entry->parent->name[strlen(entry->parent->name)-1] == 's';
-                snprintf(warning, MENU_MAX_WARNING_LEN, "%s %s disabled.", entry->parent->name, is_plural ? "are" : "is");
+                snprintf(warning, MENU_MAX_WARNING_LEN, "%s%s已禁用。", entry->parent->name, is_plural ? "" : "");
                 return MENU_WARN_NOT_WORKING;
             }
         }
@@ -2408,46 +2408,46 @@ static int check_default_warnings(struct menu_entry * entry, char* warning)
          if (DEPENDS_ON(DEP_GLOBAL_DRAW) && !get_global_draw())
         snprintf(warning, MENU_MAX_WARNING_LEN, GDR_WARNING_MSG);
     else if (DEPENDS_ON(DEP_MOVIE_MODE) && !is_movie_mode())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature only works in movie mode.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能仅在视频模式下可用。");
     else if (DEPENDS_ON(DEP_PHOTO_MODE) && is_movie_mode())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature only works in photo mode.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能仅在拍照模式下可用。");
     else if (DEPENDS_ON(DEP_LIVEVIEW) && !lv)
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature only works in LiveView.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能仅在实时取景下可用。");
     else if (DEPENDS_ON(DEP_NOT_LIVEVIEW) && lv)
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature does not work in LiveView.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能在实时取景下无法使用。");
     else if (DEPENDS_ON(DEP_AUTOFOCUS) && is_manual_focus())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires autofocus enabled.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要启用自动对焦。");
     else if (DEPENDS_ON(DEP_MANUAL_FOCUS) && !is_manual_focus())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires manual focus.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要手动对焦。");
     else if (DEPENDS_ON(DEP_CFN_AF_HALFSHUTTER) && cfn_get_af_button_assignment() != AF_BTN_HALFSHUTTER && !is_manual_focus())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "Set AF to Half-Shutter from Canon menu (CFn / custom ctrl), or use MF.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "请在佳能菜单中将自动对焦设为半按快门(CFn/自定义控制)，或改用手动对焦。");
 #if !defined(CONFIG_NO_HALFSHUTTER_AF_IN_LIVEVIEW)
     else if (DEPENDS_ON(DEP_CFN_AF_BACK_BUTTON) && cfn_get_af_button_assignment() == AF_BTN_HALFSHUTTER && !is_manual_focus())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "Set AF to back btn (*) from Canon menu (CFn / custom ctrl), or use MF.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "请在佳能菜单中将自动对焦设为机背(*)按钮(CFn/自定义控制)，或改用手动对焦。");
 #endif
     else if (DEPENDS_ON(DEP_EXPSIM) && lv && !lv_luma_is_accurate())
         snprintf(warning, MENU_MAX_WARNING_LEN, EXPSIM_WARNING_MSG);
     //~ else if (DEPENDS_ON(DEP_NOT_EXPSIM) && lv && lv_luma_is_accurate())
         //~ snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires ExpSim disabled.");
     else if (DEPENDS_ON(DEP_MANUAL_FOCUS) && !is_manual_focus())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires manual focus.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要手动对焦。");
     else if (DEPENDS_ON(DEP_CHIPPED_LENS) && !lens_info.lens_exists)
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires a chipped (electronic) lens.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要带触点的(电子)镜头。");
     else if (DEPENDS_ON(DEP_M_MODE) && shooting_mode != SHOOTMODE_M)
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires Manual (M) mode.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要手动(M)曝光模式。");
     else if (DEPENDS_ON(DEP_MANUAL_ISO) && !lens_info.raw_iso)
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires manual ISO.");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要手动设置感光度。");
     else if (DEPENDS_ON(DEP_SOUND_RECORDING) && !sound_recording_enabled())
-        snprintf(warning, MENU_MAX_WARNING_LEN, (was_sound_recording_disabled_by_fps_override() && !fps_should_record_wav()) ? 
-            "Sound recording was disabled by FPS override." :
-            "Sound recording is disabled. Enable it from Canon menu."
+        snprintf(warning, MENU_MAX_WARNING_LEN, (was_sound_recording_disabled_by_fps_override() && !fps_should_record_wav()) ?
+            "录音已被帧率覆盖功能禁用。" :
+            "录音已禁用，请在佳能菜单中启用。"
         );
     else if (DEPENDS_ON(DEP_NOT_SOUND_RECORDING) && sound_recording_enabled())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "Disable sound recording from Canon menu!");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "请在佳能菜单中禁用录音！");
     else if (DEPENDS_ON(DEP_CONTINUOUS_AF) && !is_continuous_af())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires %s AF enabled.", is_movie_mode() ? "movie servo" : "continuous");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要启用%s对焦。", is_movie_mode() ? "视频伺服" : "连续");
     else if (DEPENDS_ON(DEP_NOT_CONTINUOUS_AF) && is_continuous_af())
-        snprintf(warning, MENU_MAX_WARNING_LEN, "This feature requires %s AF disabled.", is_movie_mode() ? "movie servo" : "continuous");
+        snprintf(warning, MENU_MAX_WARNING_LEN, "此功能需要禁用%s对焦。", is_movie_mode() ? "视频伺服" : "连续");
     
     if (warning[0]) 
         return MENU_WARN_NOT_WORKING;
@@ -2455,24 +2455,24 @@ static int check_default_warnings(struct menu_entry * entry, char* warning)
     if (entry->selected) // check recommendations
     {
              if (WORKS_BEST_IN(DEP_GLOBAL_DRAW) && !get_global_draw())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with GlobalDraw enabled.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "启用全局绘制时效果最佳。");
         else if (WORKS_BEST_IN(DEP_MOVIE_MODE) && !is_movie_mode())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best in movie mode.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "在视频模式下效果最佳。");
         else if (WORKS_BEST_IN(DEP_PHOTO_MODE) && is_movie_mode())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best in photo mode.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "在拍照模式下效果最佳。");
         else if (WORKS_BEST_IN(DEP_LIVEVIEW) && !lv)
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best in LiveView.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "在实时取景下效果最佳。");
         else if (WORKS_BEST_IN(DEP_NOT_LIVEVIEW) && lv)
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best outside LiveView.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "在实时取景外效果最佳。");
         else if (WORKS_BEST_IN(DEP_AUTOFOCUS) && is_manual_focus())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with autofocus enabled.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "启用自动对焦时效果最佳。");
         else if (WORKS_BEST_IN(DEP_MANUAL_FOCUS) && !is_manual_focus())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with manual focus.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "使用手动对焦时效果最佳。");
         else if (WORKS_BEST_IN(DEP_CFN_AF_HALFSHUTTER) && cfn_get_af_button_assignment() != AF_BTN_HALFSHUTTER && !is_manual_focus())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "Set AF to Half-Shutter from Canon menu (CFn / custom ctrl).");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "建议在佳能菜单中将自动对焦设为半按快门(CFn/自定义控制)。");
 #if !defined(CONFIG_NO_HALFSHUTTER_AF_IN_LIVEVIEW)
         else if (WORKS_BEST_IN(DEP_CFN_AF_BACK_BUTTON) && cfn_get_af_button_assignment() == AF_BTN_HALFSHUTTER && !is_manual_focus())
-            snprintf(warning, MENU_MAX_WARNING_LEN, "Set AF to back btn (*) from Canon menu (CFn / custom ctrl).");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "建议在佳能菜单中将自动对焦设为机背(*)按钮(CFn/自定义控制)。");
 #endif
         //~ else if (WORKS_BEST_IN(DEP_EXPSIM) && lv && !lv_luma_is_accurate())
             //~ snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with ExpSim enabled.");
@@ -2481,9 +2481,9 @@ static int check_default_warnings(struct menu_entry * entry, char* warning)
         //~ else if (WORKS_BEST_IN(DEP_CHIPPED_LENS) && !lens_info.name[0])
             //~ snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with a chipped (electronic) lens.");
         else if (WORKS_BEST_IN(DEP_M_MODE) && shooting_mode != SHOOTMODE_M)
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best in Manual (M) mode.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "在手动(M)曝光模式下效果最佳。");
         else if (WORKS_BEST_IN(DEP_MANUAL_ISO) && !lens_info.raw_iso)
-            snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with manual ISO.");
+            snprintf(warning, MENU_MAX_WARNING_LEN, "使用手动感光度时效果最佳。");
         //~ else if (WORKS_BEST_IN(DEP_SOUND_RECORDING) && !sound_recording_enabled())
             //~ snprintf(warning, MENU_MAX_WARNING_LEN, "This feature works best with sound recording enabled.");
         //~ else if (WORKS_BEST_IN(DEP_NOT_SOUND_RECORDING) && sound_recording_enabled())
@@ -2898,7 +2898,7 @@ skip_name:
             submenu_key_hint(720-35, y + y_icon_offset, 40, COLOR_BLACK, ICON_ML_FORWARD);
     }
 
-    if (my_menu->selected && streq(my_menu->name, "Recent") && !junkie_mode)
+    if (my_menu->selected && streq(my_menu->name, "最近使用") && !junkie_mode)
     {
         /* debug info: show usage counters as small bars */
         int bar_color = entry->selected ? COLOR_LIGHT_BLUE : COLOR_GRAY(5);
@@ -3075,7 +3075,7 @@ menu_post_display()
              5,  MENU_HELP_Y_POS_2, 
                 //~ CUSTOMIZE_MODE_HIDING ? "Press SET to show/hide items you don't use.                 " :
                 //~ CUSTOMIZE_MODE_MYMENU ? "Press SET to choose your favorite items for MyMenu.         " : ""
-                "Press SET to choose MyMenu items or hide what you don't use."
+                "按SET键选择我的菜单项，或隐藏不常用的项目。"
         );
     }
 }
@@ -3284,7 +3284,7 @@ dyn_menu_rebuild(struct menu * dyn_menu, int (*select_func)(struct menu_entry * 
         dyn_entry->shidden = 1;
         dyn_entry->hidden = 1;
         dyn_entry->jhidden = 1;
-        dyn_entry->name = "(empty)";
+        dyn_entry->name = "（空）";
         dyn_entry->priv = 0;
         dyn_entry->select = 0;
         dyn_entry->select_Q = 0;
@@ -3364,7 +3364,7 @@ my_menu_rebuild()
     if (!menu_has_visible_items(my_menu) && !customize_mode)
     {
         /* no user preferences? build it dynamically from usage counters */
-        my_menu->name = "Recent";
+        my_menu->name = "最近使用";
         menu_normalize_usage_counters();
 
         if (junkie_mode)
@@ -3593,10 +3593,10 @@ static char* junkie_get_shortname(struct menu_display_info * info, int fnt, int 
     {
         // skip some common words
         int skip = 0;
-        if (startswith(info->name, "Movie")) skip = 5;
+        if (startswith(info->name, "Movie")) skip = 6;
         else if (startswith(info->name, "Magic")) skip = 5;
-        else if (startswith(info->name, "Focus")) skip = 5;
-        else if (startswith(info->name, "Expo")) skip = 4;
+        else if (startswith(info->name, "Focus")) skip = 6;
+        else if (startswith(info->name, "Expo")) skip = 6;
         else if (startswith(info->name, "Advanced")) skip = 8;
         else if (startswith(info->name, "LV Display")) skip = 10;
         else if (startswith(info->name, "LV")) skip = 2;
@@ -3947,13 +3947,13 @@ show_hidden_items(struct menu * menu, int force_clear)
     if (!menu_lv_transparent_mode)
     {
         char hidden_msg[100];
-        snprintf(hidden_msg, sizeof(hidden_msg), "Hidden: ");
+        snprintf(hidden_msg, sizeof(hidden_msg), "隐藏：");
         int hidden_count = 0;
 
         for (struct menu_entry * entry = menu->children; entry; entry = entry->next)
         {
             /* fixme: check without streq */
-            if (HAS_HIDDEN_FLAG(entry) && !streq(entry->name, "(empty)"))
+            if (HAS_HIDDEN_FLAG(entry) && !streq(entry->name, "（空）"))
             {
                 if (hidden_count) { STR_APPEND(hidden_msg, ", "); }
                 int len = strlen(hidden_msg);
@@ -3964,7 +3964,7 @@ show_hidden_items(struct menu * menu, int force_clear)
                 hidden_count++;
             }
         }
-        STR_APPEND(hidden_msg, customize_mode ? "." : " (Prefs->Customize).");
+        STR_APPEND(hidden_msg, customize_mode ? "。" : "（设置->自定义菜单）。");
         
         unsigned maxlen = bmp_strlen_clipped(FONT_MED, hidden_msg, 700);
         if (strlen(hidden_msg) > maxlen)
@@ -4009,6 +4009,36 @@ show_vscroll(struct menu * parent){
         bmp_fill(COLOR_BLACK, x-2, y_lo, 6, h);
         bmp_fill(MENU_BAR_COLOR, x, y, 3, size);
     }
+}
+
+/* Display-only Chinese labels for the top-level tabs.
+ * Internal menu names MUST stay English (boot-safe on EOSM, see AGENTS.md);
+ * the Chinese text is substituted only at draw time - same architecture as
+ * the published ryulin456/magiclantern-zh builds (English keys internally). */
+static const char * menu_tab_label(const struct menu * menu)
+{
+    static const struct { const char * en; const char * zh; } tab_labels[] =
+    {
+        { "Audio",        "音频" },
+        { "Expo",         "曝光" },
+        { "Overlay",      "叠加" },
+        { "Movie",        "视频" },
+        { "Shoot",        "拍摄" },
+        { "Focus",        "对焦" },
+        { "Debug",        "调试" },
+        { "Prefs",        "设置" },
+        { "Modules",      "模块" },
+        { "Help",         "帮助" },
+        { "Display",      "显示" },
+        { "Scripts",      "脚本" },
+        { "Games",        "游戏" },
+        { "Intervalometer", "间隔拍摄" },
+    };
+
+    for (unsigned int i = 0; i < COUNT(tab_labels); i++)
+        if (streq(menu->name, tab_labels[i].en))
+            return tab_labels[i].zh;
+    return menu->name;
 }
 
 static EXCLUDES(menu_sem)
@@ -4117,7 +4147,7 @@ void menus_display(
                     //~ bmp_printf(FONT_MED, 720 - strlen(menu->name)*font_med.width, 50, menu->name);
                 //~ else
                 if (!junkie_mode)
-                    bmp_printf(FONT(FONT_CANON, fg, NO_BG_ERASE), 5, y, "%s", menu->name);
+                    bmp_printf(FONT(FONT_CANON, fg, NO_BG_ERASE), 5, y, "%s", menu_tab_label(menu));
                 
                 int x1 = x - 1;
                 int x2 = x1 + icon_spacing + 2;
@@ -4898,7 +4928,7 @@ void menu_benchmark()
     int t1 = get_ms_clock();
 
     clrscr();
-    NotifyBox(20000, "Elapsed time: %d ms", t1 - t0);
+    NotifyBox(20000, "耗时：%d ms", t1 - t0);
 }
 
 static int menu_ensure_canon_dialog()
@@ -6103,9 +6133,9 @@ menu_help_go_to_selected_entry(
 static void menu_show_version(void)
 {
     big_bmp_printf(FONT(FONT_MED, 60, MENU_BG_COLOR_HEADER_FOOTER),  10,  480 - font_med.height * 3,
-        "Magic Lantern version: %s\n"
-        "Git commit: %s\n"
-        "Built on %s by %s.",
+        "Magic Lantern 版本：%s\n"
+        "Git 提交：%s\n"
+        "构建于 %s，作者 %s。",
         build_version,
         build_id,
         build_date,
@@ -7145,9 +7175,9 @@ MENU_SELECT_FUNC(menu_advanced_toggle)
 
 MENU_UPDATE_FUNC(menu_advanced_update)
 {
-    MENU_SET_NAME(advanced_mode ? "Simple..." : "Advanced...");
+    MENU_SET_NAME(advanced_mode ? "简单..." : "高级...");
     MENU_SET_ICON(IT_ACTION, 0);
-    MENU_SET_HELP(advanced_mode ? "Back to 'beginner' mode." : "Advanced options for experts. Use with care.");
+    MENU_SET_HELP(advanced_mode ? "返回“初级”模式。" : "面向专家的高级选项，请谨慎使用。");
 }
 
 /* run something in new task, with powersave disabled

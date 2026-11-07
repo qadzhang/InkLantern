@@ -97,7 +97,7 @@ static void add_keyframe_menu(struct keyframe * kfr)
     if (kfr)
     {
         kfr->menu_entry.update = update_keyframe_menu;
-        menu_add("List Keyframes", &(kfr->menu_entry), 1);
+        menu_add("关键帧列表", &(kfr->menu_entry), 1);
     }
 }
 
@@ -179,7 +179,7 @@ static void delete_keyframe(struct keyframe * kfr)
 {
     if(kfr)
     {
-        menu_remove("List Keyframes", &(kfr->menu_entry), 1);
+        menu_remove("关键帧列表", &(kfr->menu_entry), 1);
         delete_keyframe(kfr->next);
         kfr->next = NULL;
         free(kfr);
@@ -210,11 +210,11 @@ static MENU_SELECT_FUNC(adv_int_new_keyframe)
         kfr->interval_time = keyframe_interval_time;
         kfr->kelvin = keyframe_kelvin;
         kfr->bulb_duration = keyframe_bulb_duration;
-        NotifyBox(2000, "Keyframe Created for %d", keyframe_time);
+        NotifyBox(2000, "已创建关键帧（第 %d 帧）", keyframe_time);
     }
     else
     {
-        NotifyBox(2000, "Error: could not create keyframe", keyframe_time);
+        NotifyBox(2000, "错误：无法创建关键帧", keyframe_time);
     }
 }
 
@@ -328,13 +328,13 @@ static void adv_int_load(void)
             }
             else
             {
-                NotifyBox(2000, "Error: Could not read file");
+                NotifyBox(2000, "错误：无法读取文件");
             }
             fio_free(buffer);
         }
         else
         {
-            NotifyBox(2000, "Error: Could not create buffer");
+            NotifyBox(2000, "错误：无法创建缓冲区");
         }
         
         FIO_CloseFile(f);
@@ -381,11 +381,11 @@ static MENU_SELECT_FUNC(adv_int_save)
         }
         FIO_CloseFile(f);
         beep();
-        NotifyBox(2000, "Keyframe Sequence Saved");
+        NotifyBox(2000, "关键帧序列已保存");
     }
     else
     {
-        NotifyBox(2000, "Error saving file");
+        NotifyBox(2000, "保存文件出错");
     }
 }
 
@@ -393,7 +393,7 @@ static MENU_SELECT_FUNC(adv_int_clear)
 {
     delete_keyframe(keyframes);
     keyframes = NULL;
-    NotifyBox(2000, "All Keyframes Cleared");
+    NotifyBox(2000, "已清除所有关键帧");
 }
 
 static MENU_UPDATE_FUNC(time_menu_update)
@@ -412,7 +412,7 @@ static MENU_UPDATE_FUNC(time_menu_update)
         MENU_SET_RINFO("%s", format_time_hours_minutes_seconds(seconds));
     }
     if(keyframe_exists(keyframe_time))
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING,"This keyframe already exists, will be overwritten");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING,"此关键帧已存在，将被覆盖");
 }
 
 static MENU_SELECT_FUNC(new_keyframe_menu_select)
@@ -428,7 +428,7 @@ static MENU_UPDATE_FUNC(shutter_menu_update)
 {
     MENU_SET_RINFO("%s", lens_format_shutter(lens_info.raw_shutter));
     if(shooting_mode == SHOOTMODE_BULB)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This feature does not work in BULB mode (use Bulb Duration)");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此功能在 B 门模式下不可用（请使用 B 门时长）");
 }
 
 static MENU_UPDATE_FUNC(aperture_menu_update)
@@ -442,7 +442,7 @@ static MENU_UPDATE_FUNC(aperture_menu_update)
     
     if (!lens_info.aperture)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, lens_info.lens_exists ? "Aperture is automatic - cannot adjust manually." : "Manual lens - cannot adjust aperture.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, lens_info.lens_exists ? "光圈为自动，无法手动调整。" : "手动镜头，无法调整光圈。");
     }
 }
 
@@ -469,7 +469,7 @@ static MENU_UPDATE_FUNC(shutter_display)
         MENU_SET_ENABLED(1);
     }
     else 
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "Shutter speed is automatic - cannot adjust manually.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "快门为自动，无法手动调整。");
     
     MENU_SET_SHORT_NAME(" "); // obvious from value
 }
@@ -488,7 +488,7 @@ static MENU_UPDATE_FUNC(aperture_display)
     }
     if (!lens_info.aperture)
     {
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, lens_info.lens_exists ? "Aperture is automatic - cannot adjust manually." : "Manual lens - cannot adjust aperture.");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, lens_info.lens_exists ? "光圈为自动，无法手动调整。" : "手动镜头，无法调整光圈。");
         MENU_SET_ICON(MNI_PERCENT_OFF, 0);
     }
     else
@@ -510,7 +510,7 @@ static MENU_UPDATE_FUNC(iso_icon_update)
 
 static MENU_UPDATE_FUNC(iso_display)
 {
-    MENU_SET_VALUE("%s", lens_info.iso ? "" : "Auto");
+    MENU_SET_VALUE("%s", lens_info.iso ? "" : "自动");
     if (lens_info.iso)
     {
         if (lens_info.raw_iso == lens_info.iso_equiv_raw)
@@ -570,7 +570,7 @@ static MENU_UPDATE_FUNC(kelvin_menu_update)
     }
     else
     {
-        MENU_SET_VALUE("OFF");
+        MENU_SET_VALUE("关");
         MENU_SET_ENABLED(FALSE);
     }
 }
@@ -579,13 +579,13 @@ static MENU_UPDATE_FUNC(loop_after_menu_update)
 {
     if(adv_int_use_global_time)
     {
-        MENU_SET_VALUE("OFF");
+        MENU_SET_VALUE("关");
         MENU_SET_ENABLED(FALSE);
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This feature does not work with global time keyframes");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此功能不支持全局时间关键帧");
     }
     else if(!adv_int_loop_after)
     {
-        MENU_SET_VALUE("OFF");
+        MENU_SET_VALUE("关");
         MENU_SET_ENABLED(FALSE);
     }
     else
@@ -598,7 +598,7 @@ static MENU_UPDATE_FUNC(loop_after_menu_update)
 static MENU_UPDATE_FUNC(bulb_duration_update)
 {
     if(shooting_mode != SHOOTMODE_BULB)
-        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "This feature only works in BULB mode");
+        MENU_SET_WARNING(MENU_WARN_NOT_WORKING, "此功能仅在 B 门模式下可用");
 }
 
 static void step_focus(int mf_steps)
@@ -615,7 +615,7 @@ static void step_focus(int mf_steps)
         }
         set_lv_zoom(5);
         msleep(1000);
-        NotifyBox(1000, "Focusing...");
+        NotifyBox(1000, "对焦中...");
         lens_focus_enqueue_step(-mf_steps);
         msleep(1000);
         set_lv_zoom(1);
@@ -628,7 +628,7 @@ static void focus_to(int offset)
 {
     if(offset - current_focus_offset != 0)
     {
-        NotifyBox(2000, "Focusing %d steps to offset %d",offset - current_focus_offset, offset);
+        NotifyBox(2000, "对焦移动 %d 步至偏移 %d",offset - current_focus_offset, offset);
         step_focus(offset - current_focus_offset);
         current_focus_offset = offset;
     }
@@ -676,7 +676,7 @@ static unsigned int adv_int_cbr()
            current_time >= last_keyframe->time)
         {
             int ramp_time = MIN(current_time, current_keyframe->time);
-            NotifyBox(2000,"Ramping %d%%", compute_ramp(0, 100, last_keyframe->time,current_keyframe->time, ramp_time));
+            NotifyBox(2000,"渐变中 %d%%", compute_ramp(0, 100, last_keyframe->time,current_keyframe->time, ramp_time));
             //ramp values from previous keyframe to next keyframe
             if(current_keyframe->shutter && last_keyframe->shutter)
             {
@@ -749,139 +749,139 @@ PROP_HANDLER(PROP_GUI_STATE)
 static struct menu_entry adv_int_menu[] =
 {
     {
-        .name = "Ramping options",
+        .name = "渐变选项",
         .priv = &adv_int,
         .select = menu_open_submenu,
         .max = 1,
         .works_best_in = DEP_M_MODE,
-        .help = "Advanced intervalometer ramping options.",
+        .help = "高级间隔拍摄渐变选项。",
         .children =  (struct menu_entry[])
         {
             {
-                .name = "Enabled",
+                .name = "启用",
                 .priv = &adv_int,
                 .max = 1,
-                .help = "Enable advanced intervalometer ramping"
+                .help = "启用高级间隔拍摄渐变"
             },
             {
-                .name = "Use Global Time",
+                .name = "使用全局时间",
                 .priv = &adv_int_use_global_time,
                 .max = 1,
-                .help = "Set keyframes by global time (time of day)",
-                .help2 = "You should clear all keyframes when switching this setting"
+                .help = "按全局时间（当日时刻）设置关键帧",
+                .help2 = "切换此设置后应清除所有关键帧"
             },
             {
-                .name = "Loop After",
+                .name = "循环帧数",
                 .priv = &adv_int_loop_after,
                 .update = loop_after_menu_update,
                 .max = 5000,
                 .icon_type = IT_BOOL,
-                .help = "Loops keyframe sequence after x frames"
+                .help = "x 帧后循环关键帧序列"
             },
             {
-                .name = "External Source",
+                .name = "外部触发源",
                 .priv = &adv_int_external,
                 .max = 1,
                 .icon_type = IT_BOOL,
-                .help = "Use this module with an external intervalometer"
+                .help = "配合外部间隔拍摄设备使用本模块"
             },
             {
-                .name = "List Keyframes",
+                .name = "关键帧列表",
                 .select = menu_open_submenu,
                 .submenu_width = 710,
-                .help = "Lists all keyframes",
+                .help = "列出所有关键帧",
                 .children =  (struct menu_entry[]) {
                     MENU_EOL
                 }
             },
             {
-                .name   = "Save Keyframes",
+                .name   = "保存关键帧",
                 .select = adv_int_save,
-                .help   = "Save current keyframes to file.",
-                .help2  = "This sequence will be auto-loaded at startup."
+                .help   = "将当前关键帧保存到文件。",
+                .help2  = "该序列会在启动时自动加载。"
             },
             {
-                .name   = "Clear Keyframes",
+                .name   = "清除关键帧",
                 .select = adv_int_clear,
-                .help   = "Clears all keyframes.",
-                .help2  = "Note: this will not remove the saved sequence."
+                .help   = "清除所有关键帧。",
+                .help2  = "注意：不会删除已保存的序列。"
             },
             {
-                .name = "New Keyframe...",
+                .name = "新建关键帧...",
                 .select = new_keyframe_menu_select,
                 .submenu_width = 710,
                 .icon_type = IT_ACTION,
-                .help = "Create a new keyframe from the current camera settings",
+                .help = "以当前相机设置创建新关键帧",
                 .children =  (struct menu_entry[])
                 {
                     {
-                        .name = "Create Keyframe",
+                        .name = "创建关键帧",
                         .select = adv_int_new_keyframe,
-                        .help = "Create a new keyframe from the current camera settings"
+                        .help = "以当前相机设置创建新关键帧"
                     },
                     {
-                        .name = "Keyframe Time",
+                        .name = "关键帧时刻",
                         .priv = &keyframe_time,
                         .update = time_menu_update,
                         .min = 1,
                         .max = SECONDS_IN_DAY,
                         .unit = UNIT_DEC,
-                        .help = "The frame at which to apply this keyframe",
-                        .help2 = "* Computed time inacurate if ramping interval time"
+                        .help = "应用此关键帧的帧序号",
+                        .help2 = "* 若渐变间隔时长，计算的时间不准确"
                     },
                     {
-                        .name = "Shutter ",
+                        .name = "快门 ",
                         .priv = &keyframe_shutter,
                         .select = menu_open_submenu,
                         .update = shutter_menu_update,
                         .max = 1,
                         .icon_type = IT_BOOL,
                         .works_best_in = DEP_M_MODE,
-                        .help = "Include current Shutter in Keyframe",
+                        .help = "将当前快门纳入关键帧",
                         .children = (struct menu_entry[])
                         {
                             {
-                                .name = "Enabled",
+                                .name = "启用",
                                 .priv = &keyframe_shutter,
                                 .max = 1,
                                 .icon_type = IT_BOOL,
-                                .help = "Include current Shutter in Keyframe"
+                                .help = "将当前快门纳入关键帧"
                             },
                             {
-                                .name = "Adjust Shutter",
+                                .name = "调整快门",
                                 .update     = shutter_display,
                                 .select     = shutter_toggle,
                                 .icon_type  = IT_PERCENT,
-                                .help = "Fine-tune shutter value. Displays APEX Tv or degrees equiv.",
+                                .help = "微调快门值。显示 APEX Tv 或等效角度。",
                                 .edit_mode = EM_SHOW_LIVEVIEW,
                             },
                             MENU_EOL
                         }
                     },
                     {
-                        .name = "Aperture ",
+                        .name = "光圈 ",
                         .priv = &keyframe_aperture,
                         .select = menu_open_submenu,
                         .update = aperture_menu_update,
                         .max = 1,
                         .icon_type = IT_BOOL,
                         .works_best_in = DEP_M_MODE,
-                        .help = "Include current Aperture in Keyframe",
+                        .help = "将当前光圈纳入关键帧",
                         .children = (struct menu_entry[])
                         {
                             {
-                                .name = "Enabled",
+                                .name = "启用",
                                 .priv = &keyframe_aperture,
                                 .max = 1,
                                 .icon_type = IT_BOOL,
-                                .help = "Include current Aperture in Keyframe"
+                                .help = "将当前光圈纳入关键帧"
                             },
                             {
-                                .name = "Adjust Aperture",
+                                .name = "调整光圈",
                                 .update     = aperture_display,
                                 .select     = aperture_toggle,
                                 .icon_type  = IT_PERCENT,
-                                .help = "Adjust aperture. Also displays APEX aperture (Av) in stops.",
+                                .help = "调整光圈。同时显示 APEX 光圈 (Av) 档位。",
                                 .depends_on = DEP_CHIPPED_LENS,
                                 .edit_mode = EM_SHOW_LIVEVIEW,
                             },
@@ -895,60 +895,60 @@ static struct menu_entry adv_int_menu[] =
                         .update = iso_menu_update,
                         .max = 1,
                         .icon_type = IT_BOOL,
-                        .help = "Include current ISO in Keyframe",
+                        .help = "将当前 ISO 纳入关键帧",
                         .children = (struct menu_entry[])
                         {
                             {
-                                .name = "Enabled",
+                                .name = "启用",
                                 .priv = &keyframe_iso,
                                 .max = 1,
                                 .icon_type = IT_BOOL,
-                                .help = "Include current ISO in Keyframe"
+                                .help = "将当前 ISO 纳入关键帧"
                             },
                             {
-                                .name = "Adjust ISO",
+                                .name = "调整 ISO",
                                 .update = iso_display,
                                 .select = iso_toggle,
-                                .help  = "Adjust and fine-tune ISO. Also displays APEX Sv value.",
+                                .help  = "调整并微调 ISO。同时显示 APEX Sv 值。",
                                 .edit_mode = EM_SHOW_LIVEVIEW,
                             },
                             MENU_EOL
                         }
                     },
                     {
-                        .name = "Focus",
+                        .name = "对焦",
                         .priv = &keyframe_focus,
                         .min = -5000,
                         .max = 5000,
                         .unit = UNIT_DEC,
-                        .help = "The focus offset in steps",
+                        .help = "对焦偏移量（步数）",
                         .depends_on = DEP_AUTOFOCUS,
                         .works_best_in = DEP_LIVEVIEW,
                     },
                     {
-                        .name = "Interval Time",
+                        .name = "间隔时长",
                         .priv = &keyframe_interval_time,
                         .min = 0,
                         .max = 28800,
                         .unit = UNIT_TIME,
-                        .help = "Changes the interval between shots",
+                        .help = "更改拍摄间隔",
                     },
                     {
-                        .name = "Bulb Duration",
+                        .name = "B 门时长",
                         .priv = &keyframe_bulb_duration,
                         .update = bulb_duration_update,
                         .min = 0,
                         .max = 28800,
                         .unit = UNIT_TIME,
                         .depends_on = DEP_PHOTO_MODE,
-                        .help = "Changes duration of the bulb timer",
+                        .help = "更改 B 门定时时长",
                     },
                     {
-                        .name = "White Balance",
+                        .name = "白平衡",
                         .update = kelvin_menu_update,
                         .select = kelvin_menu_select,
                         .priv = &keyframe_kelvin,
-                        .help = "Changes the Kelvin white balance",
+                        .help = "更改开尔文白平衡",
                     },
                     MENU_EOL,
                 }
@@ -961,7 +961,7 @@ static struct menu_entry adv_int_menu[] =
 static unsigned int adv_int_init()
 {
     adv_int_load();
-    menu_add("Intervalometer", adv_int_menu, COUNT(adv_int_menu));
+    menu_add("间隔拍摄", adv_int_menu, COUNT(adv_int_menu));
     return 0;
 }
 
